@@ -2,7 +2,8 @@
 name: wiki
 description: >-
   Manages Wiki CLI end to end — install and verify wazootech-wiki, scaffold with wiki init,
-  audit vault hygiene (fmt, lint, check, render), plan and execute vault improvements, and deploy to GitHub Pages.
+  audit vault hygiene (fmt, lint, check, render), enrich wikis from raw source material,
+  plan and execute vault improvements, and deploy to GitHub Pages.
   Use whenever the user mentions wiki, Wiki CLI, wazootech-wiki, wiki init, wiki.yml, wiki.yaml, broken links,
   lint/check failures, pre-PR wiki review, GitHub Pages for a wiki, or getting started with
   semantic markdown — even if they do not say "skill". Route to one workflow reference,
@@ -31,6 +32,7 @@ Skills under `skills/` are agent knowledge — **not** wiki pages. Do not add `s
 | New wiki, `wiki init`, tweak step            | [references/init.md](references/init.md)       | Scaffold summarized              |
 | Audit, improve, pre-PR, lint/check failures  | [references/improve.md](references/improve.md) | Findings report delivered        |
 | Formatting, linting, check categories detail | [references/audit.md](references/audit.md)     | Audit criteria verified          |
+| Ingest raw material into wiki pages         | [references/enrich.md](references/enrich.md)   | Change report delivered          |
 | Generate handoff plans, plans layout         | [references/plan.md](references/plan.md)       | Plan file written                |
 | Execute plans, review diff, publish issues   | [references/loop.md](references/loop.md)       | Executor output verified         |
 | GitHub Pages, deploy workflow, CI publish    | [references/deploy.md](references/deploy.md)   | Workflow + URLs summarized       |
@@ -67,6 +69,7 @@ bash skills/wiki/scripts/audit.sh -c path/to/wiki.yml [FILE...]
 | [references/init.md](references/init.md)       | `wiki init` + configuration wizard tweaks                                 |
 | [references/improve.md](references/improve.md) | Recon, audit, vet, and planning workflow                                  |
 | [references/audit.md](references/audit.md)     | Audit check categories and style spot-check                               |
+| [references/enrich.md](references/enrich.md)   | Ingest raw material into canonical wiki pages with semantic frontmatter    |
 | [references/plan.md](references/plan.md)       | Hand-off plans format and layout                                          |
 | [references/loop.md](references/loop.md)       | Running executors, reviewing work, reconciling backlog, publishing issues |
 | [references/deploy.md](references/deploy.md)   | GitHub Pages workflow and alignment checklist                             |
