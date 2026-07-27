@@ -150,7 +150,7 @@ class TestWikiBuild(unittest.TestCase):
                 with patch(
                     "wiki.wiki._run_lint",
                     return_value=AuditReport.empty(),
-                ), patch(
+                ) as run_lint_mock, patch(
                     "wiki.wiki._run_check",
                     return_value=AuditReport.empty(),
                 ) as run_check_mock:
