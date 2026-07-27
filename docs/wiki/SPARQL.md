@@ -79,7 +79,7 @@ ORDER BY ?class
 - [wiki query](wiki_query.md) — ad-hoc queries from the terminal
 - [wiki render](wiki_render.md) — refresh inline SPARQL result tables in markdown
 - [wiki serve](wiki_serve.md#sparql-endpoint) — optional read-only HTTP endpoint on `wiki serve`
-- [wiki-yasgui-template](https://github.com/wazootech/wiki-yasgui-template) — external YASGUI template repository ([Wiki CLI templates](wiki.md#ecosystem-templates))
+- [wiki-templates/yasgui](https://github.com/wazootech/wiki-templates/yasgui) — external YASGUI template repository ([Wiki CLI templates](wiki.md#ecosystem-templates))
 - [Style Guide](Style_Guide.md) — `sparql:start` / `sparql:end` block conventions
 
 ## References

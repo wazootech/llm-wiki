@@ -44,7 +44,7 @@ This [wiki](wiki.md) repository is built directly on the principles of the LLM W
 
 ## Related
 
-- [wiki](wiki.md) — including [Wiki CLI templates](wiki.md#ecosystem-templates) ([llm-wiki-template](https://github.com/wazootech/llm-wiki-template))
+- [wiki](wiki.md) — including [Wiki CLI templates](wiki.md#ecosystem-templates) ([wiki-templates/llm-wiki](https://github.com/wazootech/wiki-templates/llm-wiki))
 - [Learning Systems](Learning_Systems.md) — continual versus recursive learning
 - [Declarative Knowledge](Declarative_Knowledge.md)
 - [Procedural Knowledge](Procedural_Knowledge.md)
