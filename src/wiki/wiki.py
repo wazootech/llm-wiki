@@ -12,7 +12,6 @@ from rdflib import Dataset, Graph
 from .audit import _merge_results, _run_check, _run_lint
 from .batch import DocumentBatch
 from .config import Config, find_config_path
-from .fmt_util import format_markdown
 from .format import process_rdf_format
 from .graph import (
     graph_descriptors,
@@ -31,7 +30,6 @@ from .links import format_internal_link
 from .parser import document_data_from_path
 from .paths import (
     iter_document_files,
-    iter_markdown_files,
     route_for_document_file,
     routes_from_markdown_files,
     select_document_paths,
