@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from wiki.config import Config
 from wiki.schemas import AuditReport, Issue
-from wiki.session import Wiki, _uses_named_graphs
+from wiki.wiki import Wiki, _uses_named_graphs
 
 
 class TestNamedGraphDetection(unittest.TestCase):
@@ -30,7 +30,7 @@ class TestWiki(unittest.TestCase):
             (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
 
             wiki = Wiki.load(root)
-            with patch("wiki.session._run_check", return_value=AuditReport.empty()) as mock_check:
+            with patch("wiki.wiki._run_check", return_value=AuditReport.empty()) as mock_check:
                 report = wiki.check()
             self.assertTrue(report.ok)
             mock_check.assert_called_once()
@@ -45,7 +45,7 @@ class TestWiki(unittest.TestCase):
             (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
 
             wiki = Wiki.load(root)
-            with patch("wiki.session._run_check", return_value=AuditReport.empty()) as mock_check:
+            with patch("wiki.wiki._run_check", return_value=AuditReport.empty()) as mock_check:
                 wiki.check([page])
             _, kwargs = mock_check.call_args
             self.assertIsNotNone(kwargs.get("file_paths"))
@@ -68,8 +68,8 @@ class TestWiki(unittest.TestCase):
             errors=[Issue(code="shacl_violation", message="fail", severity="error")],
             ok=False,
         )
-        with patch("wiki.session._run_lint", return_value=lint_report), patch(
-            "wiki.session._run_check",
+        with patch("wiki.wiki._run_lint", return_value=lint_report), patch(
+            "wiki.wiki._run_check",
             return_value=check_report,
         ):
             report = wiki.preflight()
