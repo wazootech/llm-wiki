@@ -10,8 +10,8 @@ from typing import Any
 from rdflib import Dataset, Graph
 
 from .audit import _merge_results, _run_check, _run_lint
+from .batch import DocumentBatch
 from .config import Config, find_config_path
-from .fmt_util import format_markdown
 from .format import process_rdf_format
 from .graph import (
     graph_descriptors,
@@ -30,7 +30,6 @@ from .links import format_internal_link
 from .parser import document_data_from_path
 from .paths import (
     iter_document_files,
-    iter_markdown_files,
     route_for_document_file,
     routes_from_markdown_files,
     select_document_paths,
@@ -171,13 +170,6 @@ class Wiki:
         """Return named graph descriptors for the root corpus and installed sources."""
         return graph_descriptors(self.config)
 
-    def _file_filter(self, files: Sequence[Path] | None) -> tuple[set[str] | None, list[Path] | None]:
-        if not files:
-            return None, None
-        file_filter = routes_from_markdown_files(self.config, tuple(files))
-        file_paths = select_document_paths(self.config, tuple(files))
-        return file_filter, file_paths
-
     def check(
         self,
         files: Sequence[Path] | None = None,
@@ -193,7 +185,9 @@ class Wiki:
         Returns:
             An ``AuditReport`` with messages grouped by severity.
         """
-        file_filter, file_paths = self._file_filter(files)
+        batch = DocumentBatch(self.config, files)
+        file_filter = batch.route_filter()
+        file_paths = batch.document_paths()
         if file_paths is not None:
             report = _run_check(self.config, file_filter=file_filter, file_paths=file_paths)
         else:
@@ -217,8 +211,8 @@ class Wiki:
         Returns:
             An ``AuditReport`` with convention violations.
         """
-        file_filter, _ = self._file_filter(files)
-        report = _run_lint(self.config, file_filter=file_filter)
+        batch = DocumentBatch(self.config, files)
+        report = _run_lint(self.config, file_filter=batch.route_filter())
         if strict:
             report = report.apply_strict()
         return report
@@ -289,33 +283,7 @@ class Wiki:
         Returns:
             A ``FmtReport`` listing formatted and stale files.
         """
-        config = self.config
-        if files:
-            target_files = select_markdown_paths(config, tuple(files))
-        else:
-            target_files = list(iter_markdown_files(config))
-
-        report = FmtReport()
-        for file_path in target_files:
-            try:
-                original = file_path.read_text(encoding="utf-8")
-                formatted = format_markdown(original, file_path, config)
-                if original != formatted:
-                    report.stale_files.append(file_path)
-                    if not check:
-                        file_path.write_text(formatted, encoding="utf-8")
-                        report.formatted_count += 1
-                        if verbose:
-                            report.verbose_lines.append(f"Formatted {file_path.name}")
-                elif verbose:
-                    report.verbose_lines.append(f"Already formatted {file_path.name}")
-            except Exception as exc:
-                report.ok = False
-                report.error_message = f"Error formatting {file_path.name}: {exc}"
-                return report
-
-        report.ok = not report.stale_files if check else True
-        return report
+        return DocumentBatch(self.config, files).format(check=check, verbose=verbose)
 
     def render(
         self,
