@@ -13,7 +13,7 @@ from . import __version__
 from .format import detect_query_form, is_sparql_update
 from .format_choice import FormatChoice
 from .graph import graph_stats
-from .session import Wiki
+from .wiki import Wiki
 
 QUERY_FORMATS = {"table", "json", "csv", "tsv", "turtle", "n3", "markdown"}
 ALLOWED_QUERY_FORMS = {"SELECT", "ASK", "CONSTRUCT", "DESCRIBE"}

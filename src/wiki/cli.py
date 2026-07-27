@@ -15,7 +15,7 @@ from .errors import BuildError, UpgradeError
 from .format_choice import FormatChoice
 from .graph import graph_stats
 from .init_scaffold import parse_github_repo, resolve_init_options
-from .session import Wiki, _uses_named_graphs
+from .wiki import Wiki, _uses_named_graphs
 from .upgrade import PACKAGE_NAME, check_version, perform_upgrade
 
 FILE_COMMANDS = ("check", "lint", "link", "render", "export", "fmt")

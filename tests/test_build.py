@@ -10,7 +10,7 @@ from wiki.cli import main
 from wiki.config import Config
 from wiki.paths import page_output_path
 from wiki.schemas import AuditReport
-from wiki.session import Wiki
+from wiki.wiki import Wiki
 
 
 class TestWikiBuild(unittest.TestCase):
@@ -148,10 +148,10 @@ class TestWikiBuild(unittest.TestCase):
             with patch("wiki.cli.Wiki.load") as load_mock:
                 load_mock.return_value = Wiki(config)
                 with patch(
-                    "wiki.session._run_lint",
+                    "wiki.wiki._run_lint",
                     return_value=AuditReport.empty(),
-                ) as run_lint_mock, patch(
-                    "wiki.session._run_check",
+                ), patch(
+                    "wiki.wiki._run_check",
                     return_value=AuditReport.empty(),
                 ) as run_check_mock:
                     result = runner.invoke(

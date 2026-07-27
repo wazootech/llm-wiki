@@ -11,7 +11,7 @@ from .graph import load_query_graph
 from .paths import build_page_manifest, detect_output_collisions, page_output_path
 from .render import render_markdown_files
 from .schemas import BuildOptions, BuildResult
-from .session import Wiki
+from .wiki import Wiki
 from .site import build_index_html, build_page_html, build_site
 
 
