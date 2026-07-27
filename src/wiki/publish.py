@@ -11,8 +11,8 @@ from .graph import load_query_graph
 from .paths import build_page_manifest, detect_output_collisions, page_output_path
 from .render import render_markdown_files
 from .schemas import BuildOptions, BuildResult
-from .wiki import Wiki
 from .site import build_index_html, build_page_html, build_site
+from .wiki import Wiki
 
 
 def _path_is_same_or_ancestor(ancestor: Path, descendant: Path) -> bool:
