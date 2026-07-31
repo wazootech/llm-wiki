@@ -61,7 +61,7 @@ wiki init --git
 
 Styling and branding (such as site name, theme color, logo, and favicon) are not managed by the CLI out-of-the-box, which outputs plain, unstyled HTML. To add custom styling, write a custom layout template file and place custom assets under the `wiki.assets` directory, then configure `site.layout` in your `wiki.yml`. See [Wiki Configuration — Custom CSS](Wiki_Configuration.md#custom-css) and [wiki init](wiki_init.md).
 
-Alternatively, start from a GitHub template: [wiki-templates/generic](https://github.com/wazootech/wiki-templates/tree/master/generic) (generic wiki project) or the [LLM Wiki](LLM_Wiki.md) starter [wiki-templates/llm-wiki](https://github.com/wazootech/wiki-templates/tree/master/llm-wiki). See [Wiki CLI templates](wiki.md#ecosystem-templates).
+Alternatively, start from a GitHub template: [wiki-templates/generic](https://github.com/wazootech/wiki-templates/tree/main/generic) (generic wiki project) or the [LLM Wiki](LLM_Wiki.md) starter [wiki-templates/llm-wiki](https://github.com/wazootech/wiki-templates/tree/main/llm-wiki). See [Wiki CLI templates](wiki.md#ecosystem-templates).
 
 ## Daily workflow
 

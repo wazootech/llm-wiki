@@ -104,19 +104,19 @@ Design rationale for silence, pipes, and flat subcommands: [Design philosophies]
 
 GitHub **template repositories** in the [wazootech](https://github.com/wazootech) org sit at the edges of the toolchain — publish surfaces, query UIs, and starter vaults — while Wiki CLI owns the semantic layer ([Design philosophies](Design_Philosophies.md)). This section is the canonical registry.
 
-| Template                                                                       | Description                                                                                   |
-| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| [generic](https://github.com/wazootech/wiki-templates/tree/master/generic)     | Generic Wiki CLI project (`wiki init` parity plus deploy)                                     |
-| [yasgui](https://github.com/wazootech/wiki-templates/tree/master/yasgui)       | SPARQL query editor UI (YASGUI); `wiki serve` `/api/sparql`, export TTL                       |
-| [llm-wiki](https://github.com/wazootech/wiki-templates/tree/master/llm-wiki)   | [LLM Wiki](LLM_Wiki.md) starter vault with agent-oriented pages and gardening hooks           |
-| [nextjs](https://github.com/wazootech/wiki-templates/tree/master/nextjs)       | Next.js SSG consumer of `wiki export` JSON-LD                                                 |
-| [quartz](https://github.com/wazootech/wiki-templates/tree/master/quartz)       | Quartz static site from a compatible vault plus `wiki check` CI                               |
-| [cocoindex](https://github.com/wazootech/wiki-templates/tree/master/cocoindex) | CocoIndex incremental sidecar for Wiki-derived memory, RAG, and provenance-preserving indexes |
-| [mintlify](https://github.com/wazootech/wiki-templates/tree/master/mintlify)   | Mintlify or Holocron docs site from a compatible vault                                        |
-| [holocron](https://github.com/wazootech/wiki-templates/tree/master/holocron)   | Holocron docs site from a Wiki CLI-compatible vault                                           |
-| [astro](https://github.com/wazootech/wiki-templates/tree/master/astro)         | Astro SSG consumer of `wiki export` JSON-LD                                                   |
-| [wikipedia](https://github.com/wazootech/wiki-templates/tree/master/wikipedia) | Wikipedia-themed layout using the Wiki Python API                                             |
-| [camunda](https://github.com/wazootech/wiki-templates/tree/master/camunda)     | Camunda BPMN/DMN governance knowledge base with SHACL shapes                                  |
+| Template                                                                     | Description                                                                                   |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [generic](https://github.com/wazootech/wiki-templates/tree/main/generic)     | Generic Wiki CLI project (`wiki init` parity plus deploy)                                     |
+| [yasgui](https://github.com/wazootech/wiki-templates/tree/main/yasgui)       | SPARQL query editor UI (YASGUI); `wiki serve` `/api/sparql`, export TTL                       |
+| [llm-wiki](https://github.com/wazootech/wiki-templates/tree/main/llm-wiki)   | [LLM Wiki](LLM_Wiki.md) starter vault with agent-oriented pages and gardening hooks           |
+| [nextjs](https://github.com/wazootech/wiki-templates/tree/main/nextjs)       | Next.js SSG consumer of `wiki export` JSON-LD                                                 |
+| [quartz](https://github.com/wazootech/wiki-templates/tree/main/quartz)       | Quartz static site from a compatible vault plus `wiki check` CI                               |
+| [cocoindex](https://github.com/wazootech/wiki-templates/tree/main/cocoindex) | CocoIndex incremental sidecar for Wiki-derived memory, RAG, and provenance-preserving indexes |
+| [mintlify](https://github.com/wazootech/wiki-templates/tree/main/mintlify)   | Mintlify or Holocron docs site from a compatible vault                                        |
+| [holocron](https://github.com/wazootech/wiki-templates/tree/main/holocron)   | Holocron docs site from a Wiki CLI-compatible vault                                           |
+| [astro](https://github.com/wazootech/wiki-templates/tree/main/astro)         | Astro SSG consumer of `wiki export` JSON-LD                                                   |
+| [wikipedia](https://github.com/wazootech/wiki-templates/tree/main/wikipedia) | Wikipedia-themed layout using the Wiki Python API                                             |
+| [camunda](https://github.com/wazootech/wiki-templates/tree/main/camunda)     | Camunda BPMN/DMN governance knowledge base with SHACL shapes                                  |
 
 ### Artifact contract
 
