@@ -14,7 +14,7 @@ from wiki.mcp import (
     namespaces_resource,
     query_sparql,
 )
-from wiki.session import Wiki
+from wiki.wiki import Wiki
 
 
 class TestWikiMcp(unittest.TestCase):

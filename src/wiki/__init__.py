@@ -17,7 +17,7 @@ from .schemas import (
     RenderReport,
     ScaffoldResult,
 )
-from .session import Wiki
+from .wiki import Wiki
 
 __version__ = "0.1.21"
 
