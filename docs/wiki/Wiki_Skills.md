@@ -57,7 +57,7 @@ The **`wiki`** skill routes operational workflows to focused references:
 
 Read one reference per turn unless the user explicitly asked for a multi-step flow (for example install → create → deploy).
 
-The **`wiki-feedback`** skill handles ecosystem feedback and integration proposals. Use it when comparing an external tool with Wiki CLI, drafting a `wiki-*-template` issue, or turning an integration idea into a repeatable GitHub issue. It reviews existing `template` issues first, preserves the boundary between Wiki CLI and downstream integrations, and recommends `.github/ISSUE_TEMPLATE/integration-template.yml` for final filing.
+The **`wiki-feedback`** skill handles ecosystem feedback and integration proposals. Use it when comparing an external tool with Wiki CLI, drafting a template proposal issue, or turning an integration idea into a repeatable GitHub issue. It reviews existing `template` issues in the [wiki-templates](https://github.com/wazootech/wiki-templates) monorepo first, preserves the boundary between Wiki CLI and downstream integrations, and recommends the `integration-template.yml` issue form in `wazootech/wiki-templates` for final filing.
 
 ## Scripts
 
