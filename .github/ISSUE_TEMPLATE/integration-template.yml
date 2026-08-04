@@ -1,13 +1,15 @@
 name: Wiki integration template proposal
-description: Propose a new Wiki CLI ecosystem template or integration pattern.
-title: "Create wiki-<integration>-template for <use case>"
+description: Propose a new Wiki CLI ecosystem template or integration pattern (filed in wazootech/wiki-templates).
+title: "Add <integration> template to wiki-templates for <use case>"
 labels:
   - template
 body:
   - type: markdown
     attributes:
       value: |
-        Use this form to propose a new `wazootech/wiki-*-template` repository or integration pattern.
+        Template proposals are tracked in the [wazootech/wiki-templates](https://github.com/wazootech/wiki-templates) monorepo, not in this repository. Templates are monorepo subdirectories, not standalone `wazootech/wiki-*-template` repos.
+
+        File this proposal there instead: https://github.com/wazootech/wiki-templates/issues/new?template=integration-template.yml
 
         Good proposals make the boundary explicit: Wiki CLI owns the semantic Markdown source layer, validation, querying, export, and publishing. The integration should own a distinct downstream role such as an agent workflow, memory runtime, retrieval index, docs surface, domain model, or work-management bridge.
 
@@ -23,9 +25,9 @@ body:
   - type: input
     id: proposed_repo
     attributes:
-      label: Proposed template repository
-      description: Use the `wiki-<integration>-template` naming pattern unless there is a strong reason not to.
-      placeholder: wazootech/wiki-open-swe-template
+      label: Proposed template subdirectory
+      description: Templates are subdirectories of the `wazootech/wiki-templates` monorepo. Use the `<integration>` naming pattern unless there is a strong reason not to.
+      placeholder: wazootech/wiki-templates/open-swe
     validations:
       required: true
 
@@ -51,7 +53,7 @@ body:
       label: Goal
       description: What should this template demonstrate?
       placeholder: |
-        Create `wazootech/wiki-...-template`: a template showing how ... integrates with Wiki CLI to ...
+        Add `wazootech/wiki-templates/<integration>/`: a template showing how ... integrates with Wiki CLI to ...
     validations:
       required: true
 
@@ -181,7 +183,7 @@ body:
       label: Acceptance criteria
       description: Concrete checklist for when the template is done.
       placeholder: |
-        - [ ] New `wazootech/wiki-...-template` repository exists.
+        - [ ] New `wazootech/wiki-templates/<integration>/` template subdirectory exists.
         - [ ] README explains the Wiki CLI / integration boundary.
         - [ ] Template includes a working Wiki corpus.
         - [ ] `wiki fmt --check` passes.
