@@ -44,7 +44,7 @@ Also: [`init`](#init) scaffolds `wiki.yaml`; `wiki query --pretty` renders Rich 
 
 ## Templates
 
-All templates live in the [wiki-templates](https://github.com/wazootech/wiki-templates) monorepo. Clone the one that matches your stack:
+All templates live in the [wiki-templates](https://github.com/wazootech/wiki-templates) monorepo. Template specs, epics, and roadmap are tracked in the [wiki-templates issue tracker](https://github.com/wazootech/wiki-templates/issues) (see the [template program umbrella](https://github.com/wazootech/wiki-templates/issues/4)). Clone the one that matches your stack:
 
 | Template                                                              | Description                                                                                                                                                       |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
