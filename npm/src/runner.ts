@@ -39,11 +39,15 @@ export function ensurePythonReady(): string {
     setup();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new WikiSetupError(`wazootech-wiki Python environment setup failed: ${message}`);
+    throw new WikiSetupError(
+      `wazootech-wiki Python environment setup failed: ${message}`,
+    );
   }
 
   if (!venvIsReady()) {
-    throw new WikiSetupError("wazootech-wiki Python environment is not usable after setup");
+    throw new WikiSetupError(
+      "wazootech-wiki Python environment is not usable after setup",
+    );
   }
   return getVenvPython();
 }
@@ -56,7 +60,10 @@ export function ensurePythonReady(): string {
  * @param args - Arguments to pass to the wiki CLI.
  * @param options - Execution options (cwd, env, timeout, stdin, signal).
  */
-export function runWiki(args: readonly string[], options: RunOptions = {}): Promise<WikiCommandResult> {
+export function runWiki(
+  args: readonly string[],
+  options: RunOptions = {},
+): Promise<WikiCommandResult> {
   const pythonExe = ensurePythonReady();
   const command = [pythonExe, "-m", "wiki", ...args];
   const child = spawn(pythonExe, ["-m", "wiki", ...args], {
@@ -98,12 +105,24 @@ export function runWiki(args: readonly string[], options: RunOptions = {}): Prom
     if (options.timeoutMs !== undefined) {
       timeout = setTimeout(() => {
         child.kill("SIGTERM");
-        finish({ ok: false, exitCode: -1, stdout, stderr: `${stderr}\nCommand timed out`.trim(), command });
+        finish({
+          ok: false,
+          exitCode: -1,
+          stdout,
+          stderr: `${stderr}\nCommand timed out`.trim(),
+          command,
+        });
       }, options.timeoutMs);
     }
 
     child.on("error", (error) => {
-      finish({ ok: false, exitCode: -1, stdout, stderr: error.message, command });
+      finish({
+        ok: false,
+        exitCode: -1,
+        stdout,
+        stderr: error.message,
+        command,
+      });
     });
     child.on("close", (code) => {
       const exitCode = code ?? -1;
@@ -122,7 +141,10 @@ export function runWiki(args: readonly string[], options: RunOptions = {}): Prom
  * @param options - Spawn options (cwd, env).
  * @returns The spawned child process.
  */
-export function spawnWiki(args: readonly string[], options: SpawnOptions = {}): ChildProcess {
+export function spawnWiki(
+  args: readonly string[],
+  options: SpawnOptions = {},
+): ChildProcess {
   const pythonExe = ensurePythonReady();
   return spawn(pythonExe, ["-m", "wiki", ...args], {
     stdio: "inherit",

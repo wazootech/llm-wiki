@@ -86,6 +86,9 @@ jobs:
     - name: Install npm dependencies
       run: npm ci --ignore-scripts
 
+    - name: Verify TypeScript Prettier formatting
+      run: npm run format:check
+
     - name: Check npm/PyPI version consistency
       run: |
         PY_VER=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['project']['version'])")

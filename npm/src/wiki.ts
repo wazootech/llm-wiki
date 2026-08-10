@@ -45,13 +45,20 @@ function pushFlag(args: string[], flag: string, value: FlagValue): void {
   args.push(flag, String(value));
 }
 
-function pushRepeated(args: string[], flag: string, values: readonly string[] | undefined): void {
+function pushRepeated(
+  args: string[],
+  flag: string,
+  values: readonly string[] | undefined,
+): void {
   for (const value of values ?? []) {
     args.push(flag, value);
   }
 }
 
-function appendFiles(args: string[], files: readonly string[] | undefined): void {
+function appendFiles(
+  args: string[],
+  files: readonly string[] | undefined,
+): void {
   if (files?.length) args.push(...files);
 }
 
@@ -127,13 +134,18 @@ export class Wiki {
    * @param args - Full argument list.
    * @param options - Run options (cwd, env, timeout, stdin).
    */
-  run(args: readonly string[], options: RunOptions = {}): Promise<WikiCommandResult> {
+  run(
+    args: readonly string[],
+    options: RunOptions = {},
+  ): Promise<WikiCommandResult> {
     const runOptions: RunOptions = { env: { ...this.env, ...options.env } };
     const cwd = options.cwd ?? this.cwd;
     if (cwd !== undefined) runOptions.cwd = cwd;
     if (options.stdin !== undefined) runOptions.stdin = options.stdin;
-    if (options.timeoutMs !== undefined) runOptions.timeoutMs = options.timeoutMs;
-    if (options.throwOnError !== undefined) runOptions.throwOnError = options.throwOnError;
+    if (options.timeoutMs !== undefined)
+      runOptions.timeoutMs = options.timeoutMs;
+    if (options.throwOnError !== undefined)
+      runOptions.throwOnError = options.throwOnError;
     if (options.signal !== undefined) runOptions.signal = options.signal;
     return runWiki(args, runOptions);
   }
@@ -180,7 +192,11 @@ export class Wiki {
     const args: string[] = [];
     pushFlag(args, "--output-dir", options.outputDir);
     pushFlag(args, "--site-base-url", options.baseUrl ?? this.runtime.baseUrl);
-    pushFlag(args, "--site-url-style", options.urlStyle ?? this.runtime.urlStyle);
+    pushFlag(
+      args,
+      "--site-url-style",
+      options.urlStyle ?? this.runtime.urlStyle,
+    );
     pushFlag(args, "--render", options.render);
     pushFlag(args, "--reload", options.reload);
     pushFlag(args, "--cache", options.cache);
@@ -225,14 +241,20 @@ export class Wiki {
    *
    * @param options - Export options (format, mode, output, file filter).
    */
-  async export<T = unknown>(options: ExportOptions = {}): Promise<ExportResult<T>> {
+  async export<T = unknown>(
+    options: ExportOptions = {},
+  ): Promise<ExportResult<T>> {
     const args: string[] = [];
     pushFlag(args, "--output", options.output);
     pushFlag(args, "--format", options.format);
     pushFlag(args, "--mode", options.mode);
     appendFiles(args, options.files);
     const result = await this.run(this.args("export", args));
-    const shouldParseJson = options.parseJson ?? (options.format === undefined || options.format === "dict" || options.format === "json-ld");
+    const shouldParseJson =
+      options.parseJson ??
+      (options.format === undefined ||
+        options.format === "dict" ||
+        options.format === "json-ld");
     if (shouldParseJson) {
       return parseJsonOutput<T>(result);
     }
@@ -291,7 +313,11 @@ export class Wiki {
     pushFlag(args, "--host", options.host);
     pushFlag(args, "--port", options.port);
     pushFlag(args, "--site-base-url", options.baseUrl ?? this.runtime.baseUrl);
-    pushFlag(args, "--site-url-style", options.urlStyle ?? this.runtime.urlStyle);
+    pushFlag(
+      args,
+      "--site-url-style",
+      options.urlStyle ?? this.runtime.urlStyle,
+    );
     pushFlag(args, "--watch", options.watch);
     return spawnWiki(this.args("serve", args), {
       cwd: options.cwd ?? this.cwd,
@@ -330,9 +356,17 @@ export class Wiki {
     pushRepeated(args, "--wiki-inputs", options.wikiInputs);
     pushFlag(args, "--graph-base-iri", options.graphBaseIri);
     pushRepeated(args, "--graph-implicit-types", options.graphImplicitTypes);
-    pushFlag(args, "--graph-implicit-types-policy", options.graphImplicitTypesPolicy);
+    pushFlag(
+      args,
+      "--graph-implicit-types-policy",
+      options.graphImplicitTypesPolicy,
+    );
     if (options.graphIncludeFileExtension !== undefined) {
-      args.push(options.graphIncludeFileExtension ? "--graph-include-file-extension" : "--no-graph-include-file-extension");
+      args.push(
+        options.graphIncludeFileExtension
+          ? "--graph-include-file-extension"
+          : "--no-graph-include-file-extension",
+      );
     }
     return this.run(this.args("init", args));
   }
