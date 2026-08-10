@@ -5,11 +5,13 @@ export type UrlStyle = "dir" | "file";
 /** Internal link syntax: ``[text](Page.md)`` (standard) or ``[[Page]]`` (wikilink). */
 export type LinkStyle = "standard" | "wikilink";
 /** Output formats for SPARQL query results. */
-export type QueryFormat = "table" | "json" | "csv" | "tsv" | "turtle" | "n3" | "markdown";
+export type QueryFormat =
+  "table" | "json" | "csv" | "tsv" | "turtle" | "n3" | "markdown";
 /** MCP server transport mode. */
 export type McpMode = "stdio";
 /** Output formats for RDF export. */
-export type ExportFormat = "dict" | "json-ld" | "turtle" | "xml" | "n3" | "nt" | "trig" | "nquads";
+export type ExportFormat =
+  "dict" | "json-ld" | "turtle" | "xml" | "n3" | "nt" | "trig" | "nquads";
 /** JSON-LD serialization mode. */
 export type ExportMode = "expanded" | "compacted";
 

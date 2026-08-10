@@ -30,6 +30,8 @@
     "setup": "node npm/setup.js",
     "gendocs:python": "uv run sphinx-build -b html -c docs docs/api/python docs/assets/api/python",
     "gendocs:ts": "typedoc",
+    "format": "prettier \"npm/**/*.ts\" --write",
+    "format:check": "prettier \"npm/**/*.ts\" --check",
     "test:npm": "npm run build && node npm/test-setup-argv.js && node npm/test-wiki-api.js"
   },
   "files": [
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "esbuild": "0.28.1",
+    "prettier": "^3.9.5",
     "tsup": "^8.3.0",
     "typedoc": "^0.28.0",
     "typescript": "^5.8.0"
