@@ -89,6 +89,9 @@ jobs:
     - name: Verify TypeScript Prettier formatting
       run: npm run format:check
 
+    - name: Verify TypeScript ESLint
+      run: npm run lint
+
     - name: Check npm/PyPI version consistency
       run: |
         PY_VER=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['project']['version'])")
