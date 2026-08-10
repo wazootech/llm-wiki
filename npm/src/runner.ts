@@ -34,7 +34,6 @@ export function ensurePythonReady(): string {
   if (venvIsReady()) return getVenvPython();
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const setup = require("../setup");
     setup();
   } catch (error) {

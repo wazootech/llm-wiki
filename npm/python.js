@@ -7,7 +7,9 @@ function tryCandidate(cmd, args) {
     if (result.status === 0) {
       return result.stdout.trim();
     }
-  } catch {}
+  } catch {
+    /* ignore spawn error */
+  }
   return null;
 }
 
