@@ -27,6 +27,7 @@ Install agent skills with the [Skills CLI](https://github.com/vercel-labs/skills
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
 npx skills add wazootech/wiki@wiki-feedback -g -y
+npx skills add wazootech/wiki@wiki-sync -g -y
 
 # List skills without installing
 npx skills add wazootech/wiki --list
