@@ -15,6 +15,7 @@ Typical flow: **install** → **create** → **deploy** → **improve** (each op
 
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
+npx skills add wazootech/wiki@wiki-sync -g -y
 ```
 
 Docs: [Wiki_Skills.md](../docs/wiki/Wiki_Skills.md). User walkthrough: [Getting_Started.md](../docs/wiki/Getting_Started.md).
