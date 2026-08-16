@@ -9,7 +9,7 @@ Typical flow: **install** → **create** → **deploy** → **improve** (each op
 | Skill                 | Purpose                                                                  |
 | --------------------- | ------------------------------------------------------------------------ |
 | [wiki](wiki/SKILL.md) | Install, `wiki init`, audit (fmt/lint/check/render), GitHub Pages deploy |
-| [wiki-sync](wiki-sync/SKILL.md) | Keep a code wiki (`docs/`) in sync with its source — Git-anchored delta sync (`deno doc --json`, runners, `git ls-tree`) |
+| [wiki-sync](wiki-sync/SKILL.md) | Keep a code wiki (`docs/`) in sync with its source — Git-anchored delta sync; defaults to drift-free docs with an opt-in `detail_level` directive in the repo's `AGENTS.md` |
 
 ## Install
 
