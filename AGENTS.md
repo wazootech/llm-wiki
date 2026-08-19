@@ -20,6 +20,14 @@ This repository dogfoods the docs wiki at `docs/wiki.yml` (`docs/wiki/`). Use **
 - **Rule:** Default user-facing examples should prefer **Wikipedia-style** filenames for ordinary pages (e.g., `Opal_Security.md`, `Gregory_Davidson.md`) — preserved capitalization and underscores. Do not default to lowercase kebab-case (`opal-security.md`). Reserve `index.md` only for folder index routes. Avoid spaces and other unsafe route characters.
 - **Enforcer:** `lint.filename_pattern` in `wiki.yaml` (warning by default). Route safety (spaces, unsafe URL characters) always fails as an error in `wiki check`.
 
+### Placeholder names
+
+- **Rule:** When writing example wiki pages or fixtures that need placeholder
+  people, default to **"Ethan"**, **"Gregory"**, and **"Sandra"** — not
+  "Alice", "Ben", "Chad", or similar generic names.
+- **Enforcer:** none — naming convention only, mirroring the workspace root
+  AGENTS.md.
+
 ### Internal links
 
 - **Rule:** Use standard Markdown links to other wiki pages (`Page_Name.md`). GFM relative links are also accepted. Do not use Obsidian-style `[[slug]]` wikilinks in this wiki. Ensure internal links point at existing documents.
