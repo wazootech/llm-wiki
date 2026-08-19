@@ -1,0 +1,4 @@
+# Enforce LF line endings for all text files, on every platform.
+# The Deno toolchain (deno fmt / lint / check) emits and expects LF; working
+# trees must never silently flip committed files to CRLF on Windows checkouts.
+* text=auto eol=lf
