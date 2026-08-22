@@ -295,8 +295,10 @@ The procedure runs unattended under a scheduled GitHub Actions workflow. Ship
 as `.github/workflows/wiki-sync.yml` — copy-to-install, so operator
 customizations survive skill updates. The template encodes this contract:
 
-- **Triggers.** `workflow_dispatch` always; a weekly cron ships commented out.
-  Enable it only after manual dispatch runs prove the loop end to end.
+- **Triggers.** Manual `workflow_dispatch` is the default posture — syncs run
+  on demand. A weekly cron ships as a commented scaffold for operators with an
+  always-available model credential; enabling it is a deliberate choice, never
+  a default. Without such a credential, run syncs via dispatch or locally.
 - **Checkout** uses `fetch-depth: 0` so the anchor diff sees full history.
 - **Delta gate first.** Recompute the Step 1 quiet check before anything
   expensive runs; exit cleanly when nothing wiki-relevant changed.
