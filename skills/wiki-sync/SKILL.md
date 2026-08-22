@@ -290,15 +290,19 @@ expected new content is actually served.
 
 ## Scheduled syncs (CI)
 
-The procedure runs unattended under a scheduled GitHub Actions workflow. Ship
-`workflows/wiki-sync.yml` from this skill's directory into the wiki-owning repo
-as `.github/workflows/wiki-sync.yml` — copy-to-install, so operator
+The procedure's default posture is **local generation**: an agent runs this
+skill directly in a checkout that already holds its model credentials, on
+demand after source changes land. The shipped GitHub Actions wrapper makes the
+same procedure runnable in CI. Ship `workflows/wiki-sync.yml` from this
+skill's directory into the wiki-owning repo as
+`.github/workflows/wiki-sync.yml` — copy-to-install, so operator
 customizations survive skill updates. The template encodes this contract:
 
-- **Triggers.** Manual `workflow_dispatch` is the default posture — syncs run
-  on demand. A weekly cron ships as a commented scaffold for operators with an
-  always-available model credential; enabling it is a deliberate choice, never
-  a default. Without such a credential, run syncs via dispatch or locally.
+- **Triggers.** The wrapper is dispatch-only (`workflow_dispatch`) — a manual
+  convenience, never the primary path. A weekly cron ships as a commented
+  scaffold for operators with an always-available model credential; enabling
+  it is a deliberate choice, not an expected step. Without such a credential,
+  sync locally — it needs no workflow at all.
 - **Checkout** uses `fetch-depth: 0` so the anchor diff sees full history.
 - **Delta gate first.** Recompute the Step 1 quiet check before anything
   expensive runs; exit cleanly when nothing wiki-relevant changed.
