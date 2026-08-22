@@ -1,0 +1,196 @@
+# Wiki sync — scheduled CI driver for the wiki-sync skill.
+#
+# Install: copy this file into the wiki-owning repo as
+# .github/workflows/wiki-sync.yml, then:
+#   1. Uncomment exactly ONE block under AGENT WIRING and set its secret.
+#   2. Add toolchain steps the repo's doc validators need (e.g. setup-deno
+#      for `deno fmt --check docs/`), plus an optional validate step between
+#      the agent and the commit so a failed run cannot land or bump the
+#      anchor.
+# Enable the cron trigger only after manual dispatch runs prove the loop.
+#
+# Contract (skills/wiki-sync/SKILL.md, "Scheduled syncs (CI)"):
+# - Exits cheaply when no wiki-relevant source changed since docs/.sync-base.
+# - Resumes an open docs/sync-ci PR; new deltas force-push onto it.
+# - The agent bumps docs/.sync-base inside the single docs-only commit this
+#   workflow creates, so merging the PR anchors the wiki; interrupted runs
+#   leave the anchor untouched and the next run redoes the delta.
+# - Verification rides the PR via the repo's own CI; humans merge.
+
+name: Wiki sync
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: wiki-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Resume an open docs/sync-ci branch when one exists, THEN read the
+      # anchor: the branch carries its own .sync-base, which scopes the new
+      # delta correctly in both fresh and resumed runs.
+      - name: Resolve state
+        id: state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="docs/sync-ci"
+          OPEN_PR="$(gh pr list --head "$BRANCH" --state open --json number --jq 'length')"
+          if [ "$OPEN_PR" != "0" ]; then
+            git fetch origin "$BRANCH"
+            git checkout -b "$BRANCH" "origin/$BRANCH"
+          else
+            git checkout -b "$BRANCH" origin/main
+          fi
+          BASE="$(cat docs/.sync-base 2>/dev/null || git log -1 --format=%H -- docs/)"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          if git diff --quiet "$BASE"..origin/main -- src test bench .github; then
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "No wiki-relevant source changes since $BASE"
+          else
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            git diff --stat "$BASE"..origin/main -- src test bench .github
+          fi
+
+      - name: Stop — wiki current
+        if: steps.state.outputs.relevant == 'false'
+        run: echo "Nothing to sync; stopping cleanly."
+
+      # Toolchain steps go here if validators need them, e.g.:
+      # - uses: denoland/setup-deno@v2
+      #   with:
+      #     deno-version: v2.x
+
+      # =====================================================================
+      # AGENT WIRING — uncomment exactly ONE block and set its secret.
+      #
+      # This skill file IS the prompt. Each wiring tells the agent to follow
+      # skills/wiki-sync/SKILL.md end to end against THIS checkout, editing
+      # only docs/ and leaving ALL changes uncommitted (no git add/commit/
+      # push, no PRs) — the workflow owns committing and PR creation below.
+      # =====================================================================
+
+      # --- OpenCode --------------------------------------------------------
+      # - name: Run wiki-sync via OpenCode
+      #   if: steps.state.outputs.relevant == 'true'
+      #   env:
+      #     BASE: ${{ steps.state.outputs.base }}
+      #     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      #   run: |
+      #     curl -fsSL https://opencode.ai/install | bash
+      #     PROMPT="$(cat skills/wiki-sync/SKILL.md)
+      #       Follow this skill end to end for THIS checkout. Base commit:
+      #       ${BASE}. Edit only docs/; bump docs/.sync-base last, after the
+      #       skill's Step 8 validation passes. Leave all changes
+      #       uncommitted: do not git add, commit, push, or open PRs."
+      #     opencode run "$PROMPT"
+
+      # --- Pi --------------------------------------------------------------
+      # Provider-agnostic: Pi resolves its model from whichever provider key
+      # the environment carries (ANTHROPIC_API_KEY below; OPENAI_API_KEY,
+      # GEMINI_API_KEY, ... equally valid).
+      # - name: Run wiki-sync via Pi
+      #   if: steps.state.outputs.relevant == 'true'
+      #   env:
+      #     BASE: ${{ steps.state.outputs.base }}
+      #     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      #   run: |
+      #     curl -fsSL https://pi.dev/install.sh | sh
+      #     PROMPT="$(cat skills/wiki-sync/SKILL.md)
+      #       Follow this skill end to end for THIS checkout. Base commit:
+      #       ${BASE}. Edit only docs/; bump docs/.sync-base last, after the
+      #       skill's Step 8 validation passes. Leave all changes
+      #       uncommitted: do not git add, commit, push, or open PRs."
+      #     pi -p "$PROMPT"
+
+      # --- Claude Code -----------------------------------------------------
+      # - name: Run wiki-sync via Claude Code
+      #   if: steps.state.outputs.relevant == 'true'
+      #   env:
+      #     BASE: ${{ steps.state.outputs.base }}
+      #     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      #   run: |
+      #     npm install -g @anthropic-ai/claude-code
+      #     PROMPT="$(cat skills/wiki-sync/SKILL.md)
+      #       Follow this skill end to end for THIS checkout. Base commit:
+      #       ${BASE}. Edit only docs/; bump docs/.sync-base last, after the
+      #       skill's Step 8 validation passes. Leave all changes
+      #       uncommitted: do not git add, commit, push, or open PRs."
+      #     claude -p "$PROMPT" --dangerously-skip-permissions
+
+      # --- Codex -----------------------------------------------------------
+      # - name: Run wiki-sync via Codex
+      #   if: steps.state.outputs.relevant == 'true'
+      #   env:
+      #     BASE: ${{ steps.state.outputs.base }}
+      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      #   run: |
+      #     npm install -g @openai/codex
+      #     PROMPT="$(cat skills/wiki-sync/SKILL.md)
+      #       Follow this skill end to end for THIS checkout. Base commit:
+      #       ${BASE}. Edit only docs/; bump docs/.sync-base last, after the
+      #       skill's Step 8 validation passes. Leave all changes
+      #       uncommitted: do not git add, commit, push, or open PRs."
+      #     codex exec "$PROMPT"
+
+      # Recommended: re-run this repo's doc validators here, BEFORE the
+      # commit, so failed validation lands nothing — e.g. for a Deno repo:
+      # - name: Validate docs
+      #   if: steps.state.outputs.relevant == 'true'
+      #   run: deno fmt --check docs/
+
+      - name: Commit and push
+        id: commit
+        if: steps.state.outputs.relevant == 'true'
+        env:
+          BASE: ${{ steps.state.outputs.base }}
+          BRANCH: ${{ steps.state.outputs.branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Agent made no documentation changes; nothing to land."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            HEAD="$(git rev-parse origin/main)"
+            git commit -m "docs: scheduled wiki sync (${BASE:0:12}..${HEAD:0:12})"
+            git push -u origin "$BRANCH" --force-with-lease
+          fi
+
+      - name: Open or update PR
+        if: >-
+          steps.state.outputs.relevant == 'true' &&
+          steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ steps.state.outputs.base }}
+          BRANCH: ${{ steps.state.outputs.branch }}
+        run: |
+          HEAD="$(git rev-parse origin/main)"
+          LOG="$(git log --oneline "$BASE"..origin/main | sed 's/^/    /')"
+          BODY="$(printf '%s\n\nSynced %s..%s:\n\n%s\n\nEdits follow the wiki-sync skill. The anchor (docs/.sync-base) rides inside the docs-only commit: merging anchors the wiki.' \
+            "Scheduled wiki sync." "$BASE" "$HEAD" "$LOG")"
+          EXISTING="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')"
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            gh pr edit "$EXISTING" --body "$BODY"
+          else
+            gh pr create --title "docs: scheduled wiki sync" \
+              --body "$BODY" --base main --head "$BRANCH"
+          fi
