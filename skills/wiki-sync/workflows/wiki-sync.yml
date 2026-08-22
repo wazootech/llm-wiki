@@ -57,6 +57,13 @@ jobs:
             git checkout -b "$BRANCH" origin/main
           fi
           BASE="$(cat docs/.sync-base 2>/dev/null || git log -1 --format=%H -- docs/)"
+          # An unresolvable anchor (corrupt entry, rewritten history) must
+          # not kill the run: fall back to the last commit touching docs/,
+          # per the skill's "One anchor, deterministic diffs" principle.
+          if ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "::warning::docs/.sync-base '$BASE' does not resolve; falling back to the last commit that touched docs/"
+            BASE="$(git log -1 --format=%H -- docs/)"
+          fi
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "base=$BASE" >> "$GITHUB_OUTPUT"
           if git diff --quiet "$BASE"..origin/main -- src test bench .github; then
