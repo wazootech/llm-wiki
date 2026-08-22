@@ -290,19 +290,22 @@ expected new content is actually served.
 
 ## Scheduled syncs (CI)
 
-The procedure's default posture is **local generation**: an agent runs this
-skill directly in a checkout that already holds its model credentials, on
-demand after source changes land. The shipped GitHub Actions wrapper makes the
-same procedure runnable in CI. Ship `workflows/wiki-sync.yml` from this
-skill's directory into the wiki-owning repo as
-`.github/workflows/wiki-sync.yml` — copy-to-install, so operator
-customizations survive skill updates. The template encodes this contract:
+This skill follows the software-factory pattern of [build value locally, then
+move to the cloud](https://vercel.com/blog/building-a-software-factory-for-ai-sdk#build-value-locally,-then-move-to-the-cloud):
+run it locally first — iterate where your model credentials already live — and
+graduate to CI as an extra layer once the loop proves reliable. Local
+generation means an agent runs this skill directly in a checkout, on demand
+after source changes land; no workflow is required. When you want that extra
+layer, ship `workflows/wiki-sync.yml` from this skill's directory into the
+wiki-owning repo as `.github/workflows/wiki-sync.yml` — copy-to-install, so
+operator customizations survive skill updates. The template encodes this
+contract:
 
 - **Triggers.** The wrapper is dispatch-only (`workflow_dispatch`) — a manual
-  convenience, never the primary path. A weekly cron ships as a commented
-  scaffold for operators with an always-available model credential; enabling
-  it is a deliberate choice, not an expected step. Without such a credential,
-  sync locally — it needs no workflow at all.
+  extra layer, never the primary path. Operators can set up CI whenever they
+  want; we encourage starting without it. A weekly cron ships as a commented
+  scaffold for operators who later add an always-available model credential;
+  enabling it stays a deliberate choice.
 - **Checkout** uses `fetch-depth: 0` so the anchor diff sees full history.
 - **Delta gate first.** Recompute the Step 1 quiet check before anything
   expensive runs; exit cleanly when nothing wiki-relevant changed.
