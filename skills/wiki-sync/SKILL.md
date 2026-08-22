@@ -7,7 +7,8 @@ description: >-
   inventories, or maintain a code wiki incrementally (e.g. wazootech/sparql-engine's docs/). Defaults
   to drift-free docs — no line numbers, machine-specific measurements, or test counts — with an
   opt-in detail_level directive in the repo's AGENTS.md for consumers who want them. Never regenerates a wiki
-  from scratch — it diffs the commits since the last sync anchor and edits only the affected pages.
+  from scratch — it diffs the commits since the last sync anchor and edits only the affected pages. Ships a
+  GitHub Actions template for scheduled CI syncs.
 ---
 
 # `wiki-sync` skill
@@ -106,6 +107,11 @@ its readers.
    measurement units (ms/iter, MiB) may appear in `docs/`.
 5. **Docs-only commits.** The sync PR must never change `src/`, `test/`, or
    `bench/` code.
+6. **Anchor last.** The `.sync-base` bump happens only after validation passes
+   and rides inside the docs-only commit — merging the PR and anchoring the
+   wiki are the same event. An interrupted run leaves the anchor untouched, so
+   the next run safely redoes the whole delta; no run-status bookkeeping is
+   needed.
 
 ## Procedure
 
@@ -115,11 +121,17 @@ its readers.
 git fetch origin
 BASE=$(cat docs/.sync-base)          # last-synced commit
 git log --oneline "$BASE"..origin/main          # the delta
-git diff --stat "$BASE"..origin/main -- src test bench .github   # what moved
+if ! git diff --quiet "$BASE"..origin/main -- src test bench .github; then
+  git diff --stat "$BASE"..origin/main -- src test bench .github   # what moved
+fi
 ```
 
 - No commits → the wiki is current; stop and say so.
-- Docs-only commits → re-check the few touched pages, update `.sync-base`, done.
+- Commits exist but none touch `src`, `test`, `bench`, or `.github` → no
+  wiki-relevant delta: re-check the few touched `docs/` pages, update
+  `.sync-base`, done. This path-scoped quiet check is the gate that keeps
+  scheduled runs cheap ([Scheduled syncs](#scheduled-syncs-ci)) — an empty
+  delta exits before verification passes or agent work begin.
 - Source/test/bench commits → continue.
 
 ### Step 2 — Read the detail level
@@ -275,6 +287,54 @@ expected new content is actually served.
 - In the default style: a structural diff only — no renumbered citations, no
   refreshed snapshot tables. When opted in: corrected line refs, counts, and
   inventory — with the command that produced each number cited.
+
+## Scheduled syncs (CI)
+
+The procedure runs unattended under a scheduled GitHub Actions workflow. Ship
+`workflows/wiki-sync.yml` from this skill's directory into the wiki-owning repo
+as `.github/workflows/wiki-sync.yml` — copy-to-install, so operator
+customizations survive skill updates. The template encodes this contract:
+
+- **Triggers.** `workflow_dispatch` always; a weekly cron ships commented out.
+  Enable it only after manual dispatch runs prove the loop end to end.
+- **Checkout** uses `fetch-depth: 0` so the anchor diff sees full history.
+- **Delta gate first.** Recompute the Step 1 quiet check before anything
+  expensive runs; exit cleanly when nothing wiki-relevant changed.
+- **Resume state machine.**
+
+  | State                   | Action                                                         |
+  | ----------------------- | -------------------------------------------------------------- |
+  | Empty delta, no open PR | skip                                                           |
+  | Delta, no open PR       | branch `docs/sync-ci` off `origin/main`; agent edits; push; PR |
+  | Delta, open PR          | checkout `docs/sync-ci`; rerun agent over its own `$BASE..origin/main`; force-push |
+  | Empty delta, open PR    | skip; the existing PR stands until merged                      |
+
+  Reading `.sync-base` from the checked-out branch — not `main` — is what
+  makes resume correct: the branch carries its own anchor.
+- **Content-level no-op guard.** If the agent changes nothing under `docs/`,
+  nothing is committed and no PR opens or updates.
+- **Anchor semantics.** The agent bumps `.sync-base` after validation, inside
+  the docs-only commit (invariant 6); merging anchors the wiki. Interrupted
+  runs leave the remote anchor untouched, so the next run redoes the delta.
+  Re-running the repo's doc validators in a workflow step *after* the agent
+  and *before* the commit makes this mechanical: failed validation lands
+  nothing.
+- **Authorship and permissions.** Commits are authored by
+  `github-actions[bot]` via `GITHUB_TOKEN` (job permissions:
+  `contents: write`, `pull-requests: write`); machine syncs stay visually
+  distinct from human `docs/sync` branches in history.
+- **Concurrency.** One `concurrency.group` serializes ticks so two runs never
+  race on the branch.
+- **Agent invocation seam.** One replaceable step drives any coding agent with
+  this SKILL.md as the prompt; uncomment exactly one wiring and set its
+  credential secret. Documented wirings: OpenCode (`opencode run`), Pi
+  (`pi -p`), Claude Code (`claude -p`), Codex (`codex exec`) — pick by
+  available credentials or preference; any harness that reads files and runs
+  `git`/`gh` in the checkout works. In CI there is no runtime user preference:
+  the instantiator chooses once, and the secret decides the provider.
+- **Verification rides the PR.** Docs-only PRs trigger the repo's existing
+  path-gated checks; merge only when green (Step 9). Install whatever
+  toolchain the validators need before the agent step.
 
 ## Guiding principles
 
