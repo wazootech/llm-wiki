@@ -290,15 +290,22 @@ expected new content is actually served.
 
 ## Scheduled syncs (CI)
 
-The procedure runs unattended under a scheduled GitHub Actions workflow. Ship
-`workflows/wiki-sync.yml` from this skill's directory into the wiki-owning repo
-as `.github/workflows/wiki-sync.yml` — copy-to-install, so operator
-customizations survive skill updates. The template encodes this contract:
+This skill follows the software-factory pattern of [build value locally, then
+move to the cloud](https://vercel.com/blog/building-a-software-factory-for-ai-sdk#build-value-locally,-then-move-to-the-cloud):
+run it locally first — iterate where your model credentials already live — and
+graduate to CI as an extra layer once the loop proves reliable. Local
+generation means an agent runs this skill directly in a checkout, on demand
+after source changes land; no workflow is required. When you want that extra
+layer, ship `workflows/wiki-sync.yml` from this skill's directory into the
+wiki-owning repo as `.github/workflows/wiki-sync.yml` — copy-to-install, so
+operator customizations survive skill updates. The template encodes this
+contract:
 
-- **Triggers.** Manual `workflow_dispatch` is the default posture — syncs run
-  on demand. A weekly cron ships as a commented scaffold for operators with an
-  always-available model credential; enabling it is a deliberate choice, never
-  a default. Without such a credential, run syncs via dispatch or locally.
+- **Triggers.** The wrapper is dispatch-only (`workflow_dispatch`) — a manual
+  extra layer, never the primary path. Operators can set up CI whenever they
+  want; we encourage starting without it. A weekly cron ships as a commented
+  scaffold for operators who later add an always-available model credential;
+  enabling it stays a deliberate choice.
 - **Checkout** uses `fetch-depth: 0` so the anchor diff sees full history.
 - **Delta gate first.** Recompute the Step 1 quiet check before anything
   expensive runs; exit cleanly when nothing wiki-relevant changed.
