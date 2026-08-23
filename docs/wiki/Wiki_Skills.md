@@ -27,7 +27,6 @@ Install agent skills with the [Skills CLI](https://github.com/vercel-labs/skills
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
 npx skills add wazootech/wiki@wiki-feedback -g -y
-npx skills add wazootech/wiki@wiki-sync -g -y
 
 # List skills without installing
 npx skills add wazootech/wiki --list
@@ -55,12 +54,13 @@ The **`wiki`** skill routes operational workflows to focused references:
 | New wiki / `wiki init`         | `skills/wiki/references/init.md`    | Scaffold summarized              |
 | Audit / pre-PR / lint failures | `skills/wiki/references/improve.md` | Findings report delivered        |
 | GitHub Pages / CI deploy       | `skills/wiki/references/deploy.md`  | Workflow + URLs summarized       |
+| Docs out of sync with source   | `skills/wiki/references/sync.md`    | Sync PR opened and validated     |
 
 Read one reference per turn unless the user explicitly asked for a multi-step flow (for example install → create → deploy).
 
 The **`wiki-feedback`** skill handles ecosystem feedback and integration proposals. Use it when comparing an external tool with Wiki CLI, drafting a template proposal issue, or turning an integration idea into a repeatable GitHub issue. It reviews existing `template` issues in the [wiki-templates](https://github.com/wazootech/wiki-templates) monorepo first, preserves the boundary between Wiki CLI and downstream integrations, and recommends the `integration-template.yml` issue form in `wazootech/wiki-templates` for final filing.
 
-The **`wiki-sync`** skill maintains *code wikis* (a repo's `docs/` folder, e.g. `wazootech/sparql-engine`) — the Git-anchored delta process that keeps documentation truthful to source after code changes: anchor at `docs/.sync-base`, diff `origin/main` forward, check file inventory with `git ls-tree`, edit only the affected pages, validate, and land. It defaults to drift-free docs — no line numbers, machine-specific measurements, or test counts — with an opt-in `detail_level` directive in the repo's `AGENTS.md` (`line-numbers`, `measurements`, or `full`) that re-enables the execute-to-verify steps (`deno doc --json` lines, runner counts, bench snapshots). Canonical file: [`skills/wiki-sync/SKILL.md`](https://github.com/wazootech/wiki/blob/main/skills/wiki-sync/SKILL.md).
+Code-wiki **sync** lives inside the `wiki` skill as a routed workflow (`skills/wiki/references/sync.md`). It maintains *code wikis* (a repo's `docs/` folder, e.g. `wazootech/sparql-engine`) — the Git-anchored delta process that keeps documentation truthful to source after code changes: anchor at `docs/.sync-base`, diff `origin/main` forward, check file inventory with `git ls-tree`, edit only the affected pages, validate, and land. It defaults to drift-free docs — no line numbers, machine-specific measurements, or test counts — with an opt-in `detail_level` directive in the repo's `AGENTS.md` (`line-numbers`, `measurements`, or `full`) that re-enables the execute-to-verify steps (`deno doc --json` lines, runner counts, bench snapshots). A wholesale scheduled-sync template ships alongside it: [`skills/wiki/references/workflow-template-wiki-sync.yml`](https://github.com/wazootech/wiki/blob/main/skills/wiki/references/workflow-template-wiki-sync.yml).
 
 ## Scripts
 
@@ -114,8 +114,10 @@ skills/
   wiki/references/plan.md
   wiki/references/loop.md
   wiki/references/deploy.md
+  wiki/references/sync.md
   wiki/references/workflow-template-uv.yml
   wiki/references/workflow-template-pip.yml
+  wiki/references/workflow-template-wiki-sync.yml
   wiki-feedback/SKILL.md
 ```
 

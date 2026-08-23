@@ -3,11 +3,12 @@ name: wiki
 description: >-
   Manages Wiki CLI end to end — install and verify wazootech-wiki, scaffold with wiki init,
   audit vault hygiene (fmt, lint, check, render), enrich wikis from raw source material,
-  plan and execute vault improvements, and deploy to GitHub Pages.
+  plan and execute vault improvements, deploy to GitHub Pages, and keep code wikis
+  (docs/) in sync with their source via Git-anchored delta sync.
   Use whenever the user mentions wiki, Wiki CLI, wazootech-wiki, wiki init, wiki.yml, wiki.yaml, broken links,
-  lint/check failures, pre-PR wiki review, GitHub Pages for a wiki, or getting started with
-  semantic markdown — even if they do not say "skill". Route to one workflow reference,
-  complete that job, and stop.
+  lint/check failures, pre-PR wiki review, GitHub Pages for a wiki, docs drift, syncing documentation
+  after source changes, or getting started with semantic markdown — even if they do not say "skill".
+  Route to one workflow reference, complete that job, and stop.
 ---
 
 # Wiki CLI Skill
@@ -36,6 +37,7 @@ Skills under `skills/` are agent knowledge — **not** wiki pages. Do not add `s
 | Generate handoff plans, plans layout         | [references/plan.md](references/plan.md)       | Plan file written                |
 | Execute plans, review diff, publish issues   | [references/loop.md](references/loop.md)       | Executor output verified         |
 | GitHub Pages, deploy workflow, CI publish    | [references/deploy.md](references/deploy.md)   | Workflow + URLs summarized       |
+| Docs out of sync after source changes, drift check | [references/sync.md](references/sync.md) | Sync PR opened and validated     |
 
 When the user asks for multiple intents in one message, pick the **blocking** workflow first (usually install), or the workflow they emphasized. Offer the next step in plain language.
 
@@ -73,5 +75,7 @@ bash skills/wiki/scripts/audit.sh -c path/to/wiki.yml [FILE...]
 | [references/plan.md](references/plan.md)       | Hand-off plans format and layout                                          |
 | [references/loop.md](references/loop.md)       | Running executors, reviewing work, reconciling backlog, publishing issues |
 | [references/deploy.md](references/deploy.md)   | GitHub Pages workflow and alignment checklist                             |
+| [references/sync.md](references/sync.md)       | Git-anchored delta sync of a code wiki (`docs/`) with its source tree     |
+| [references/workflow-template-wiki-sync.yml](references/workflow-template-wiki-sync.yml) | Scheduled CI sync template — embed wholesale |
 
 Human docs: [Wiki Skills](https://github.com/wazootech/wiki/blob/main/docs/wiki/Wiki_Skills.md), [Getting Started](https://github.com/wazootech/wiki/blob/main/docs/wiki/Getting_Started.md), [Wiki Programmatic API](https://github.com/wazootech/wiki/blob/main/docs/wiki/Wiki_Programmatic_API.md).
