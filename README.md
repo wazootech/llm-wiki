@@ -44,8 +44,8 @@ Also: [`init`](#init) scaffolds `wiki.yaml`; `wiki query --pretty` renders Rich 
 
 ## Agent skills
 
-Wiki CLI ships three agent skills for coding assistants (Claude Code, Cursor,
-OpenCode, Gemini). They are not thin wrappers — they encode opinionated
+Wiki CLI ships one consolidated agent skill for coding assistants (Claude Code,
+Cursor, OpenCode, Gemini). It is not a thin wrapper — it encodes opinionated
 best practices that apply to any wiki or docs repo:
 
 - **[wiki](skills/wiki/SKILL.md)** — the consolidated operational skill.
@@ -56,13 +56,13 @@ best practices that apply to any wiki or docs repo:
   last-synced commit as an anchor and diffs forward, editing only the pages
   the diff demands; defaults to drift-free docs with an opt-in `detail_level`
   directive.
-- **[wiki-feedback](skills/wiki-feedback/SKILL.md)** — structured feedback on
-  integration and template proposals. Enforces a quality bar for new ecosystem
-  contributions.
+
+Integration and template proposals are not handled by a skill: they follow the
+contributing guide in the [wiki-templates](https://github.com/wazootech/wiki-templates)
+repository, where proposals are filed.
 
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
-npx skills add wazootech/wiki@wiki-feedback -g -y
 ```
 
 The skills follow the same convention as the CLI: deterministic scripts
