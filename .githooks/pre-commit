@@ -1,0 +1,5 @@
+#!/bin/sh
+# prettier-check staged files (repo canonical formatter)
+staged=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|md)$')
+[ -z "$staged" ] && exit 0
+exec npx --no-install prettier --check $staged
