@@ -1,17 +1,4 @@
----
-name: wiki-sync
-description: >-
-  Keep a repository's code wiki (docs/) in sync with its source using a Git-anchored delta process.
-  Use when asked to sync or refresh documentation after source changes, verify the wiki still matches
-  the tree (file inventory, task tables, symbol links, behavior prose), re-run deno doc --json symbol
-  inventories, or maintain a code wiki incrementally (e.g. wazootech/sparql-engine's docs/). Defaults
-  to drift-free docs — no line numbers, machine-specific measurements, or test counts — with an
-  opt-in detail_level directive in the repo's AGENTS.md for consumers who want them. Never regenerates a wiki
-  from scratch — it diffs the commits since the last sync anchor and edits only the affected pages. Ships a
-  GitHub Actions template for scheduled CI syncs.
----
-
-# `wiki-sync` skill
+# Syncing a code wiki with its source
 
 Keep a code wiki (`docs/`, typically a GitHub Pages Jekyll site) truthful to its
 source tree with a **Git-anchored delta process** — the approach popularized by
@@ -28,9 +15,9 @@ about the code. The detailed style stays fully available as an opt-in
 `detail_level` directive in the wiki-owning repo's `AGENTS.md`; "execute to
 verify" applies only to numbers a repo has opted into.
 
-This is a *code-wiki* maintenance skill (repo `docs/` folders), distinct from
-Wiki CLI's semantic-wiki authoring flows in the `wiki` skill. The wiki it was
-built for: `wazootech/sparql-engine`, whose docs live in `docs/` (pages
+This is a *code-wiki* maintenance workflow (repo `docs/` folders), distinct from
+the semantic-wiki authoring flows in this skill's other references. The wiki it
+was built for: `wazootech/sparql-engine`, whose docs live in `docs/` (pages
 `00`–`09`).
 
 ## When to run
@@ -49,8 +36,8 @@ not in a config file. An explicit directive looks like:
 
 ```markdown
 <!-- in the repo's AGENTS.md, next to its docs-maintenance notes -->
-We keep `docs/` in sync with the `wiki-sync` skill at `detail_level:
-line-numbers` (see skills/wiki-sync/SKILL.md).
+We keep `docs/` in sync with the wiki skill's sync reference at
+`detail_level: line-numbers` (see skills/wiki/references/sync.md).
 ```
 
 No explicit directive (or no `AGENTS.md`) means `minimal` — the default.
@@ -85,8 +72,8 @@ the source structure changes:
    structure changes.
 
 **Opt-in (`line-numbers` | `measurements` | `full`).** Consumers who want the
-detailed style declare it in their `AGENTS.md` and the skill's "execute to
-verify" procedure applies to those numbers: `deno doc --json` for lines,
+detailed style declare it in their `AGENTS.md` and this workflow's
+"execute to verify" steps apply to those numbers: `deno doc --json` for lines,
 runner output for counts, bench snapshots for measurements — never memory or
 comments. The opt-in is per repo, so each consumer chooses the style that fits
 its readers.
@@ -290,16 +277,16 @@ expected new content is actually served.
 
 ## Scheduled syncs (CI)
 
-This skill follows the software-factory pattern of [build value locally, then
-move to the cloud](https://vercel.com/blog/building-a-software-factory-for-ai-sdk#build-value-locally,-then-move-to-the-cloud):
+This workflow follows the software-factory pattern of [build value locally,
+then move to the cloud](https://vercel.com/blog/building-a-software-factory-for-ai-sdk#build-value-locally,-then-move-to-the-cloud):
 run it locally first — iterate where your model credentials already live — and
 graduate to CI as an extra layer once the loop proves reliable. Local
-generation means an agent runs this skill directly in a checkout, on demand
+generation means an agent runs this workflow directly in a checkout, on demand
 after source changes land; no workflow is required. When you want that extra
-layer, ship `workflows/wiki-sync.yml` from this skill's directory into the
-wiki-owning repo as `.github/workflows/wiki-sync.yml` — copy-to-install, so
-operator customizations survive skill updates. The template encodes this
-contract:
+layer, embed [`workflow-template-wiki-sync.yml`](workflow-template-wiki-sync.yml)
+— a sibling of this reference — as `.github/workflows/wiki-sync.yml` in the
+wiki-owning repo: copy-to-install, so operator customizations survive skill
+updates. The template encodes this contract:
 
 - **Triggers.** The wrapper is dispatch-only (`workflow_dispatch`) — a manual
   extra layer, never the primary path. Operators can set up CI whenever they
@@ -335,7 +322,7 @@ contract:
 - **Concurrency.** One `concurrency.group` serializes ticks so two runs never
   race on the branch.
 - **Agent invocation seam.** One replaceable step drives any coding agent with
-  this SKILL.md as the prompt; uncomment exactly one wiring and set its
+  this reference as the prompt; uncomment exactly one wiring and set its
   credential secret. Documented wirings: OpenCode (`opencode run`), Pi
   (`pi -p`), Claude Code (`claude -p`), Codex (`codex exec`) — pick by
   available credentials or preference; any harness that reads files and runs
@@ -359,5 +346,5 @@ contract:
   numbers drift — run the full-tree verification passes (Steps 4–5) over the
   whole tree every few source merges, since incremental passes miss drift that
   accumulates in line citations and snapshot tables.
-- **Never block on prompting.** This skill *is* the prompt; run it end to end
-  and report what the delta contained.
+- **Never block on prompting.** This reference *is* the prompt; run it end to
+  end and report what the delta contained.

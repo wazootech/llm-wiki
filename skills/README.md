@@ -8,14 +8,12 @@ Typical flow: **install** → **create** → **deploy** → **improve** (each op
 
 | Skill                 | Purpose                                                                  |
 | --------------------- | ------------------------------------------------------------------------ |
-| [wiki](wiki/SKILL.md) | Install, `wiki init`, audit (fmt/lint/check/render), GitHub Pages deploy |
-| [wiki-sync](wiki-sync/SKILL.md) | Keep a code wiki (`docs/`) in sync with its source — Git-anchored delta sync; defaults to drift-free docs with an opt-in `detail_level` directive in the repo's `AGENTS.md` |
+| [wiki](wiki/SKILL.md) | Install, `wiki init`, audit (fmt/lint/check/render), GitHub Pages deploy, Git-anchored delta sync of code wikis with opt-in `detail_level` |
 
 ## Install
 
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
-npx skills add wazootech/wiki@wiki-sync -g -y
 ```
 
 Docs: [Wiki_Skills.md](../docs/wiki/Wiki_Skills.md). User walkthrough: [Getting_Started.md](../docs/wiki/Getting_Started.md).

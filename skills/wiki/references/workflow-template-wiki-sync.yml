@@ -7,12 +7,12 @@
 #      for `deno fmt --check docs/`), plus an optional validate step between
 #      the agent and the commit so a failed run cannot land or bump the
 #      anchor.
-# The prompt is read from a vendored skills/wiki-sync/SKILL.md when present;
+# The prompt is read from a vendored skills/wiki/references/sync.md when present;
 # otherwise "Resolve skill prompt file" fetches it from wazootech/wiki pinned
 # by SKILL_PIN — bump that commit deliberately to pick up skill updates.
 # Enable the cron trigger only after manual dispatch runs prove the loop.
 #
-# Contract (skills/wiki-sync/SKILL.md, "Scheduled syncs (CI)"):
+# Contract (skills/wiki/references/sync.md, "Scheduled syncs (CI)"):
 # - Exits cheaply when no wiki-relevant source changed since docs/.sync-base.
 # - Resumes an open docs/sync-ci PR; new deltas force-push onto it.
 # - The agent bumps docs/.sync-base inside the single docs-only commit this
@@ -90,7 +90,7 @@ jobs:
         env:
           SKILL_PIN: e45166c16496866f55cf64ad798d15de0ebf3e4d
         run: |
-          LOCAL="skills/wiki-sync/SKILL.md"
+          LOCAL="skills/wiki/references/sync.md"
           if [ -f "$LOCAL" ]; then
             echo "path=$LOCAL" >> "$GITHUB_OUTPUT"
             echo "Using vendored $LOCAL"

@@ -44,28 +44,25 @@ Also: [`init`](#init) scaffolds `wiki.yaml`; `wiki query --pretty` renders Rich 
 
 ## Agent skills
 
-Wiki CLI ships three agent skills for coding assistants (Claude Code, Cursor,
-OpenCode, Gemini). They are not thin wrappers — they encode opinionated
+Wiki CLI ships one consolidated agent skill for coding assistants (Claude Code,
+Cursor, OpenCode, Gemini). It is not a thin wrapper — it encodes opinionated
 best practices that apply to any wiki or docs repo:
 
 - **[wiki](skills/wiki/SKILL.md)** — the consolidated operational skill.
-  Routes to install, scaffold, audit, or deploy workflows. Encodes the
-  "silence is golden" philosophy (exit 0 on success) and deterministic
-  verification scripts instead of agent reasoning about whether things look
-  right.
-- **[wiki-sync](skills/wiki-sync/SKILL.md)** — Git-anchored delta sync for
-  code wikis. Treats the last-synced commit as an anchor and diffs forward,
-  editing only the pages the diff demands. Defaults to drift-free docs (no
-  line numbers, no machine-specific measurements) with an opt-in `detail_level`
-  directive. Works on any `docs/` folder, not just this repo.
-- **[wiki-feedback](skills/wiki-feedback/SKILL.md)** — structured feedback on
-  integration and template proposals. Enforces a quality bar for new ecosystem
-  contributions.
+  Routes to install, scaffold, audit, deploy, or code-wiki sync workflows.
+  Encodes the "silence is golden" philosophy (exit 0 on success) and
+  deterministic verification scripts instead of agent reasoning about whether
+  things look right. Code-wiki maintenance (`references/sync.md`) treats the
+  last-synced commit as an anchor and diffs forward, editing only the pages
+  the diff demands; defaults to drift-free docs with an opt-in `detail_level`
+  directive.
+
+Integration and template proposals are not handled by a skill: they follow the
+contributing guide in the [wiki-templates](https://github.com/wazootech/wiki-templates)
+repository, where proposals are filed.
 
 ```bash
 npx skills add wazootech/wiki@wiki -g -y
-npx skills add wazootech/wiki@wiki-sync -g -y
-npx skills add wazootech/wiki@wiki-feedback -g -y
 ```
 
 The skills follow the same convention as the CLI: deterministic scripts
