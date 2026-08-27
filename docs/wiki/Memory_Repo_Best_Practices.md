@@ -36,7 +36,7 @@ memory/
   wiki/                         # typed knowledge graph (living documents)
   raw/<source>/                 # immutable captures, append-only (data)
     <capture-files>             # unique per-item filenames
-  raw/<source>/cursor           # monotonic opaque cursor
+  raw/<source>/.cursor          # monotonic opaque cursor
   raw/<source>/SUMMARY.json     # run bookkeeping
   connectors/<name>/            # connector code (centralized, not per-repo)
   queries/                      # saved SPARQL queries
@@ -70,7 +70,7 @@ Every connector owns one dataset subtree, `raw/<source>/`, with:
 
 ```json
 {
-  "status": "ok",
+  "status": "OK",
   "connector": "<source>",
   "fetched": 42,
   "ingested": 5,
@@ -95,15 +95,16 @@ Credentials never enter the repository; they live in the secrets vault and are i
 
 ## Runtime and orchestration
 
-Daily automation runs as a Letta cloud agent (cloud sandbox + GitHub app; commits carry the bot identity). Per run the agent:
+Daily automation runs as a scheduled GitHub Actions workflow (`connector-cron.yml`, daily 06:00 UTC), not a long-lived agent. Per run the workflow:
 
 1. Clones the memory repo fresh.
-1. Runs `python -m connectors.<source> fetch` for each scheduled source; captures and bookkeeping land in the same clone.
-1. Generates and updates wiki pages from normalized data.
-1. Gates: `wiki check` then `wiki fmt` (use `wiki check --strict` for full filename and link validation).
-1. Commits one atomic change per run and pushes to `main` of the same repo.
+1. Runs `python -m connectors.<source> fetch` for each scheduled source whose credentials are configured; a source with no credentials is **skipped, not failed** (each connector's fetch is gated on its secret being present).
+1. Captures and bookkeeping land in the same clone.
+1. Appraisal converts actionable captures into living records; the workflow generates and updates wiki pages from normalized data (a no-op until connectors emit appraised records).
+1. Gates: `wiki check` and `wiki fmt --check`, plus `scripts/memory_check.py --base origin/main` and the pytest suite.
+1. Commits one atomic change per run and pushes to `main` of the same repo; a run with no new captures is a no-op commit.
 
-Hard gates are structurally enforced: the validation step runs before commit, and repository CI (`check.yml` + `memory-check.yml`) is the tripwire on push. Natural-language operators follow the atomic persistence protocol: one coherent transaction per commit, checkpoint commits when blocked, no destructive history operations without approval.
+Hard gates are structurally enforced: validation runs before commit, and repository CI (`check.yml` + `memory-check.yml`) is the tripwire on push. Natural-language operators follow the atomic persistence protocol: one coherent transaction per commit, checkpoint commits when blocked, no destructive history operations without approval.
 
 ## Escape hatch criteria
 
@@ -118,8 +119,8 @@ Each split is its own reviewable change: move the subtree, re-point provenance l
 ## Roll-out
 
 - **Step 1 (this document):** conventions agreed.
-- **Step 2 — reference deployment:** rename the current personal wiki to `EthanThatOneKid/memory`, structure `raw/` as per-source datasets, add `SUMMARY.json` and cursor conventions, enable branch protection and `memory-check.yml`. Tracked in [wazootech/wiki#261](https://github.com/wazootech/wiki/issues/261).
-- **Step 3 — Calendar reference connector:** `ConnectorBase` + Google Calendar end-to-end through fetch, bookkeeping, page generation, and the daily Letta loop. Tracked in [ethanpedia#45](https://github.com/EthanThatOneKid/ethanpedia/issues/45).
+- **Step 2 — reference deployment (done):** the legacy personal wiki was renamed `EthanThatOneKid/ethanpedia` and archived; `EthanThatOneKid/memory` was re-created clean with the `raw/<source>/` per-source dataset scaffolding (fresh `SUMMARY.json` baselines, no legacy captures), `SUMMARY.json` + cursor conventions, branch protection, `check.yml` + `memory-check.yml` + `connector-cron.yml`, and the reference `ConnectorBase` + calendar scaffold. Tracked in [wazootech/wiki#261](https://github.com/wazootech/wiki/issues/261).
+- **Step 3 — Calendar reference connector:** wire `ConnectorBase` + Google Calendar end-to-end through fetch, bookkeeping, page generation, and the daily cron loop. Tracked in [memory#1](https://github.com/EthanThatOneKid/memory/issues/1). Legacy discussion lives in the archived tracker at [ethanpedia#45](https://github.com/EthanThatOneKid/ethanpedia/issues/45).
 - **Step 4 — replicate:** move each remaining connector onto the same pattern; stream-only provider imports stay gated on the [deferred imports ruling](https://github.com/EthanThatOneKid/ethanpedia/issues/28).
 
 ## Related
