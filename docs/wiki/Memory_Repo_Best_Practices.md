@@ -22,7 +22,7 @@ EthanThatOneKid/
 ## Naming
 
 - **Uniform per-owner name:** the memory repo is named `memory` under each owner or organization, joining `.github` and `workspace` as the third uniform owner special repo. Examples: `EthanThatOneKid/memory`, `wazootech/memory`.
-- **Role suffix:** the `-pedia` suffix previously designated knowledge repos (`ethanpedia`, `wazoopedia`). Going forward it describes the memory role: data repositories use the `memory` family, not `-pedia`.
+- **Role suffix:** the `-pedia` suffix previously designated knowledge repos (`ethanpedia`, `wazoopedia`). Going forward it describes the memory role: data repositories use the `memory` family, not `-pedia`. The `wazoopedia` repo has been renamed to `memory`.
 - **Per-source datasets are subtrees**, not repositories: `raw/<source>/` inside the memory repo.
 - **Escape hatch:** if a single source outgrows the shared repo (volume, access control, or CI isolation), split that subtree to a per-source repo named `<product>-<source>-memory` (e.g. `ethanpedia-calendar-memory`). Do not split preemptively.
 - **Transcription:** repo and directory names use hyphens (`x-bookmarks`, `gemini-notes`); connector Python packages keep underscores (`x_bookmarks`, `gemini_notes`).
