@@ -753,6 +753,14 @@ def install(wiki: Wiki, url: str | None) -> None:
         click.echo(f"  {name}: {locked.resolved_ref[:12]} ({locked.fetched_at})")
 
 
+@main.command(hidden=True)
+@click.argument("url", required=False, default=None)
+@click.pass_obj
+def i(wiki: Wiki, url: str | None) -> None:
+    """Alias for install."""
+    install(wiki, url)
+
+
 @main.command()
 @click.argument("name", required=False, default=None)
 @click.option("-n", "--dry-run", is_flag=True, help="Show what would update without modifying wiki.lock.")
