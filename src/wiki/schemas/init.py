@@ -32,6 +32,7 @@ class InitOptions(BaseModel):
     graph_implicit_types: list[str] | None = None
     graph_implicit_types_policy: str | None = None
     graph_include_file_extension: bool | None = None
+    template: str | None = None
 
 
     @field_validator("site_url_style", mode="before")

@@ -1659,5 +1659,118 @@ name: ConfigTest
             self.assertEqual(clean.exit_code, 0)
 
 
+    def test_cli_init_with_template(self) -> None:
+        """Test that wiki init --template clones and copies a template."""
+        runner = CliRunner()
+        with TemporaryDirectory() as tmpdir:
+            with runner.isolated_filesystem(temp_dir=tmpdir):
+                from unittest.mock import patch, MagicMock
+                import shutil
+                from pathlib import Path as P
+
+                # Create a fake wiki-templates monorepo with a generic template
+                fake_templates_dir = P(tmpdir) / "fake-templates"
+                fake_templates_dir.mkdir()
+                generic_dir = fake_templates_dir / "generic"
+                generic_dir.mkdir()
+                (generic_dir / "wiki.yml").write_text(
+                    "wiki:\n  inputs:\n    - wiki\n", encoding="utf-8"
+                )
+                (generic_dir / "README.md").write_text(
+                    "# Generic Wiki\n", encoding="utf-8"
+                )
+                wiki_subdir = generic_dir / "wiki"
+                wiki_subdir.mkdir()
+                (wiki_subdir / "Page.md").write_text(
+                    "---\ntype: schema:WebPage\n---\n", encoding="utf-8"
+                )
+
+                def fake_run(args, **kwargs):
+                    if "clone" in args:
+                        clone_dest = P(args[-1])
+                        shutil.copytree(fake_templates_dir, clone_dest)
+                    result = MagicMock()
+                    result.returncode = 0
+                    result.stdout = ""
+                    result.stderr = ""
+                    return result
+
+                with patch("wiki.init_scaffold.subprocess.run", side_effect=fake_run):
+                    result = runner.invoke(
+                        main,
+                        ["init", "--template", "generic"],
+                        catch_exceptions=False,
+                    )
+
+                self.assertEqual(result.exit_code, 0)
+                self.assertIn("generic", result.output)
+                self.assertTrue(Path("wiki.yml").exists())
+                self.assertTrue(Path("README.md").exists())
+                self.assertTrue((Path("wiki") / "Page.md").exists())
+                content = Path("wiki.yml").read_text(encoding="utf-8")
+                self.assertIn("inputs:", content)
+                self.assertIn("wiki", content)
+
+    def test_cli_init_with_template_and_repo(self) -> None:
+        """Test that wiki init --template --repo works."""
+        runner = CliRunner()
+        with TemporaryDirectory() as tmpdir:
+            with runner.isolated_filesystem(temp_dir=tmpdir):
+                from unittest.mock import patch, MagicMock
+                import shutil
+                from pathlib import Path as P
+
+                fake_templates_dir = P(tmpdir) / "fake-templates"
+                fake_templates_dir.mkdir()
+                generic_dir = fake_templates_dir / "generic"
+                generic_dir.mkdir()
+                (generic_dir / "wiki.yml").write_text(
+                    "wiki:\n  inputs:\n    - wiki\n", encoding="utf-8"
+                )
+                (generic_dir / "README.md").write_text(
+                    "# Generic Wiki\n", encoding="utf-8"
+                )
+                wiki_subdir = generic_dir / "wiki"
+                wiki_subdir.mkdir()
+                (wiki_subdir / "Page.md").write_text(
+                    "---\ntype: schema:WebPage\n---\n", encoding="utf-8"
+                )
+
+                def fake_run(args, **kwargs):
+                    if "clone" in args:
+                        clone_dest = P(args[-1])
+                        shutil.copytree(fake_templates_dir, clone_dest)
+                    result = MagicMock()
+                    result.returncode = 0
+                    result.stdout = ""
+                    result.stderr = ""
+                    return result
+
+                with patch("wiki.init_scaffold.subprocess.run", side_effect=fake_run):
+                    result = runner.invoke(
+                        main,
+                        ["init", "--template", "generic", "--repo", "wazootech/wiki"],
+                        catch_exceptions=False,
+                    )
+
+                self.assertEqual(result.exit_code, 0)
+                self.assertIn("generic", result.output)
+                self.assertTrue(Path("wiki.yml").exists())
+                self.assertTrue(Path("README.md").exists())
+
+    def test_cli_init_with_template_rejects_existing_config(self) -> None:
+        """Test that wiki init --template fails if wiki.yml already exists."""
+        runner = CliRunner()
+        with TemporaryDirectory() as tmpdir:
+            with runner.isolated_filesystem(temp_dir=tmpdir):
+                Path("wiki.yml").write_text("wiki:\n  inputs:\n    - wiki\n", encoding="utf-8")
+                result = runner.invoke(
+                    main,
+                    ["init", "--template", "generic"],
+                )
+                self.assertNotEqual(result.exit_code, 0)
+                self.assertIn("already exists", result.output)
+
+
 if __name__ == "__main__":
     unittest.main()

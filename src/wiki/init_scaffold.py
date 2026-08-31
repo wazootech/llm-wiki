@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
+import tempfile
 from collections.abc import Callable
 from functools import lru_cache
 from importlib.resources import files
@@ -16,6 +18,7 @@ from .schemas.wiki_config import DEFAULT_WIKI_BASE, normalize_base_iri
 
 __all__ = [
     "InitOptions",
+    "fetch_template",
     "load_packaged_official_layout",
     "render_wiki_yaml",
     "resolve_init_options",
@@ -147,6 +150,54 @@ def resolve_init_options(
         graph_implicit_types_policy=graph_implicit_types_policy,
         graph_include_file_extension=graph_include_file_extension,
     )
+
+
+WIKI_TEMPLATES_REPO = "https://github.com/wazootech/wiki-templates.git"
+
+
+def fetch_template(
+    target_dir: Path,
+    template_name: str,
+) -> None:
+    """Clone the wiki-templates monorepo and copy a template into *target_dir*.
+
+    Args:
+        target_dir: Destination directory (must be empty or new).
+        template_name: Subdirectory name inside wiki-templates (e.g. "generic").
+
+    Raises:
+        RuntimeError: If the template is not found in the monorepo.
+    """
+    with tempfile.TemporaryDirectory(prefix="wiki-template-") as tmp_dir:
+        clone_dir = Path(tmp_dir) / "wiki-templates"
+        result = subprocess.run(
+            ["git", "clone", "--depth", "1", WIKI_TEMPLATES_REPO, str(clone_dir)],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Failed to clone wiki-templates: {result.stderr.strip()}"
+            )
+        template_dir = clone_dir / template_name
+        if not template_dir.is_dir():
+            available = sorted(
+                d.name
+                for d in clone_dir.iterdir()
+                if d.is_dir() and not d.name.startswith(".")
+            )
+            raise RuntimeError(
+                f"Template {template_name!r} not found in wiki-templates. "
+                f"Available: {', '.join(available)}"
+            )
+        for item in template_dir.iterdir():
+            if item.name.startswith(".") and item.name != ".gitignore":
+                continue
+            dest = target_dir / item.name
+            if item.is_dir():
+                shutil.copytree(item, dest)
+            else:
+                shutil.copy2(item, dest)
 
 
 _INIT_TEMPLATE_NAME = "wiki.yml"

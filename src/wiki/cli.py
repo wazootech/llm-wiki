@@ -592,8 +592,15 @@ def serve(
     default=None,
     help="Override graph.include_file_extension.",
 )
+@click.option(
+    "--template",
+    "init_template",
+    default=None,
+    help="Use a starter template from wazootech/wiki-templates (e.g. generic, llm-wiki, astro).",
+)
 def init(
     init_git: bool,
+    init_template: str | None,
     repo: str | None,
     graph_context_wiki: str | None,
     site_base_url: str | None,
@@ -646,6 +653,19 @@ def init(
 
     def prompt_context_wiki(default: str) -> str:
         return str(click.prompt("Custom wiki namespace IRI (graph.context.wiki)", default=default))
+
+    if init_template is not None:
+        from .init_scaffold import fetch_template
+
+        try:
+            fetch_template(cwd, init_template)
+        except RuntimeError as exc:
+            click.echo(f"Error: {exc}", err=True)
+            sys.exit(1)
+        click.echo(
+            f"Initialized wiki from template '{init_template}' (wazootech/wiki-templates)."
+        )
+        return
 
     init_options = resolve_init_options(
         repo=repo,

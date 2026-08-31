@@ -16,6 +16,7 @@ from wiki.init_scaffold import (
     InitOptions,
     _scaffold_wiki,
     detect_origin_repo,
+    fetch_template,
     infer_github_pages_urls,
     load_packaged_official_layout,
     normalize_base_url,
@@ -216,8 +217,8 @@ INIT_OPTIONS_TO_CONFIG_PATH = {
     "graph_include_file_extension": ("graph", "include_file_extension"),
 }
 
-# Init-only CLI flags with no InitOptions field (none currently).
-INIT_ONLY_OPTIONS: frozenset[str] = frozenset()
+# Init-only CLI flags with no matching config path (used only during init).
+INIT_ONLY_OPTIONS: frozenset[str] = frozenset({"template"})
 
 
 class TestInitLockstep(TestCase):
@@ -302,4 +303,90 @@ class TestScaffoldGitignore(TestCase):
             self.assertTrue(result.ok)
             content = existing.read_text(encoding="utf-8")
             self.assertIn(".env/", content)
-            self.assertNotIn(".wiki/", content)
+
+
+class TestFetchTemplate(TestCase):
+    @patch("wiki.init_scaffold.subprocess.run")
+    def test_fetch_template_clones_and_copies(self, run_mock) -> None:
+        """Test that fetch_template clones the repo and copies template files."""
+        import shutil
+        from unittest.mock import MagicMock
+
+        # Create a fake wiki-templates monorepo with a generic template
+        with TemporaryDirectory() as fake_templates_dir:
+            fake_templates = Path(fake_templates_dir)
+            generic_dir = fake_templates / "generic"
+            generic_dir.mkdir()
+            (generic_dir / "wiki.yml").write_text(
+                "wiki:\n  inputs:\n    - wiki\n", encoding="utf-8"
+            )
+            (generic_dir / "README.md").write_text(
+                "# Generic Wiki\n", encoding="utf-8"
+            )
+            wiki_dir = generic_dir / "wiki"
+            wiki_dir.mkdir()
+            (wiki_dir / "Page.md").write_text(
+                "---\ntype: schema:WebPage\n---\n", encoding="utf-8"
+            )
+            # Also add a hidden .github dir that should be skipped
+            github_dir = generic_dir / ".github"
+            github_dir.mkdir()
+            (github_dir / "workflows").mkdir()
+
+            def fake_run(args, **kwargs):
+                # Simulate successful clone by copying fake repo
+                if "clone" in args:
+                    clone_dest = Path(args[-1])
+                    shutil.copytree(fake_templates, clone_dest)
+                    result = MagicMock()
+                    result.returncode = 0
+                    result.stdout = ""
+                    result.stderr = ""
+                    return result
+                result = MagicMock()
+                result.returncode = 0
+                return result
+
+            run_mock.side_effect = fake_run
+
+            with TemporaryDirectory() as target_dir:
+                target = Path(target_dir)
+                fetch_template(target, "generic")
+
+                # Verify files were copied
+                self.assertTrue((target / "wiki.yml").exists())
+                self.assertTrue((target / "README.md").exists())
+                self.assertTrue((target / "wiki").is_dir())
+                self.assertTrue((target / "wiki" / "Page.md").exists())
+                # .github should be skipped
+                self.assertFalse((target / ".github").exists())
+
+    @patch("wiki.init_scaffold.subprocess.run")
+    def test_fetch_template_raises_on_missing(self, run_mock) -> None:
+        """Test that fetch_template raises RuntimeError for unknown templates."""
+        from unittest.mock import MagicMock
+
+        with TemporaryDirectory() as fake_templates_dir:
+            fake_templates = Path(fake_templates_dir)
+            # Create a repo with no matching template
+            (fake_templates / "other").mkdir()
+
+            def fake_run(args, **kwargs):
+                if "clone" in args:
+                    clone_dest = Path(args[-1])
+                    import shutil
+                    shutil.copytree(fake_templates, clone_dest)
+                result = MagicMock()
+                result.returncode = 0
+                result.stdout = ""
+                result.stderr = ""
+                return result
+
+            run_mock.side_effect = fake_run
+
+            with TemporaryDirectory() as target_dir:
+                target = Path(target_dir)
+                with self.assertRaises(RuntimeError) as ctx:
+                    fetch_template(target, "nonexistent")
+                self.assertIn("nonexistent", str(ctx.exception))
+                self.assertIn("Available", str(ctx.exception))
