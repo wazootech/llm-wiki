@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Changed
+
+- Standalone release binaries now ship for Linux (x64), macOS (arm64), and
+  Windows (x64). The macOS (Intel/x64) build is temporarily paused while
+  GitHub's `macos-13` runner pool is unavailable; the README download list
+  reflects the current set.
+
 ## 0.1.23 — 2026-09-04
 
 ### Changed
