@@ -1,7 +1,7 @@
 /**
- * CLI drift detector — verifies TypeScript bindings match Pydantic models.
+ * CLI drift detector — verifies TypeScript bindings match the Python CLI.
  *
- * Runs in three stages:
+ * Runs in four stages:
  *
  * 1. CLI/model conformance (`scripts/check_cli_models.py`): introspects the
  *    real Click command tree and fails when a non-hidden subcommand or
@@ -16,6 +16,15 @@
  *    echo here — the generated file carries the model's aliases, and
  *    `npm/src/types.ts` re-exports/extend it (issue #286 §7(d), the
  *    `EXPECTED_OPTIONS` echo was retired once the freshness gate landed).
+ * 4. Flag-string parity: the wrapper's `--flag` literals in
+ *    `npm/src/wiki.ts` are duplicated from Click's `@click.option`
+ *    declarations, and stages 1–3 never look at them (models carry field
+ *    names/aliases, not flag strings). This stage introspects the real Click
+ *    tree (`scripts/export_cli_flags.py`) and asserts every `--flag` literal
+ *    each wrapper method emits — including direct `args.push` emissions like
+ *    `update`'s `--dry-run` and `init`'s boolean-pair ternary — is a real
+ *    option string on that command (or on the root `wiki` command for
+ *    `args()`, which emits `--config`/`--wiki-inputs` from no model entry).
  */
 
 const { execSync } = require("child_process");
@@ -23,6 +32,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const prettier = require("prettier");
+const ts = require("typescript");
 const { Wiki } = require("./dist/index.js");
 
 // Prototype methods without a same-named COMMAND_MODELS key. Note: neither is
@@ -32,6 +42,54 @@ const { Wiki } = require("./dist/index.js");
 const NO_MANIFEST_METHODS = new Set(["preflight", "format"]);
 
 const GENERATED_TYPES = "npm/src/types.generated.ts";
+const ROOT_FLAGS_KEY = "__root__";
+const ROOT_DISPLAY = "wiki (root)";
+
+/**
+ * Stage 4: per-method `--flag` string literals from npm/src/wiki.ts, using the
+ * TypeScript compiler API so doc comments can't leak false flags and direct
+ * `args.push(...)` emissions (update's `--dry-run`, init's boolean-pair
+ * ternary) are captured as well as `pushFlag`/`pushRepeated` arguments.
+ */
+function extractMethodFlags(source) {
+  const sf = ts.createSourceFile(
+    "wiki.ts",
+    source,
+    ts.ScriptTarget.Latest,
+    false,
+    ts.ScriptKind.TS,
+  );
+  const byMethod = new Map();
+
+  function collectFlags(body) {
+    const flags = new Set();
+    (function walk(node) {
+      if (ts.isStringLiteral(node) && node.text.startsWith("--")) {
+        flags.add(node.text);
+      }
+      ts.forEachChild(node, walk);
+    })(body);
+    return flags;
+  }
+
+  (function visit(node) {
+    if (ts.isClassDeclaration(node) && node.name && node.name.text === "Wiki") {
+      for (const member of node.members) {
+        if (
+          (ts.isMethodDeclaration(member) ||
+            ts.isConstructorDeclaration(member)) &&
+          member.body
+        ) {
+          const name = member.name ? member.name.getText(sf) : "constructor";
+          byMethod.set(name, collectFlags(member.body));
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  })(sf);
+
+  return byMethod;
+}
 
 /** Stage 3: regenerate the generated types and compare to the committed file. */
 async function checkFreshness() {
@@ -127,10 +185,53 @@ async function main() {
   const freshnessError = await checkFreshness();
   if (freshnessError) errors.push(freshnessError);
 
+  // Stage 4: flag-string parity — every `--flag` a wrapper method emits must
+  // be a real Click option string on that command (or on the root command).
+  const commandFlags = JSON.parse(
+    execSync("uv run python scripts/export_cli_flags.py", {
+      encoding: "utf-8",
+      timeout: 30_000,
+    }),
+  );
+  const flagsByMethod = extractMethodFlags(
+    fs.readFileSync("npm/src/wiki.ts", "utf8"),
+  );
+  let flagCount = 0;
+  for (const [method, flags] of flagsByMethod) {
+    const cmd = Object.prototype.hasOwnProperty.call(commandFlags, method)
+      ? method
+      : method === "args"
+        ? ROOT_FLAGS_KEY
+        : undefined;
+    if (cmd === undefined) {
+      if (flags.size > 0) {
+        errors.push(
+          `Wiki.prototype.${method}() emits flags (${[...flags].join(", ")}) but ` +
+            `'${method}' is not a CLI command; emit them through a command method ` +
+            `or add a mapping to the drift check.`,
+        );
+      }
+      continue;
+    }
+    const real = new Set(commandFlags[cmd] ?? []);
+    const display = cmd === ROOT_FLAGS_KEY ? ROOT_DISPLAY : `'${cmd}'`;
+    for (const flag of flags) {
+      flagCount++;
+      if (!real.has(flag)) {
+        errors.push(
+          `Wiki.prototype.${method}() emits ${flag} but the ${display} command has ` +
+            `no such option (real options: ${[...real].join(", ") || "none"}).`,
+        );
+      }
+    }
+  }
+
   if (exitCode === 0 && errors.length === 0) {
     const cmdCount = Object.keys(manifest).length;
     console.log(
-      `Drift check passed: ${cmdCount} commands mirrored on Wiki.prototype; generated types are fresh.`,
+      `Drift check passed: ${cmdCount} commands mirrored on Wiki.prototype; ` +
+        `${flagCount} wrapper flag emissions verified against the Click tree; ` +
+        `generated types are fresh.`,
     );
   } else {
     exitCode = 1;
