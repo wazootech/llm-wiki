@@ -9,7 +9,7 @@ from wiki.wiki_links import LinkIndex
 
 class TestVaultLinks(unittest.TestCase):
     def _config(self, root: Path, wiki: Path) -> Config:
-        return Config(wiki={"inputs": [wiki]}, config_root=root)
+        return Config(wiki={"input": [wiki]}, config_root=root)
 
     def test_wikilink_backlink(self) -> None:
         with TemporaryDirectory() as tmpdir:

@@ -122,7 +122,7 @@ GitHub **template repositories** in the [wazootech](https://github.com/wazootech
 
 External templates consume Wiki CLI outputs — they do not replace the compiler:
 
-- **`wiki.yml`** / **`wiki.yaml`** — config root; `wiki.inputs`, `graph.*`, `site.*`
+- **`wiki.yml`** / **`wiki.yaml`** — config root; `wiki.input`, `graph.*`, `site.*`
 - **`wiki export`** — JSON-LD, Turtle, TriG, and other RDF serializations
 - **`wiki build`** — static HTML under `site.base_url`
 
@@ -152,7 +152,7 @@ Do not use these in new prose: `sparql-service-template` (→ `wiki-templates/ya
 
 ### Input pipelines
 
-Wiki CLI processes files through two distinct pipelines. Files in `wiki.inputs` are classified as either **documents** (frontmatter parsed, IRI derived from file path, link-checked) or **raw RDF sources** (loaded directly via rdflib, no document processing):
+Wiki CLI processes files through two distinct pipelines. Files in `wiki.input` are classified as either **documents** (frontmatter parsed, IRI derived from file path, link-checked) or **raw RDF sources** (loaded directly via rdflib, no document processing):
 
 | Category            | Extensions                                               | Pipeline             | Key behavior                                                                                  |
 | ------------------- | -------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------- |
@@ -188,7 +188,7 @@ Files with raw RDF extensions are parsed directly by rdflib using the format map
 - **`@context` auto-injection** — Document files that lack an `@context` key get default `wiki:` and `foaf:` prefixes injected. If `@context` is present as a dict, those defaults are merged in.
 - **Only `.md` carries body text** — Data-only formats cannot carry a body literal in the graph; the entire file content is the data dict.
 - **Inline ```` ```turtle ``` ```` blocks** — Any fenced code block with `turtle` language inside a `.md` file is parsed as Turtle RDF and merged into the wiki graph. This is separate from SPARQL result blocks.
-- **`.toml` is a document format** — TOML files under `wiki.inputs` are treated as data-only wiki documents, subject to `@context` injection and route generation.
+- **`.toml` is a document format** — TOML files under `wiki.input` are treated as data-only wiki documents, subject to `@context` injection and route generation.
 
 ### Related
 
@@ -222,14 +222,14 @@ Example:
 wiki -c docs/wiki.yml check
 ```
 
-### `--wiki-inputs PATH` (repeatable)
+### `--input PATH` (repeatable)
 
-Override or extend `wiki.inputs` from config for a single invocation. Relative paths resolve against the config file directory. Useful for one-off queries against a subdirectory.
+Override or extend `wiki.input` from config for a single invocation. Relative paths resolve against the config file directory. Useful for one-off queries against a subdirectory.
 
 Example:
 
 ```bash
-wiki --wiki-inputs ./wiki --wiki-inputs ./imported query "SELECT * WHERE { ?s ?p ?o } LIMIT 5"
+wiki --input ./wiki --input ./imported query "SELECT * WHERE { ?s ?p ?o } LIMIT 5"
 ```
 
 ## Command reference
@@ -272,7 +272,7 @@ ORDER BY ?command
 
 <!-- sparql:end -->
 
-Global flags: `-c`, `--wiki-inputs`.
+Global flags: `-c`, `--input`.
 
 ## Publishing
 

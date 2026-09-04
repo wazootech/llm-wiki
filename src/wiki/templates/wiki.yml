@@ -3,7 +3,7 @@
 # Wiki paths, assets, and filename policy (wiki check / wiki lint).
 wiki:
   # Markdown and data directories to index (relative to this file).
-  inputs:
+  input:
 {% if wiki_inputs %}
 {% for inp in wiki_inputs %}
     - {{ inp }}

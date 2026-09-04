@@ -12,8 +12,8 @@ import type {
 export interface WikiLoadOptions {
   /** Path to ``wiki.yml`` (or directory containing it). */
   config?: string;
-  /** Override ``wiki.inputs`` from the config file. */
-  wikiInputs?: readonly string[];
+  /** Override ``wiki.input`` from the config file. */
+  input?: readonly string[];
   /** Working directory for the wiki CLI subprocess. */
   cwd?: string;
   /** Environment variables for the wiki CLI subprocess. */

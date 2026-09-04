@@ -259,14 +259,14 @@ def find_config_path(path: Path) -> Path | None:
 class WikiConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    inputs: list[Path] = Field(default_factory=lambda: [Path("wiki")])
+    input: list[Path] = Field(default_factory=lambda: [Path("wiki")])
     assets: list[Path] | None = None
     exclude: list[str] = Field(default_factory=list)
     filename_pattern: str | None = None
 
-    @field_validator("inputs", mode="before")
+    @field_validator("input", mode="before")
     @classmethod
-    def _validate_inputs(cls, value: object) -> list[Path]:
+    def _validate_input(cls, value: object) -> list[Path]:
         return _coerce_path_list(value)
 
     @field_validator("assets", mode="before")
@@ -441,7 +441,7 @@ class Config(BaseModel):
         def resolve_list(paths: list[Path]) -> list[Path]:
             return [_resolve_path(p, base_dir) for p in paths]
 
-        inputs = resolve_list(self.wiki.inputs)
+        inputs = resolve_list(self.wiki.input)
         if self.wiki.assets is None:
             assets_raw = [Path("assets")] if (base_dir / "assets").is_dir() else []
         else:
@@ -459,7 +459,7 @@ class Config(BaseModel):
         fmt = FmtConfig.parse_raw(self.fmt, config_name, base_dir)
 
         object.__setattr__(self, "wiki", self.wiki.model_copy(update={
-            "inputs": inputs,
+            "input": inputs,
             "assets": assets,
             "exclude": exclude,
         }))

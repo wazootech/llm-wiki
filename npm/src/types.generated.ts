@@ -161,9 +161,9 @@ export interface InitOptions {
    */
   linkStyle?: "standard" | "wikilink";
   /**
-   * Override ``wiki.inputs`` (repeatable).
+   * Override ``wiki.input`` (repeatable).
    */
-  wikiInputs?: readonly string[];
+  input?: readonly string[];
   /**
    * Override ``graph.base_iri``.
    */

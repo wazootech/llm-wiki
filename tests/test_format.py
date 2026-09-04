@@ -75,7 +75,7 @@ familyName: Smith
 ---""",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki_dir]}, config_root=wiki_dir)
+            config = Config(wiki={"input": [wiki_dir]}, config_root=wiki_dir)
             graph = load_graph(config, infer=False)
             result = graph.query(
                 "SELECT ?givenName ?familyName WHERE { ?s <https://schema.org/givenName> ?givenName ; "
@@ -90,7 +90,7 @@ class CompactJsonLdContextTest(unittest.TestCase):
     def test_compacted_json_ld_context_includes_only_used_prefixes(self) -> None:
         with TemporaryDirectory() as tmpdir:
             wiki_dir = Path(tmpdir)
-            config = Config(wiki={"inputs": [wiki_dir]}, config_root=wiki_dir)
+            config = Config(wiki={"input": [wiki_dir]}, config_root=wiki_dir)
             frontmatter = {
                 "type": "TechArticle",
                 "headline": "wiki query",
@@ -126,7 +126,7 @@ familyName: Smith
 ---""",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki_dir]}, config_root=wiki_dir)
+            config = Config(wiki={"input": [wiki_dir]}, config_root=wiki_dir)
             graph = load_graph(config, infer=False)
             output = run_query(
                 graph,
@@ -139,7 +139,7 @@ familyName: Smith
     def test_pretty_table_format_empty_results(self) -> None:
         with TemporaryDirectory() as tmpdir:
             wiki_dir = Path(tmpdir)
-            config = Config(wiki={"inputs": [wiki_dir]}, config_root=wiki_dir)
+            config = Config(wiki={"input": [wiki_dir]}, config_root=wiki_dir)
             graph = load_graph(config, infer=False)
             result = graph.query("SELECT ?givenName WHERE { ?s <https://schema.org/givenName> ?givenName }")
             self.assertEqual(pretty_table_format(result), "(no results)")

@@ -32,7 +32,7 @@ def _validate_build_output_dir(page_output_dir: Path, config) -> None:
     protected: list[tuple[str, Path]] = [
         ("config root", config.config_root.resolve()),
     ]
-    for input_dir in config.wiki.inputs:
+    for input_dir in config.wiki.input:
         protected.append(("wiki input", input_dir.resolve()))
     for asset_dir in config.wiki.assets:
         protected.append(("wiki asset", asset_dir.resolve()))
@@ -66,8 +66,8 @@ def _build_static_site(wiki: Wiki, options: BuildOptions) -> BuildResult:
             wiki.graph(infer=True, reload=True, disk_cache=True)
             wiki.dataset(infer=True, reload=True, disk_cache=True)
 
-    if not any(path.exists() for path in config.wiki.inputs):
-        dirs_str = ", ".join(str(path) for path in config.wiki.inputs)
+    if not any(path.exists() for path in config.wiki.input):
+        dirs_str = ", ".join(str(path) for path in config.wiki.input)
         return BuildResult(ok=False, error_message=f"none of the input directories exist ({dirs_str})")
 
     if not options.skip_preflight:

@@ -346,7 +346,7 @@ def create_server(
     server = HTTPServer((host, port), WikiHandler)
     server.state = server_state  # type: ignore[attr-defined]
     print(f"Wiki server ready at http://{host}:{port}/")
-    dirs_str = ", ".join(str(d) for d in config.wiki.inputs)
+    dirs_str = ", ".join(str(d) for d in config.wiki.input)
     print(f"Serving {len(site.pages)} pages from {dirs_str}")
     if not site.pages:
         print("Warning: no pages found. Ensure your wiki directory has .md, .yaml, .yml, or .json files.")
@@ -566,7 +566,7 @@ def run_server(
     )
 
     if watch:
-        watch_dirs = list(config.wiki.inputs) + [d for d in config.wiki.assets if d.exists()]
+        watch_dirs = list(config.wiki.input) + [d for d in config.wiki.assets if d.exists()]
         stop_event = threading.Event()
         mtimes = _snapshot_watch_dirs(watch_dirs)
         threading.Thread(

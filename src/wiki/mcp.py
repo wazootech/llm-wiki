@@ -87,7 +87,7 @@ def describe_wiki(wiki: Wiki, *, disk_cache: bool = False) -> dict[str, Any]:
     return {
         "version": __version__,
         "config": _display_path(wiki.config_path, root),
-        "inputs": [_relative_path(path, root) for path in config.wiki.inputs],
+        "inputs": [_relative_path(path, root) for path in config.wiki.input],
         "namespaces": _namespace_map(graph),
         "graph": {
             **graph_stats(graph),

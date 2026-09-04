@@ -18,9 +18,9 @@ async function main() {
   const esm = await import('./dist/index.mjs');
   assert.strictEqual(typeof esm.Wiki, 'function');
 
-  const wiki = new TestWiki({ config: 'docs/wiki.yml', wikiInputs: ['docs/wiki'], cwd: 'repo' });
+  const wiki = new TestWiki({ config: 'docs/wiki.yml', input: ['docs/wiki'], cwd: 'repo' });
   assert.deepStrictEqual(wiki.args('check', ['--strict', 'docs/wiki/Page.md']), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -31,7 +31,7 @@ async function main() {
 
   await wiki.build({ outputDir: '_site', baseUrl: '', urlStyle: 'file', render: true, cache: true, noCheck: true });
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -49,7 +49,7 @@ async function main() {
 
   await wiki.link({ apply: true, fixBroken: true, dryRun: true, check: true, verbose: true, files: ['Page.md'] });
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -72,7 +72,7 @@ async function main() {
 
   await wiki.graphList();
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -81,7 +81,7 @@ async function main() {
   ]);
 
   assert.deepStrictEqual(wiki.args('mcp', ['--mode', 'stdio', '--cache']), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -96,7 +96,7 @@ async function main() {
     git: true,
     repo: 'wazootech/wiki',
     linkStyle: 'standard',
-    wikiInputs: ['wiki', 'docs/wiki'],
+    input: ['wiki', 'docs/wiki'],
     graphImplicitTypes: ['schema:Thing'],
     graphIncludeFileExtension: false,
   });
@@ -107,9 +107,9 @@ async function main() {
     'wazootech/wiki',
     '--link-style',
     'standard',
-    '--wiki-inputs',
+    '--input',
     'wiki',
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--graph-implicit-types',
     'schema:Thing',
@@ -137,7 +137,7 @@ async function main() {
 
   await wiki.install();
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -146,7 +146,7 @@ async function main() {
 
   await wiki.install({ url: 'https://github.com/wazootech/wiki-templates.git' });
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -156,7 +156,7 @@ async function main() {
 
   await wiki.update({ name: 'templates', dryRun: true });
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',
@@ -167,7 +167,7 @@ async function main() {
 
   await wiki.remove({ name: 'templates' });
   assert.deepStrictEqual(wiki.calls.at(-1), [
-    '--wiki-inputs',
+    '--input',
     'docs/wiki',
     '--config',
     'docs/wiki.yml',

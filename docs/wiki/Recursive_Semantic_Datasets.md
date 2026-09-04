@@ -46,7 +46,7 @@ Those may become separate capabilities, but they need the read-only provenance l
 
 ```yaml
 wiki:
-  inputs:
+  input:
     - wiki
 
 sources:

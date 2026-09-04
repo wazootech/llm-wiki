@@ -12,11 +12,11 @@ In this wiki, SHACL is used to enforce structure via the [wiki](wiki.md) validat
 
 ## Defining custom SHACL shapes (validation)
 
-SHACL shapes load from the wiki graph. Add a dedicated `shapes/` tree to [Wiki Configuration](Wiki_Configuration.md) `wiki.inputs` so shape documents stay separate from prose pages:
+SHACL shapes load from the wiki graph. Add a dedicated `shapes/` tree to [Wiki Configuration](Wiki_Configuration.md) `wiki.input` so shape documents stay separate from prose pages:
 
 ```yaml
 wiki:
-  inputs:
+  input:
     - wiki
     - shapes
 ```
@@ -65,7 +65,7 @@ sh:property:
 
 See [Tech Article Shape](Tech_Article_Shape.md) in this wiki for a dogfooded example.
 
-Pure `.ttl` or `.trig` files in `shapes/` also load when that directory is listed in `wiki.inputs`; markdown frontmatter is the default authoring style in this wiki.
+Pure `.ttl` or `.trig` files in `shapes/` also load when that directory is listed in `wiki.input`; markdown frontmatter is the default authoring style in this wiki.
 
 ## Related
 
@@ -73,7 +73,7 @@ Pure `.ttl` or `.trig` files in `shapes/` also load when that directory is liste
 - [wiki lint](wiki_lint.md) — prose and link conventions (separate from shapes)
 - [Style Guide](Style_Guide.md) — shape authoring and filenames
 - [Software Application Shape](Software_Application_Shape.md) — example `sh:NodeShape`
-- [Wiki Configuration](Wiki_Configuration.md) — `wiki.inputs` and shapes layout
+- [Wiki Configuration](Wiki_Configuration.md) — `wiki.input` and shapes layout
 
 ## References
 

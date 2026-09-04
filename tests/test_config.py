@@ -17,7 +17,7 @@ from wiki.config import (
 )
 from wiki.schemas import FmtConfig
 
-MINIMAL_WIKI_YAML = "wiki:\n  inputs: [wiki]\n"
+MINIMAL_WIKI_YAML = "wiki:\n  input: [wiki]\n"
 
 
 class TestContext(unittest.TestCase):
@@ -54,7 +54,7 @@ class TestConfig(unittest.TestCase):
     def test_Config_default_init(self) -> None:
         """Test Config has proper defaults."""
         config = Config()
-        self.assertEqual(config.wiki.inputs, [config.config_root.absolute() / "wiki"])
+        self.assertEqual(config.wiki.input, [config.config_root.absolute() / "wiki"])
         self.assertEqual(config.wiki.assets, [])
         self.assertFalse(config.graph.include_file_extension)
         self.assertEqual(config.site.base_url, "/wiki")
@@ -71,7 +71,7 @@ class TestConfig(unittest.TestCase):
         """Test Config.load falls back to defaults when no files exist."""
         with TemporaryDirectory() as tmpdir:
             config = Config.load(Path(tmpdir))
-            self.assertEqual(config.wiki.inputs, [config.config_root.absolute() / "wiki"])
+            self.assertEqual(config.wiki.input, [config.config_root.absolute() / "wiki"])
 
     def test_Config_load_yaml(self) -> None:
         """Test Config.load correctly parses wiki.yaml."""
@@ -79,7 +79,7 @@ class TestConfig(unittest.TestCase):
             base_path = Path(tmpdir)
             yaml_content = {
                 "wiki": {
-                    "inputs": "custom_wiki",
+                    "input": "custom_wiki",
                     "assets": ["assets", "media/photos"],
                     "exclude": ["wiki/drafts/**", "assets/private/**"],
                     "filename_pattern": "[A-Za-z0-9_()-]+\\.md",
@@ -107,7 +107,7 @@ class TestConfig(unittest.TestCase):
             (base_path / "wiki.yaml").write_text(yaml.dump(yaml_content), encoding="utf-8")
 
             config = Config.load(base_path)
-            self.assertEqual(config.wiki.inputs, [base_path.absolute() / "custom_wiki"])
+            self.assertEqual(config.wiki.input, [base_path.absolute() / "custom_wiki"])
             self.assertEqual(config.wiki.assets, [base_path.absolute() / "assets", base_path.absolute() / "media/photos"])
             self.assertEqual(config.wiki.exclude, ["wiki/drafts/**", "assets/private/**"])
             self.assertEqual(config.check.missing_layout_file, "error")
@@ -250,7 +250,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             json_content = {
-                "wiki": {"inputs": "json_wiki"},
+                "wiki": {"input": "json_wiki"},
                 "graph": {
                     "@context": {
                         "json_pref": "http://json-pref.org/"
@@ -260,7 +260,7 @@ class TestConfig(unittest.TestCase):
             (base_path / "wiki.json").write_text(json.dumps(json_content), encoding="utf-8")
 
             config = Config.load(base_path)
-            self.assertEqual(config.wiki.inputs, [base_path.absolute() / "json_wiki"])
+            self.assertEqual(config.wiki.input, [base_path.absolute() / "json_wiki"])
             self.assertIn("json_pref", config.namespaces)
 
     def test_Config_load_camel_case_top_level_keys_raise_error(self) -> None:
@@ -287,7 +287,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "check": {"brokenLinks": "error"}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "check": {"brokenLinks": "error"}}),
                 encoding="utf-8",
             )
 
@@ -298,7 +298,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "sparql_service": {"enable": True}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "sparql_service": {"enable": True}}),
                 encoding="utf-8",
             )
 
@@ -309,7 +309,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "serve_api": {"enabled": True}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "serve_api": {"enabled": True}}),
                 encoding="utf-8",
             )
 
@@ -340,7 +340,7 @@ class TestConfig(unittest.TestCase):
             (base_path / "wiki.yaml").write_text(
                 yaml.dump(
                     {
-                        "wiki": {"inputs": "wiki"},
+                        "wiki": {"input": "wiki"},
                         "check": {"filename_pattern": "warning", "broken_links": "warning"},
                     }
                 ),
@@ -360,7 +360,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "lint": {"broken_links": "error"}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "lint": {"broken_links": "error"}}),
                 encoding="utf-8",
             )
 
@@ -371,7 +371,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "lint": {"brokenLinks": "error"}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "lint": {"brokenLinks": "error"}}),
                 encoding="utf-8",
             )
 
@@ -405,7 +405,7 @@ class TestConfig(unittest.TestCase):
             (base_path / "wiki.yaml").write_text(
                 yaml.dump(
                     {
-                        "wiki": {"inputs": "wiki"},
+                        "wiki": {"input": "wiki"},
                         "fmt": {
                             "wrap": "no",
                             "extensions": ["gfm", "front_matters", "wikilink"],
@@ -422,7 +422,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "fmt": "custom.toml"}),
+                yaml.dump({"wiki": {"input": "wiki"}, "fmt": "custom.toml"}),
                 encoding="utf-8",
             )
             config = Config.load(base_path)
@@ -437,7 +437,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "fmt": absolute_fmt}),
+                yaml.dump({"wiki": {"input": "wiki"}, "fmt": absolute_fmt}),
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "fmt path must be relative"):
@@ -447,7 +447,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "fmt": True}),
+                yaml.dump({"wiki": {"input": "wiki"}, "fmt": True}),
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "fmt must be a mapping or path string"):
@@ -457,7 +457,7 @@ class TestConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                yaml.dump({"wiki": {"inputs": "wiki"}, "fmt": {"typo_key": True}}),
+                yaml.dump({"wiki": {"input": "wiki"}, "fmt": {"typo_key": True}}),
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "Invalid key 'typo_key'"):
@@ -469,7 +469,7 @@ class TestConfig(unittest.TestCase):
             (base_path / "wiki.json").write_text(
                 json.dumps(
                     {
-                        "wiki": {"inputs": ["wiki"]},
+                        "wiki": {"input": ["wiki"]},
                         "fmt": {
                             "wrap": "no",
                             "extensions": ["gfm", "front_matters", "wikilink"],

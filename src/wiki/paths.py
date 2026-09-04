@@ -15,7 +15,7 @@ UNSAFE_ROUTE_CHARS = set("?#%")
 
 def iter_document_files(config: Config) -> list[Path]:
     doc_files: list[Path] = []
-    for input_dir in config.wiki.inputs:
+    for input_dir in config.wiki.input:
         if input_dir.exists():
             for file_path in sorted(input_dir.rglob("*")):
                 if not file_path.is_file() or file_path.suffix.lower() not in DOCUMENT_EXTENSIONS:
@@ -168,7 +168,7 @@ def validate_route_safety(config: Config) -> list[str]:
 
 
 def _relative_to_input_dir(config: Config, md_file: Path) -> Path:
-    for root in config.wiki.inputs:
+    for root in config.wiki.input:
         try:
             return md_file.relative_to(root)
         except ValueError:

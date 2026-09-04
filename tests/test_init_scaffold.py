@@ -210,7 +210,7 @@ INIT_OPTIONS_TO_CONFIG_PATH = {
     "site_layout": ("site", "layout"),
     "graph_content_predicate": ("graph", "content_predicate"),
     "link_style": ("link", "style"),
-    "wiki_inputs": ("wiki", "inputs"),
+    "wiki_inputs": ("wiki", "input"),
     "graph_base_iri": ("graph", "base_iri"),
     "graph_implicit_types": ("graph", "implicit_types"),
     "graph_implicit_types_policy": ("graph", "implicit_types_policy"),
@@ -220,6 +220,11 @@ INIT_OPTIONS_TO_CONFIG_PATH = {
 # Init-only CLI flags with no matching config path (used only during init).
 INIT_ONLY_OPTIONS: frozenset[str] = frozenset({"template"})
 
+# Fields whose flag does not follow the --kebab-case-of-field convention.
+# wiki_inputs stays snake internally (shape of the #227 rename) while its
+# Click flag is --input, not --wiki-inputs.
+FIELD_TO_FLAG_OVERRIDES: dict[str, str] = {"wiki_inputs": "--input"}
+
 
 class TestInitLockstep(TestCase):
     def test_init_options_fields_match_cli_options(self) -> None:
@@ -227,7 +232,7 @@ class TestInitLockstep(TestCase):
         from wiki.cli import init as init_cmd
         cli_option_names = {opt.opts[0] for opt in init_cmd.params if opt.opts}
         for field in InitOptions.model_fields.keys():
-            expected_opt = "--" + field.replace("_", "-")
+            expected_opt = FIELD_TO_FLAG_OVERRIDES.get(field, "--" + field.replace("_", "-"))
             # We allow options with both / and without / (e.g. --graph-include-file-extension/--no-graph-include-file-extension)
             # Click splits these but let's check prefix or inclusion
             found = False
@@ -318,7 +323,7 @@ class TestFetchTemplate(TestCase):
             generic_dir = fake_templates / "generic"
             generic_dir.mkdir()
             (generic_dir / "wiki.yml").write_text(
-                "wiki:\n  inputs:\n    - wiki\n", encoding="utf-8"
+                "wiki:\n  input:\n    - wiki\n", encoding="utf-8"
             )
             (generic_dir / "README.md").write_text(
                 "# Generic Wiki\n", encoding="utf-8"

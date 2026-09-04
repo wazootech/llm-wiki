@@ -41,7 +41,7 @@ from pathlib import Path
 from wiki import Wiki
 
 w = Wiki.load("wiki.yml")
-# or override inputs (same as --wiki-inputs):
+# or override inputs (same as --input):
 w = Wiki.load("wiki.yml", wiki_inputs=["docs/wiki"])
 
 report = w.check()

@@ -27,7 +27,7 @@ class TestWiki(unittest.TestCase):
             wiki_dir = root / "wiki"
             wiki_dir.mkdir()
             (wiki_dir / "Page.md").write_text("# Page\n\nContent.", encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
 
             wiki = Wiki.load(root)
             with patch("wiki.wiki._run_check", return_value=AuditReport.empty()) as mock_check:
@@ -42,7 +42,7 @@ class TestWiki(unittest.TestCase):
             wiki_dir.mkdir()
             page = wiki_dir / "Page.md"
             page.write_text("---\ntype: schema:WebPage\n---\n", encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
 
             wiki = Wiki.load(root)
             with patch("wiki.wiki._run_check", return_value=AuditReport.empty()) as mock_check:
@@ -51,7 +51,7 @@ class TestWiki(unittest.TestCase):
             self.assertIsNotNone(kwargs.get("file_paths"))
 
     def test_with_runtime_overrides_site(self) -> None:
-        config = Config(wiki={"inputs": [Path("/tmp/wiki")]}, site={"base_url": "/wiki"})
+        config = Config(wiki={"input": [Path("/tmp/wiki")]}, site={"base_url": "/wiki"})
         wiki = Wiki(config)
         runtime = wiki.with_runtime(base_url="/custom", url_style="file")
         self.assertEqual(runtime.config.site.base_url, "/custom")
@@ -59,7 +59,7 @@ class TestWiki(unittest.TestCase):
         self.assertEqual(wiki.config.site.base_url, "/wiki")
 
     def test_preflight_merges_lint_and_check(self) -> None:
-        config = Config(wiki={"inputs": [Path("/tmp/wiki")]})
+        config = Config(wiki={"input": [Path("/tmp/wiki")]})
         wiki = Wiki(config)
         lint_report = AuditReport(
             warnings=[Issue(code="headings", message="warn", severity="warning")],

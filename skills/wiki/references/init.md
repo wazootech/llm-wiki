@@ -55,7 +55,7 @@ When context already supplies values, **do not re-prompt**:
 | Custom namespace       | No GitHub / custom site                      | `--graph-context-wiki https://…/` and optional `--site-base-url` |
 | Git repository         | User wants `git init` now                    | `--git`                                                          |
 | Link style             | Wikilinks vs standard page links             | `--link-style wikilink`                                          |
-| Inputs directory       | Custom markdown folder                       | `--wiki-inputs myfolder`                                         |
+| Inputs directory       | Custom markdown folder                       | `--input myfolder`                                         |
 | URL style              | File vs directory routes                     | `--site-url-style dir` or `file`                                 |
 | Content predicate      | Body text RDF predicate                      | `--graph-content-predicate schema:articleBody`                   |
 | Document IRIs          | IRIs differ from `wiki:` namespace           | `--graph-base-iri https://…/`                                    |

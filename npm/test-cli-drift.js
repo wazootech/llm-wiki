@@ -27,7 +27,7 @@
  *    each wrapper method emits — including direct `args.push` emissions like
  *    `update`'s `--dry-run` and `init`'s boolean-pair ternary — is a real
  *    option string on that command (or on the root `wiki` command for
- *    `args()`, which emits `--config`/`--wiki-inputs` from no model entry).
+ *    `args()`, which emits `--config`/`--input` from no model entry).
  * 5. Config-key conformance (`scripts/check_config_keys.py`): every
  *    config-key reference in the scaffold template
  *    (`src/wiki/templates/wiki.yml`) and the docs (`docs/wiki`,

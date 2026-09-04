@@ -30,7 +30,7 @@ Valid settings and keys in the `wiki.yml` or legacy `wiki.yaml` file:
 
 - **Invalid keys**: Unknown top-level configuration keys that cause `wiki check` to fail.
 - **Deprecated branding properties**: Presence of old `site.manifest`, `site.title`, or `site.theme_color` keys that are no longer part of the schema.
-- **Inputs folder exclusions**: The `wiki.inputs` configuration listing directories like `skills/`, `.agents/`, `.git/`, or test folders, which imports agent instructions as content pages.
+- **Inputs folder exclusions**: The `wiki.input` configuration listing directories like `skills/`, `.agents/`, `.git/`, or test folders, which imports agent instructions as content pages.
 - **Base URL issues**: `site.base_url` undefined or lacking a leading slash (should be `""` or `/path`).
 
 ## Deploy and CI/CD alignment

@@ -2,7 +2,7 @@
 # Wiki paths, assets, and filename policy (wiki check / wiki lint).
 wiki:
   # Markdown and data directories to index (relative to this file).
-  inputs:
+  input:
     - wiki
   # Static files for custom CSS, logos, favicons (copied on wiki build).
   assets:

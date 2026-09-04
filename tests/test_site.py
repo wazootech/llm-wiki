@@ -49,7 +49,7 @@ class TestWikiSite(unittest.TestCase):
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Bob.md").write_text("# Bob\n\n## Early Life\n\nBorn.\n\n## Early Life\n\nAgain.", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config, base_url="/wiki", url_style="dir")
 
@@ -70,7 +70,7 @@ class TestWikiSite(unittest.TestCase):
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Pokemon_Diamond_(copy_1).md").write_text("No heading.", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config)
 
@@ -84,7 +84,7 @@ class TestWikiSite(unittest.TestCase):
             (wiki / "person.yaml").write_text("type: Person\nname: Gregory Davidson\n", encoding="utf-8")
             (wiki / "place.yml").write_text("type: Place\nname: Princeton\n", encoding="utf-8")
             (wiki / "index.md").write_text("# Home", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config)
 
@@ -127,7 +127,7 @@ name: Bella Davidson
 """,
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config, base_url="/wiki", url_style="dir")
             page = next(page for page in site.pages if page.full_slug == "Gregory_Davidson")
@@ -168,7 +168,7 @@ name: Project Atlas Record
 """,
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config, base_url="/wiki", url_style="dir")
             page = next(page for page in site.pages if page.full_slug == "project")
@@ -196,7 +196,7 @@ name: Project Atlas
 """,
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config, base_url="/wiki", url_style="dir")
             page = next(page for page in site.pages if page.full_slug == "project")
@@ -231,7 +231,7 @@ name: Project Atlas
                 "## Importance in the [[Semantic_Web|semantic web]]\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             page_layout = _full_test_layout(root)
@@ -343,7 +343,7 @@ name: Project Atlas
                 "# Page\n\n## Safe section\n\n### <script>alert(1)</script>\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             page_layout = _full_test_layout(root)
@@ -377,7 +377,7 @@ specialty: Diagnostics
 """,
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             site = build_site(config, base_url="/wiki", url_style="dir")
             page = next(page for page in site.pages if page.full_slug == "person")
@@ -418,7 +418,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Alice.md").write_text("# Alice\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             html = build_index_html(site, root)
             self.assertIn('<ul class="pages-list">', html)
@@ -458,7 +458,7 @@ specialty: Diagnostics
                 "# Content negotiation\n\nLead paragraph.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             self.assertIn("Lead paragraph.", page.html)
@@ -471,7 +471,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\ngraph:\n  context:\n    wiki: https://wiki.example.org/\n"
+                "wiki:\n  input: [wiki]\ngraph:\n  context:\n    wiki: https://wiki.example.org/\n"
                 "  context:\n    wiki: https://wiki.example.org/\n",
                 encoding="utf-8",
             )
@@ -496,7 +496,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "page.md").write_text("---\ntype: Article\n---\n\n# My Article\n\nContent.", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             html = build_page_html(page, root)
@@ -518,7 +518,7 @@ specialty: Diagnostics
                 "# Wiki CLI\n\nLead paragraph.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             html = build_page_html(page, root, default_layout=_default_layout(root))
@@ -531,7 +531,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "page.md").write_text("# Page\n\nBody.", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             html = build_page_html(page, root, default_layout=_default_layout(root))
@@ -543,7 +543,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "page.md").write_text("# Page\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             index_html = build_index_html(site, root)
             self.assertIn("All Pages", index_html)
@@ -563,7 +563,7 @@ specialty: Diagnostics
                 "| `{metadata_pane_html}` | Metadata pane |\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             html = build_page_html(page, root, default_layout=_default_layout(root))
@@ -578,14 +578,14 @@ specialty: Diagnostics
             (wiki / "alice.md").write_text("# Alice\n", encoding="utf-8")
             (wiki / "bob.md").write_text("# Bob\n", encoding="utf-8")
 
-            dir_config = Config(wiki={"inputs": [wiki]}, site={"url_style": "dir"}, config_root=root)
+            dir_config = Config(wiki={"input": [wiki]}, site={"url_style": "dir"}, config_root=root)
             dir_site = build_site(dir_config)
             dir_index = build_index_html(dir_site, root, base_url="/wiki", url_style=dir_config.site.url_style)
             self.assertIn('href="/wiki/alice/"', dir_index)
             self.assertIn('href="/wiki/bob/"', dir_index)
             self.assertNotIn(".html", dir_index)
 
-            file_config = Config(wiki={"inputs": [wiki]}, site={"url_style": "file"}, config_root=root)
+            file_config = Config(wiki={"input": [wiki]}, site={"url_style": "file"}, config_root=root)
             file_site = build_site(file_config)
             file_index = build_index_html(file_site, root, base_url="/wiki", url_style=file_config.site.url_style)
             self.assertIn('href="/wiki/alice.html"', file_index)
@@ -597,7 +597,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Alice.md").write_text("# Alice\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             html = build_index_html(site, root, default_layout=_full_test_layout(root))
             self.assertNotIn("%wiki.", html)
@@ -610,7 +610,7 @@ specialty: Diagnostics
             wiki.mkdir()
             (wiki / "Person_A.md").write_text("---\ntype: Person\n---\n# Person A\n", encoding="utf-8")
             (wiki / "Plain.md").write_text("# Plain\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             html = build_index_html(site, root, default_layout=_full_test_layout(root))
             article_start = html.index('<article id="article-top">')
@@ -626,7 +626,7 @@ specialty: Diagnostics
             wiki.mkdir()
             (wiki / "page.md").write_text("# Page\n", encoding="utf-8")
             config = Config(
-                wiki={"inputs": [wiki]},
+                wiki={"input": [wiki]},
                 site={"base_url": "/wiki"},
                 config_root=root,
             )
@@ -650,7 +650,7 @@ specialty: Diagnostics
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "page.md").write_text("# Page\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             html = build_index_html(
                 site,

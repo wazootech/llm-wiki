@@ -184,7 +184,7 @@ class TestConfigSources(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             yaml_content = {
-                "wiki": {"inputs": "wiki"},
+                "wiki": {"input": "wiki"},
                 "sources": [
                     {"name": "taxonomy", "type": "git", "url": "https://example.com/taxonomy.git", "ref": "v1.0"},
                     {"name": "community", "type": "git", "url": "https://example.com/community.git"},
@@ -201,7 +201,7 @@ class TestConfigSources(unittest.TestCase):
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
                 yaml.dump({
-                    "wiki": {"inputs": "wiki"},
+                    "wiki": {"input": "wiki"},
                     "sources": [{"name": "bad", "type": "git", "url": "https://x.com", "extra": True}],
                 }),
                 encoding="utf-8",
@@ -257,7 +257,7 @@ class TestDiscoverSources(unittest.TestCase):
     def test_no_sources_block(self) -> None:
         with TemporaryDirectory() as tmpdir:
             (Path(tmpdir) / "wiki.yml").write_text(
-                yaml.dump({"wiki": {"inputs": "pages"}}), encoding="utf-8"
+                yaml.dump({"wiki": {"input": "pages"}}), encoding="utf-8"
             )
             sources = _discover_sources(Path(tmpdir))
             self.assertEqual(sources, [])
@@ -266,7 +266,7 @@ class TestDiscoverSources(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             (Path(tmpdir) / "wiki.yml").write_text(
                 yaml.dump({
-                    "wiki": {"inputs": "pages"},
+                    "wiki": {"input": "pages"},
                     "sources": [
                         {"name": "dep-a", "type": "git", "url": "https://example.com/a.git"},
                         {"name": "dep-b", "type": "git", "url": "https://example.com/b.git", "ref": "v1.0"},
@@ -322,7 +322,7 @@ def _make_mock_git(
         if deps:
             (repo_dir / "wiki.yml").write_text(
                 yaml.dump({
-                    "wiki": {"inputs": "pages"},
+                    "wiki": {"input": "pages"},
                     "sources": [d.model_dump() for d in deps],
                 }),
                 encoding="utf-8",
@@ -346,7 +346,7 @@ class TestInstallTree(unittest.TestCase):
     def _make_config(self, root: Path, sources: list[dict]) -> Config:
         return Config(
             config_root=root,
-            wiki={"inputs": ["wiki"]},
+            wiki={"input": ["wiki"]},
             sources=sources,
         )
 
@@ -533,7 +533,7 @@ class TestRemoveOrphans(unittest.TestCase):
     def _make_config(self, root: Path, sources: list[dict]) -> Config:
         return Config(
             config_root=root,
-            wiki={"inputs": ["wiki"]},
+            wiki={"input": ["wiki"]},
             sources=sources,
         )
 

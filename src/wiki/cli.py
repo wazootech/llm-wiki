@@ -37,11 +37,11 @@ def optional_files_argument(f):
 @click.group()
 @click.version_option(version=__version__, prog_name="wiki")
 @click.option(
-    "--wiki-inputs",
+    "--input",
     "wiki_inputs",
     multiple=True,
     default=None,
-    help="Override wiki.inputs from config file (.md, .yaml, .json, .toml; repeatable).",
+    help="Override wiki.input from config file (.md, .yaml, .json, .toml; repeatable).",
 )
 @click.option(
     "-c",
@@ -565,11 +565,11 @@ def serve(
     help="Override link.style.",
 )
 @click.option(
-    "--wiki-inputs",
+    "--input",
     "wiki_inputs",
     multiple=True,
     default=None,
-    help="Override wiki.inputs (repeatable).",
+    help="Override wiki.input (repeatable).",
 )
 @click.option("--graph-base-iri", "graph_base_iri", default=None, help="Override graph.base_iri.")
 @click.option(

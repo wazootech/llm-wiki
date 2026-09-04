@@ -49,7 +49,7 @@ def iter_wiki_files(config: Config) -> list[Path]:
     """All non-excluded files under inputs that contribute to the graph."""
     files: list[Path] = []
     cache_root = cache_dir(config).resolve()
-    for input_dir in config.wiki.inputs:
+    for input_dir in config.wiki.input:
         if not input_dir.exists():
             continue
         for file_path in sorted(input_dir.rglob("*")):

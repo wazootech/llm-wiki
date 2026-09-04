@@ -22,7 +22,7 @@ class TestWikiBuild(unittest.TestCase):
             assets = root / "assets" / "items"
             wiki.mkdir()
             assets.mkdir(parents=True)
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n  assets: [assets]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n  assets: [assets]\n", encoding="utf-8")
             (wiki / "Item.md").write_text("# Item\n\n![label](../assets/items/label.jpg)", encoding="utf-8")
             (assets / "label.jpg").write_text("image", encoding="utf-8")
             output_dir = root / "_site"
@@ -43,7 +43,7 @@ class TestWikiBuild(unittest.TestCase):
             wiki.mkdir()
             owned.mkdir(parents=True)
             (owned / "old.html").write_text("old", encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\nlint:\n  broken_links: error\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\nlint:\n  broken_links: error\n", encoding="utf-8")
             (wiki / "Page.md").write_text("# Page\n\n[[Missing]]", encoding="utf-8")
 
             result = runner.invoke(main, ["--config", str(root), "build", "--output-dir", str(output_dir)])
@@ -61,7 +61,7 @@ class TestWikiBuild(unittest.TestCase):
             wiki.mkdir()
             owned.mkdir(parents=True)
             (owned / "old.html").write_text("old", encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\nlint:\n  broken_links: error\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\nlint:\n  broken_links: error\n", encoding="utf-8")
             (wiki / "Page.md").write_text("# Page\n\n[[Missing]]", encoding="utf-8")
 
             result = runner.invoke(main, ["--config", str(root), "build", "--output-dir", str(output_dir), "--no-check"])
@@ -77,7 +77,7 @@ class TestWikiBuild(unittest.TestCase):
             wiki = root / "wiki"
             output_dir = root / "_site"
             wiki.mkdir()
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             (wiki / "index.md").write_text("# Custom Home\n\nWelcome.", encoding="utf-8")
             (wiki / "Page.md").write_text("# Page", encoding="utf-8")
 
@@ -95,7 +95,7 @@ class TestWikiBuild(unittest.TestCase):
             wiki = root / "wiki"
             output_dir = root / "_site"
             wiki.mkdir()
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             (wiki / "person.yaml").write_text("type: Person\nname: Gregory Davidson\n", encoding="utf-8")
             (wiki / "place.yml").write_text("type: Place\nname: Princeton\n", encoding="utf-8")
 
@@ -111,7 +111,7 @@ class TestWikiBuild(unittest.TestCase):
             root = Path(tmpdir)
             wiki = root / "wiki"
             wiki.mkdir()
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             (wiki / "Page.md").write_text("# Page\n\nContent.", encoding="utf-8")
 
             for url_style in ("dir", "file"):
@@ -143,7 +143,7 @@ class TestWikiBuild(unittest.TestCase):
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Page.md").write_text("# Page\n\nContent.", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, site={"base_url": "/wiki", "url_style": "dir"}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, site={"base_url": "/wiki", "url_style": "dir"}, config_root=root)
 
             with patch("wiki.cli.Wiki.load") as load_mock:
                 load_mock.return_value = Wiki(config)
@@ -197,7 +197,7 @@ class TestWikiBuild(unittest.TestCase):
 </body>
 </html>"""
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nsite:\n  layout: test_shell.html\n", encoding="utf-8"
+                "wiki:\n  input: [wiki]\nsite:\n  layout: test_shell.html\n", encoding="utf-8"
             )
             write_layout(root, "test_shell.html", test_template)
             (wiki / "Gregory_Davidson.yaml").write_text(
@@ -254,7 +254,7 @@ name: Bella Davidson
 </body>
 </html>"""
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nsite:\n  layout: test_shell.html\n", encoding="utf-8"
+                "wiki:\n  input: [wiki]\nsite:\n  layout: test_shell.html\n", encoding="utf-8"
             )
             write_layout(root, "test_shell.html", template)
             (wiki / "Page.md").write_text(
@@ -284,7 +284,7 @@ about: wiki:Alice_Theory
             output_dir = root / "_site"
             wiki.mkdir()
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nsite:\n  layout: nonexistent.html\n", encoding="utf-8"
+                "wiki:\n  input: [wiki]\nsite:\n  layout: nonexistent.html\n", encoding="utf-8"
             )
             (wiki / "Page.md").write_text("# Page\n\nContent.", encoding="utf-8")
             result = runner.invoke(main, ["--config", str(root), "build", "--output-dir", str(output_dir)])
@@ -310,7 +310,7 @@ about: wiki:Alice_Theory
                 encoding="utf-8",
             )
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\n  assets: [assets]\n"
+                "wiki:\n  input: [wiki]\n  assets: [assets]\n"
                 "site:\n  layout: test_shell.html\n",
                 encoding="utf-8",
             )

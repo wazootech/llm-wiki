@@ -29,7 +29,7 @@ def build_site(
         config = input_dirs
     else:
         dirs_arg = [input_dirs] if isinstance(input_dirs, Path) else input_dirs
-        config = Config.for_root(Path.cwd(), wiki={"inputs": [str(p) for p in dirs_arg]})
+        config = Config.for_root(Path.cwd(), wiki={"input": [str(p) for p in dirs_arg]})
     resolved_base_url = config.site.base_url if base_url is None else base_url
     resolved_url_style = config.site.url_style if url_style is None else url_style
     pages: list[VirtualPage] = []
