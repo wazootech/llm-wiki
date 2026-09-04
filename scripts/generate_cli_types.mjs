@@ -35,6 +35,11 @@
  *    deliberately requires a single scalar `query: string`. The patch below
  *    encodes that documented divergence; a schema-shape guard throws if the
  *    CLI positional ever changes shape so the delta cannot silently rot.
+ * 5. Choice-union aliases — the public union types (`UrlStyle`,
+ *    `QueryFormat`, …) are emitted here from the schema `enum`/`const`, so
+ *    the hand-written copies in types.ts re-export them instead of drifting
+ *    independently. Values come from the model; a name maps conflicting
+ *    value sets across models and the generator throws.
  */
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
@@ -53,6 +58,38 @@ const header = [
   " */",
   "",
 ].join("\n");
+
+/**
+ * Public choice-union aliases, keyed by model → schema property (the camelCase
+ * alias) → exported type name. The values come from the schema enum/const, so
+ * the hand-written copies in types.ts are retired without drift: a choice
+ * added or removed in the model updates the alias automatically, and the
+ * freshness gate enforces the regenerated file.
+ */
+const CHOICE_ALIASES = {
+  BuildOptions: { urlStyle: "UrlStyle" },
+  ExportOptions: { format: "ExportFormat", mode: "ExportMode" },
+  InitOptions: { urlStyle: "UrlStyle", linkStyle: "LinkStyle" },
+  McpOptions: { mode: "McpMode" },
+  QueryOptions: { format: "QueryFormat" },
+  ServeOptions: { urlStyle: "UrlStyle" },
+};
+
+/** Union values from a property schema: `enum` array, single `const`, or an anyOf branch. */
+function enumValues(propSchema) {
+  if (propSchema === null || typeof propSchema !== "object") return null;
+  if (Array.isArray(propSchema.enum) && propSchema.enum.length > 0) {
+    return propSchema.enum.map((v) => String(v));
+  }
+  if ("const" in propSchema) return [String(propSchema.const)];
+  if (Array.isArray(propSchema.anyOf)) {
+    for (const branch of propSchema.anyOf) {
+      const values = enumValues(branch);
+      if (values) return values;
+    }
+  }
+  return null;
+}
 
 /** Recursively drop `title` keys so jstt inlines property types. */
 function stripTitles(node) {
@@ -145,17 +182,63 @@ const files = (await readdir(schemasDir))
   .sort();
 
 const chunks = [];
+const aliasChunks = [];
+const emittedAliases = new Map(); // alias name -> sorted values
+
 for (const file of files) {
   const name = file.replace(/\.schema\.json$/, "");
   const schema = JSON.parse(await readFile(path.join(schemasDir, file), "utf8"));
   applyQueryDelta(schema);
   stripTitles(schema);
   stripNullFromOptional(schema);
+
+  for (const [propName, alias] of Object.entries(CHOICE_ALIASES[name] ?? {})) {
+    const values = enumValues(schema.properties?.[propName]);
+    if (values === null) {
+      throw new Error(
+        `${name}.${propName} is mapped to alias ${alias} but its schema has no ` +
+          `enum/const — remove or fix the mapping.`
+      );
+    }
+    const sorted = [...values].sort();
+    const seen = emittedAliases.get(alias);
+    if (seen) {
+      if (JSON.stringify(seen) !== JSON.stringify(sorted)) {
+        throw new Error(
+          `Alias ${alias} maps conflicting value sets: ${JSON.stringify(seen)} ` +
+            `vs ${JSON.stringify(sorted)}.`
+        );
+      }
+      continue;
+    }
+    emittedAliases.set(alias, sorted);
+    const description = schema.properties[propName].description;
+    const jsdoc = description
+      ? `/** ${description.replace(/\*\//g, "*\\/").replace(/\s+/g, " ").trim()} */\n`
+      : "";
+    aliasChunks.push(
+      `${jsdoc}export type ${alias} = ${values
+        .map((v) => JSON.stringify(v))
+        .join(" | ")};`
+    );
+  }
+
   let out = await compile(schema, name, { bannerComment: "" });
   out = applyReadonly(out, name, schema);
   chunks.push(out);
 }
 
+const parts = [header];
+if (aliasChunks.length) {
+  parts.push(
+    "// Choice unions — named mirrors of the schema enums (public API aliases)."
+  );
+  parts.push(aliasChunks.join("\n\n"));
+}
+parts.push(chunks.join("\n\n"));
+
 await mkdir(path.dirname(outFile), { recursive: true });
-await writeFile(outFile, header + chunks.join("\n\n") + "\n");
-console.log(`Wrote ${chunks.length} model declarations to ${outFile}`);
+await writeFile(outFile, parts.join("\n\n") + "\n");
+console.log(
+  `Wrote ${chunks.length} model declarations and ${aliasChunks.length} choice-union aliases to ${outFile}`
+);

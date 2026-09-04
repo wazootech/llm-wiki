@@ -4,6 +4,29 @@
  * model_json_schema(by_alias=True)) compiled by json-schema-to-typescript.
  * Regenerate via: npm run gen:cli-types
  */
+
+// Choice unions — named mirrors of the schema enums (public API aliases).
+
+/** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
+export type UrlStyle = "dir" | "file";
+
+/** RDF serialization format. */
+export type ExportFormat =
+  "dict" | "json-ld" | "turtle" | "xml" | "n3" | "nt" | "trig" | "nquads";
+
+/** JSON-LD mode (``"expanded"`` or ``"compacted"``). */
+export type ExportMode = "expanded" | "compacted";
+
+/** Override ``link.style`` (``"standard"`` or ``"wikilink"``). */
+export type LinkStyle = "standard" | "wikilink";
+
+/** MCP transport mode (default ``"stdio"``). */
+export type McpMode = "stdio";
+
+/** Output format. */
+export type QueryFormat =
+  "table" | "json" | "csv" | "tsv" | "turtle" | "n3" | "markdown";
+
 /**
  * Options for ``Wiki.build()``.
  */
