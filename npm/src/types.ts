@@ -1,5 +1,12 @@
 import type { ChildProcess } from "node:child_process";
 
+import type {
+  ExportOptions as GeneratedExportOptions,
+  McpOptions as GeneratedMcpOptions,
+  QueryOptions as GeneratedQueryOptions,
+  ServeOptions as GeneratedServeOptions,
+} from "./types.generated";
+
 /** Build output URL style: ``<slug>.html`` (file) or ``<slug>/index.html`` (dir). */
 export type UrlStyle = "dir" | "file";
 /** Internal link syntax: ``[text](Page.md)`` (standard) or ``[[Page]]`` (wikilink). */
@@ -57,24 +64,46 @@ export interface WikiCommandResult {
   command: readonly string[];
 }
 
+// ── Generated CLI option bags ──────────────────────────────────────────────
+// The command option bags are generated from the Pydantic COMMAND_MODELS in
+// src/wiki/schemas/cli.py (scripts/export_cli_schemas.py +
+// scripts/generate_cli_types.mjs via `npm run gen:cli-types`); the drift test
+// in npm/test-cli-drift.js fails when the committed generated file falls out
+// of sync with the models. The bags below that merge SDK-only fields (e.g.
+// parseJson, cwd/env) onto their pure-CLI generated shape re-declare with
+// `extends`; everything else re-exports the generated declaration unchanged.
+export type {
+  BuildOptions,
+  CheckOptions,
+  FmtOptions,
+  InitOptions,
+  InstallOptions,
+  LinkOptions,
+  LintOptions,
+  RenderOptions,
+  RemoveOptions,
+  UpdateOptions,
+  UpgradeOptions,
+} from "./types.generated";
+
 /** Mixin for methods that accept a ``files`` filter. */
 export interface FilesOption {
   /** Subset of wiki files to operate on. Omit for whole-wiki mode. */
   files?: readonly string[];
 }
 
-/** Shared options for check and lint. */
+/**
+ * Shared options for check and lint.
+ *
+ * Retained as a standalone type for API stability; the generated
+ * ``CheckOptions``/``LintOptions`` bags carry the same members.
+ */
 export interface StrictOption extends FilesOption {
   /** Elevate all warnings to errors. */
   strict?: boolean;
   /** Print detailed audit output. */
   verbose?: boolean;
 }
-
-/** Options for ``Wiki.check()``. */
-export type CheckOptions = StrictOption;
-/** Options for ``Wiki.lint()``. */
-export type LintOptions = StrictOption;
 
 /** Options for ``Wiki.preflight()``. */
 export interface PreflightOptions {
@@ -84,58 +113,32 @@ export interface PreflightOptions {
   verbose?: boolean;
 }
 
-/** Options for ``Wiki.build()``. */
-export interface BuildOptions {
-  /** Target directory (default ``"_site"``). */
-  outputDir?: string;
-  /** Override ``site.base_url``. */
-  baseUrl?: string;
-  /** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
-  urlStyle?: UrlStyle;
-  /** Render inline SPARQL blocks before building. */
-  render?: boolean;
-  /** Rebuild the graph before rendering. */
-  reload?: boolean;
-  /** Persist the graph to disk. */
-  cache?: boolean;
-  /** Skip lint + check preflight. */
-  noCheck?: boolean;
-  /** Print generated file paths. */
-  verbose?: boolean;
-}
-
-/** Options for ``Wiki.fmt()``. */
-export interface FmtOptions extends FilesOption {
-  /** Report formatting issues without modifying files. */
-  check?: boolean;
-  /** Print per-file formatting status. */
-  verbose?: boolean;
-}
-
-/** Options for ``Wiki.render()``. */
-export interface RenderOptions extends FilesOption {
-  /** Detect stale blocks without modifying files. */
-  check?: boolean;
-  /** Rebuild the graph before rendering. */
-  reload?: boolean;
-  /** Persist the graph to disk. */
-  cache?: boolean;
-  /** Skip OWL-RL inference. */
-  noInference?: boolean;
-  /** Print summary of updated files. */
-  verbose?: boolean;
-}
-
 /** Options for ``Wiki.export()``. */
-export interface ExportOptions extends FilesOption {
-  /** Output file path. */
-  output?: string;
-  /** RDF serialization format. */
-  format?: ExportFormat;
-  /** JSON-LD mode (``"expanded"`` or ``"compacted"``). */
-  mode?: ExportMode;
+export interface ExportOptions extends GeneratedExportOptions {
   /** Automatically parse JSON output into ``data`` field. */
   parseJson?: boolean;
+}
+
+/** Options for ``Wiki.query()``. */
+export interface QueryOptions extends GeneratedQueryOptions {
+  /** Automatically parse JSON output. */
+  parseJson?: boolean;
+}
+
+/** Options for ``Wiki.serve()``. */
+export interface ServeOptions extends GeneratedServeOptions {
+  /** Working directory for the subprocess. */
+  cwd?: string;
+  /** Extra environment variables. */
+  env?: NodeJS.ProcessEnv;
+}
+
+/** Options for ``Wiki.mcp()``. */
+export interface McpOptions extends GeneratedMcpOptions {
+  /** Working directory for the subprocess. */
+  cwd?: string;
+  /** Extra environment variables. */
+  env?: NodeJS.ProcessEnv;
 }
 
 /** Extended result from ``Wiki.export()`` with parsed JSON data. */
@@ -144,142 +147,12 @@ export interface ExportResult<T = unknown> extends WikiCommandResult {
   data?: T;
 }
 
-/** Options for ``Wiki.link()``. */
-export interface LinkOptions extends FilesOption {
-  /** Insert suggested internal links. */
-  apply?: boolean;
-  /** Repair unambiguous broken internal links. */
-  fixBroken?: boolean;
-  /** Preview changes without writing files. */
-  dryRun?: boolean;
-  /** Exit with code 1 if opportunities or broken links remain. */
-  check?: boolean;
-  /** Show target titles; list changed files. */
-  verbose?: boolean;
-}
-
-/** Options for ``Wiki.query()``. */
-export interface QueryOptions {
-  /** The SPARQL query string (required). */
-  query: string;
-  /** Output format. */
-  format?: QueryFormat;
-  /** Write output to a file. */
-  output?: string;
-  /** Skip OWL-RL inference. */
-  noInference?: boolean;
-  /** Rebuild the graph before querying. */
-  reload?: boolean;
-  /** Persist the graph to disk. */
-  cache?: boolean;
-  /** Key-path filter for JSON output (implies ``format="json"``). */
-  jq?: string;
-  /** Render a rich table (stdout only). */
-  pretty?: boolean;
-  /** Print graph statistics before results. */
-  verbose?: boolean;
-  /** Automatically parse JSON output. */
-  parseJson?: boolean;
-}
-
-/** Options for ``Wiki.serve()``. */
-export interface ServeOptions {
-  /** Host to bind the server to. */
-  host?: string;
-  /** Port to serve on. */
-  port?: number;
-  /** Override ``site.base_url``. */
-  baseUrl?: string;
-  /** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
-  urlStyle?: UrlStyle;
-  /** Watch for file changes and auto-rebuild. */
-  watch?: boolean;
-  /** Working directory for the subprocess. */
-  cwd?: string;
-  /** Extra environment variables. */
-  env?: NodeJS.ProcessEnv;
-}
-
-/** Options for ``Wiki.mcp()``. */
-export interface McpOptions {
-  /** MCP transport mode (default ``"stdio"``). */
-  mode?: McpMode;
-  /** Persist graph under ``.wiki/cache`` across MCP launches. */
-  cache?: boolean;
-  /** Working directory for the subprocess. */
-  cwd?: string;
-  /** Extra environment variables. */
-  env?: NodeJS.ProcessEnv;
-}
-
 /** Runtime overrides applied to a Wiki session (immutable config copy). */
 export interface RuntimeOptions {
   /** Override ``site.base_url`` for this session. */
   baseUrl?: string;
   /** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
   urlStyle?: UrlStyle;
-}
-
-/** Options for ``Wiki.init()``. */
-export interface InitOptions {
-  /** Run ``git init`` after scaffolding. */
-  git?: boolean;
-  /** GitHub ``owner/repo`` string for inferring defaults. */
-  repo?: string;
-  /** Override ``graph.context.wiki`` IRI. */
-  graphContextWiki?: string;
-  /** Override ``site.base_url`` (default ``/wiki`` or inferred from ``--repo``). */
-  baseUrl?: string;
-  /** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
-  urlStyle?: UrlStyle;
-  /** Override ``site.layout``. */
-  siteLayout?: string;
-  /** Override ``graph.content_predicate``. */
-  graphContentPredicate?: string;
-  /** Override ``link.style`` (``"standard"`` or ``"wikilink"``). */
-  linkStyle?: LinkStyle;
-  /** Override ``wiki.inputs`` (repeatable). */
-  wikiInputs?: readonly string[];
-  /** Override ``graph.base_iri``. */
-  graphBaseIri?: string;
-  /** Default types for untyped documents. */
-  graphImplicitTypes?: readonly string[];
-  /** Strategy when applying ``graph.implicit_types``. */
-  graphImplicitTypesPolicy?: "fallback" | "append";
-  /** Override ``graph.include_file_extension``. */
-  graphIncludeFileExtension?: boolean;
-  /** Scaffold from a starter template in wazootech/wiki-templates. */
-  template?: string;
-}
-
-/** Options for ``Wiki.install()``. */
-export interface InstallOptions {
-  /** Git URL of an external source to add, fetch, and lock. Omit to install all declared sources. */
-  url?: string;
-}
-
-/** Options for ``Wiki.update()``. */
-export interface UpdateOptions {
-  /** Source name to check; omit to check all locked sources. */
-  name?: string;
-  /** Report what would update without modifying wiki.lock. */
-  dryRun?: boolean;
-}
-
-/** Options for ``Wiki.remove()``. */
-export interface RemoveOptions {
-  /** Name of the source to remove. */
-  name: string;
-}
-
-/** Options for ``Wiki.upgrade()``. */
-export interface UpgradeOptions {
-  /** Check for updates without upgrading. Exits 1 if outdated. */
-  check?: boolean;
-  /** Skip confirmation prompt. */
-  yes?: boolean;
-  /** Show pip install output. */
-  verbose?: boolean;
 }
 
 /** Result of ``Wiki.preflight()`` — lint and check reports. */

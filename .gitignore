@@ -44,6 +44,9 @@ env/
 .coverage.*
 htmlcov/
 
+# CLI JSON Schema intermediates (Pydantic -> TS codegen)
+.cli-schemas/
+
 # Generated API docs
 docs/assets/api/
 
