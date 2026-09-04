@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.23 — 2026-09-04
+
 ### Changed
 
 - Renamed the `--wiki-inputs` CLI flag to `--input` and the `wiki.inputs`

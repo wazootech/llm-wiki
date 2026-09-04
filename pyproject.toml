@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wazootech-wiki"
-version = "0.1.22"
+version = "0.1.23"
 description = "Clean, pure, idiomatic Python CLI for managing a semantic LLM wiki"
 readme = "README.md"
 requires-python = ">=3.12"
