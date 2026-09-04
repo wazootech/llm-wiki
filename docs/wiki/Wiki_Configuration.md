@@ -88,7 +88,7 @@ wiki:  # optional block
 
 | Key                | Required               | Default                                     | Init   | Audited by                                 |
 | ------------------ | ---------------------- | ------------------------------------------- | ------ | ------------------------------------------ |
-| `inputs`           | optional               | `[wiki]`                                    | writes | indexing (`build`, `check`, `lint`, `fmt`) |
+| `input`            | optional               | `[wiki]`                                    | writes | indexing (`build`, `check`, `lint`, `fmt`) |
 | `assets`           | optional               | `[assets]` when `assets/` exists, else `[]` | writes | `wiki build` (static copy)                 |
 | `exclude`          | optional               | `[]`                                        | omits  | indexing (skipped paths)                   |
 | `filename_pattern` | optional (recommended) | unset — no regex check until set            | writes | `wiki lint` (`lint.filename_pattern`)      |
