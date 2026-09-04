@@ -28,7 +28,7 @@
     "postinstall": "node npm/setup.js",
     "preuninstall": "node npm/uninstall.js",
     "setup": "node npm/setup.js",
-    "gendocs:python": "uv run sphinx-build -b html -c docs docs/api/python docs/assets/api/python",
+    "gendocs:python": "uv run sphinx-build -b html -W -c docs docs/api/python docs/assets/api/python",
     "gendocs:ts": "typedoc",
     "gen:cli-types": "uv run python scripts/export_cli_schemas.py && node scripts/generate_cli_types.mjs && prettier npm/src/types.generated.ts --write",
     "format": "prettier \"npm/**/*.ts\" --write",
