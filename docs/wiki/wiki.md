@@ -15,7 +15,7 @@ pip install wazootech-wiki
 wiki --help
 ```
 
-Install options: PyPI (`pip install wazootech-wiki`), npm ([`wazootech-wiki` on npm](https://www.npmjs.com/package/wazootech-wiki) → `wiki` on PATH), or zero-install (`npx wazootech-wiki` / `uvx wazootech-wiki` — same subcommands as `wiki`). See [Getting Started](Getting_Started.md#install).
+Install options: PyPI (`pip install wazootech-wiki`), npm ([`wazootech-wiki` on npm](https://www.npmjs.com/package/wazootech-wiki) → `wiki` on PATH), or zero-install (`npx wazootech-wiki` / `uvx --from wazootech-wiki wiki` — same subcommands as `wiki`). See [Getting Started](Getting_Started.md#install).
 
 ## Quickstart
 

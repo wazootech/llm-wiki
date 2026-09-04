@@ -47,7 +47,7 @@ npx wazootech-wiki --help
 npx wazootech-wiki fmt --help
 ```
 
-Treat **`npx wazootech-wiki <args>`** (or **`uvx wazootech-wiki <args>`**) as **`wiki <args>`** for all subcommands and flags.
+Treat **`npx wazootech-wiki <args>`** (or **`uvx --from wazootech-wiki wiki <args>`**) as **`wiki <args>`** for all subcommands and flags.
 
 **Standalone binary (no Python):** download the archive for their OS from [GitHub Releases](https://github.com/wazootech/wiki/releases), verify `SHA256SUMS`, extract, and run `./wiki --help` (or `wiki.exe` on Windows).
 

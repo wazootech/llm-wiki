@@ -121,7 +121,7 @@ npm install -g wazootech-wiki
 
 This installs the **`wiki`** command globally (the npm package name is `wazootech-wiki`). The npm package automatically creates a private Python virtual environment and installs the matching PyPI version of `wazootech-wiki` as the engine. Python 3.12 or newer is required on the machine.
 
-`npx wazootech-wiki` and `uvx wazootech-wiki` accept the **same subcommands and flags** as `wiki` — they run the same Python CLI via a Node shim.
+`npx wazootech-wiki` (via a Node shim) and `uvx --from wazootech-wiki wiki` (the PyPI package directly) accept the **same subcommands and flags** as `wiki`.
 
 Zero-install (no global install required):
 
@@ -129,7 +129,7 @@ Zero-install (no global install required):
 npx wazootech-wiki --help
 npx wazootech-wiki init
 npx wazootech-wiki -c docs/wiki.yml check
-uvx wazootech-wiki --help
+uvx --from wazootech-wiki wiki --help
 ```
 
 After `npm install -g wazootech-wiki`, use `wiki` instead of the `npx` prefix (for example `wiki check`). For library usage from Node or TypeScript, see [Programmatic APIs](#programmatic-apis).
