@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+## 0.1.22 — 2026-09-04
+
+### Added
+
+- `wiki init --template` scaffolds new wikis from the
+  [wiki-templates](https://github.com/wazootech/wiki-templates) monorepo.
+  ([#233](https://github.com/wazootech/wiki/issues/233))
+- `i` alias for the `wiki install` subcommand.
+  ([#265](https://github.com/wazootech/wiki/pull/265))
+- Query-first wiki MCP server (`wiki mcp`), documented in `docs/wiki/wiki_mcp.md`.
+  ([#209](https://github.com/wazootech/wiki/issues/209))
+- TypeScript SDK methods for `install`, `update`, `remove`, `mcp`, and
+  `graphList`, with CLI option types generated from the Pydantic
+  `COMMAND_MODELS`. ([#283](https://github.com/wazootech/wiki/pull/283),
+  [#287](https://github.com/wazootech/wiki/pull/287))
+- wiki-sync skill for Git-anchored code-wiki maintenance.
+  ([#247](https://github.com/wazootech/wiki/pull/247))
+
+### Changed
+
+- The CLI↔TypeScript mirror contract is now enforced in CI: every CLI command
+  and `--flag` must have a corresponding SDK method and option.
+  ([#288](https://github.com/wazootech/wiki/pull/288))
+- Memory orchestration moved to a GitHub Actions cron.
+  ([#263](https://github.com/wazootech/wiki/pull/263))
+- Docs reorganized: `Wiki_CLI`/`Wiki_Subcommand_*` pages renamed to
+  `wiki`/`wiki_*`, and template references point at the wiki-templates
+  monorepo. ([#223](https://github.com/wazootech/wiki/issues/223),
+  [#242](https://github.com/wazootech/wiki/issues/242))
+- Pre-commit hook runs prettier on staged files; LF line endings enforced via
+  `.gitattributes`.
+
+### Fixed
+
+- `wiki init` on non-interactive stdin no longer hangs on the namespace
+  prompt; it scaffolds an empty wiki instead.
+  ([#289](https://github.com/wazootech/wiki/pull/289))
+- Sphinx docs fail the build on any warning; typedoc fails on undocumented
+  public API. ([#285](https://github.com/wazootech/wiki/pull/285),
+  [#284](https://github.com/wazootech/wiki/pull/284))
+- Markdown formatting fixes applied with `wiki fmt`.
+  ([#230](https://github.com/wazootech/wiki/pull/230))
 ## 0.1.21 — 2026-07-12
 
 ### Fixed
