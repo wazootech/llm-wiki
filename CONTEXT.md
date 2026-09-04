@@ -18,7 +18,7 @@ Issue [#112](https://github.com/wazootech/wiki/issues/112): expose a **stable Py
 
 **Wiki**: An LLM-managed knowledge base of markdown files containing structured frontmatter. _Avoid_: Book, repository, database.
 
-**Wiki** (or **Wiki corpus**): The semantic corpus the CLI loads from `wiki.inputs` plus installed read-only `sources:` when present. It is the on-disk home of **Documents**, shapes, raw RDF, and embedded SPARQL; the CLI compiles it into the RDF graph. A composed Wiki can feel like one corpus while preserving source boundaries as RDF named graphs. In this repository, `docs/wiki/`. _Avoid_: Book, generic database.
+**Wiki** (or **Wiki corpus**): The semantic corpus the CLI loads from `wiki.input` plus installed read-only `sources:` when present. It is the on-disk home of **Documents**, shapes, raw RDF, and embedded SPARQL; the CLI compiles it into the RDF graph. A composed Wiki can feel like one corpus while preserving source boundaries as RDF named graphs. In this repository, `docs/wiki/`. _Avoid_: Book, generic database.
 
 **Document**: An individual Markdown page in the wiki containing a metadata block. _Avoid_: Page, post, wiki page.
 
@@ -26,7 +26,7 @@ Issue [#112](https://github.com/wazootech/wiki/issues/112): expose a **stable Py
 
 **Context**: The namespace mapping and prefix bindings (similar to JSON-LD `@context`) embedded inside a Config. _Avoid_: Namespace list.
 
-**Config**: The root configuration object loaded from `wiki.yml` (or legacy `wiki.yaml`) — same nested blocks as the file (`wiki`, `graph`, `site`, …) plus loader-injected `config_root`. Access paths via `config.wiki.inputs`, routing and layout path via `config.site.*` (`layout`, `base_url`, `url_style`); presentation and branding live in the page layout and `wiki.assets`, RDF via `config.graph.*` and the `config.context` property. Import as `from wiki.config import Config`. _Avoid_: parameters, settings, flat `input_dirs` fields.
+**Config**: The root configuration object loaded from `wiki.yml` (or legacy `wiki.yaml`) — same nested blocks as the file (`wiki`, `graph`, `site`, …) plus loader-injected `config_root`. Access paths via `config.wiki.input`, routing and layout path via `config.site.*` (`layout`, `base_url`, `url_style`); presentation and branding live in the page layout and `wiki.assets`, RDF via `config.graph.*` and the `config.context` property. Import as `from wiki.config import Config`. _Avoid_: parameters, settings, flat `input_dirs` fields.
 
 **WikiConfig**: Reserved name for a future top-level `wiki:` yaml section (`{section}Config` pattern). Not loaded today. _Avoid_: Using this name for the root loader (use **Config**).
 
@@ -64,7 +64,7 @@ Issue [#112](https://github.com/wazootech/wiki/issues/112): expose a **stable Py
 
 ## Relationships
 
-- A **Wiki** (the wiki corpus) is the filesystem corpus of **Documents** and raw RDF listed by `wiki.inputs`, plus installed read-only source inputs resolved from `wiki.lock`
+- A **Wiki** (the wiki corpus) is the filesystem corpus of **Documents** and raw RDF listed by `wiki.input`, plus installed read-only source inputs resolved from `wiki.lock`
 - A **Wiki** is composed of root corpus content and optional source graphs, compiled semantically at runtime
 - A **Document** contains exactly one **Frontmatter** block
 - The **CLI** manages, validates, and queries the **Wiki** using **Config**, which contains the **Context** and **Namespaces**
