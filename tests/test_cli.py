@@ -1664,9 +1664,9 @@ name: ConfigTest
         runner = CliRunner()
         with TemporaryDirectory() as tmpdir:
             with runner.isolated_filesystem(temp_dir=tmpdir):
-                from unittest.mock import patch, MagicMock
                 import shutil
                 from pathlib import Path as P
+                from unittest.mock import MagicMock, patch
 
                 # Create a fake wiki-templates monorepo with a generic template
                 fake_templates_dir = P(tmpdir) / "fake-templates"
@@ -1716,9 +1716,9 @@ name: ConfigTest
         runner = CliRunner()
         with TemporaryDirectory() as tmpdir:
             with runner.isolated_filesystem(temp_dir=tmpdir):
-                from unittest.mock import patch, MagicMock
                 import shutil
                 from pathlib import Path as P
+                from unittest.mock import MagicMock, patch
 
                 fake_templates_dir = P(tmpdir) / "fake-templates"
                 fake_templates_dir.mkdir()
