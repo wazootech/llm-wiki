@@ -1,9 +1,15 @@
 /**
  * CLI drift detector — verifies TypeScript bindings match Pydantic models.
  *
- * Generates a command→options map from Pydantic models, then checks
- * that every subcommand has a Wiki.prototype method and matching
- * expected option names.
+ * Runs in two stages:
+ *
+ * 1. CLI/model conformance (`scripts/check_cli_models.py`): introspects the
+ *    real Click command tree and fails when a non-hidden subcommand or
+ *    option has no Pydantic model entry (e.g. a new `@click.option` that
+ *    was never mirrored into `src/wiki/schemas/cli.py`).
+ * 2. Model/TS drift: generates a command→options map from Pydantic models,
+ *    then checks that every subcommand has a Wiki.prototype method and
+ *    matching expected option names.
  */
 
 const { execSync } = require("child_process");
@@ -14,12 +20,16 @@ const EXPECTED_OPTIONS = {
   check: ["files", "strict", "verbose"],
   export: ["files", "format", "mode", "output"],
   fmt: ["check", "files", "verbose"],
-  init: ["baseUrl", "git", "graphBaseIri", "graphContentPredicate", "graphContextWiki", "graphImplicitTypes", "graphImplicitTypesPolicy", "graphIncludeFileExtension", "linkStyle", "repo", "urlStyle", "wikiInputs"],
+  init: ["baseUrl", "git", "graphBaseIri", "graphContentPredicate", "graphContextWiki", "graphImplicitTypes", "graphImplicitTypesPolicy", "graphIncludeFileExtension", "linkStyle", "repo", "siteLayout", "template", "urlStyle", "wikiInputs"],
+  install: ["url"],
   link: ["apply", "check", "dryRun", "files", "fixBroken", "verbose"],
   lint: ["files", "strict", "verbose"],
+  mcp: ["cache", "mode"],
   query: ["cache", "format", "jq", "noInference", "output", "pretty", "query", "reload", "verbose"],
+  remove: ["name"],
   render: ["cache", "check", "files", "noInference", "reload", "verbose"],
   serve: ["baseUrl", "host", "port", "urlStyle", "watch"],
+  update: ["dryRun", "name"],
   upgrade: ["check", "verbose", "yes"],
 };
 
@@ -30,6 +40,20 @@ function main() {
   let exitCode = 0;
   const errors = [];
 
+  // Stage 1: CLI ↔ Pydantic model conformance. Any CLI subcommand/option
+  // missing from COMMAND_MODELS fails here before the TS comparison runs.
+  try {
+    execSync("uv run python scripts/check_cli_models.py", {
+      encoding: "utf-8",
+      stdio: "inherit",
+      timeout: 60_000,
+    });
+  } catch (error) {
+    console.error(error.message || String(error));
+    process.exit(1);
+  }
+
+  // Stage 2: model ↔ TS drift.
   const manifest = JSON.parse(
     execSync("uv run python scripts/export_cli_shapes.py", {
       encoding: "utf-8",

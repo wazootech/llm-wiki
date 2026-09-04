@@ -116,6 +116,65 @@ async function main() {
     '--no-graph-include-file-extension',
   ]);
 
+  const siteInitWiki = new TestWiki();
+  await siteInitWiki.init({
+    baseUrl: 'https://wiki.wazoo.dev',
+    urlStyle: 'dir',
+    siteLayout: 'docs',
+    template: 'generic',
+  });
+  assert.deepStrictEqual(siteInitWiki.calls.at(-1), [
+    'init',
+    '--site-base-url',
+    'https://wiki.wazoo.dev',
+    '--site-url-style',
+    'dir',
+    '--site-layout',
+    'docs',
+    '--template',
+    'generic',
+  ]);
+
+  await wiki.install();
+  assert.deepStrictEqual(wiki.calls.at(-1), [
+    '--wiki-inputs',
+    'docs/wiki',
+    '--config',
+    'docs/wiki.yml',
+    'install',
+  ]);
+
+  await wiki.install({ url: 'https://github.com/wazootech/wiki-templates.git' });
+  assert.deepStrictEqual(wiki.calls.at(-1), [
+    '--wiki-inputs',
+    'docs/wiki',
+    '--config',
+    'docs/wiki.yml',
+    'install',
+    'https://github.com/wazootech/wiki-templates.git',
+  ]);
+
+  await wiki.update({ name: 'templates', dryRun: true });
+  assert.deepStrictEqual(wiki.calls.at(-1), [
+    '--wiki-inputs',
+    'docs/wiki',
+    '--config',
+    'docs/wiki.yml',
+    'update',
+    '--dry-run',
+    'templates',
+  ]);
+
+  await wiki.remove({ name: 'templates' });
+  assert.deepStrictEqual(wiki.calls.at(-1), [
+    '--wiki-inputs',
+    'docs/wiki',
+    '--config',
+    'docs/wiki.yml',
+    'remove',
+    'templates',
+  ]);
+
   console.log('npm Wiki API regression ok');
 }
 

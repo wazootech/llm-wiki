@@ -232,6 +232,8 @@ export interface InitOptions {
   baseUrl?: string;
   /** Override ``site.url_style`` (``"file"`` or ``"dir"``). */
   urlStyle?: UrlStyle;
+  /** Override ``site.layout``. */
+  siteLayout?: string;
   /** Override ``graph.content_predicate``. */
   graphContentPredicate?: string;
   /** Override ``link.style`` (``"standard"`` or ``"wikilink"``). */
@@ -246,6 +248,28 @@ export interface InitOptions {
   graphImplicitTypesPolicy?: "fallback" | "append";
   /** Override ``graph.include_file_extension``. */
   graphIncludeFileExtension?: boolean;
+  /** Scaffold from a starter template in wazootech/wiki-templates. */
+  template?: string;
+}
+
+/** Options for ``Wiki.install()``. */
+export interface InstallOptions {
+  /** Git URL of an external source to add, fetch, and lock. Omit to install all declared sources. */
+  url?: string;
+}
+
+/** Options for ``Wiki.update()``. */
+export interface UpdateOptions {
+  /** Source name to check; omit to check all locked sources. */
+  name?: string;
+  /** Report what would update without modifying wiki.lock. */
+  dryRun?: boolean;
+}
+
+/** Options for ``Wiki.remove()``. */
+export interface RemoveOptions {
+  /** Name of the source to remove. */
+  name: string;
 }
 
 /** Options for ``Wiki.upgrade()``. */

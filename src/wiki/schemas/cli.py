@@ -160,6 +160,7 @@ class InitOptions(BaseModel):
     site_url_style: Literal["dir", "file"] | None = Field(
         default=None, alias="urlStyle"
     )
+    site_layout: str | None = Field(default=None, alias="siteLayout")
     graph_content_predicate: str | None = Field(
         default=None, alias="graphContentPredicate"
     )
@@ -181,6 +182,39 @@ class InitOptions(BaseModel):
     graph_include_file_extension: bool | None = Field(
         default=None, alias="graphIncludeFileExtension"
     )
+    init_template: str | None = Field(default=None, alias="template")
+
+
+# ── mcp ──
+
+
+class McpOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    mode: Literal["stdio"] = Field(default="stdio", alias="mode")
+    disk_cache: bool = Field(default=False, alias="cache")
+
+
+# ── sources: install / update / remove ──
+
+
+class InstallOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    url: str | None = Field(default=None, alias="url")
+
+
+class UpdateOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    name: str | None = Field(default=None, alias="name")
+    dry_run: bool = Field(default=False, alias="dryRun")
+
+
+class RemoveOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    name: str = Field(alias="name")
 
 
 # ── fmt ──
@@ -214,8 +248,12 @@ COMMAND_MODELS: dict[str, type[BaseModel]] = {
     "export": ExportOptions,
     "serve": ServeOptions,
     "init": InitOptions,
+    "mcp": McpOptions,
     "fmt": FmtOptions,
     "upgrade": UpgradeOptions,
+    "install": InstallOptions,
+    "update": UpdateOptions,
+    "remove": RemoveOptions,
 }
 
 __all__ = [
