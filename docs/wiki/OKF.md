@@ -14,7 +14,7 @@ Adopt the OKF v0.2 field families as an **optional first-party frontmatter conve
 
 Defer `wiki export --okf` until a Wazoo consumer and bundle fixture exist. The export profile is a reasonable follow-on, but the current CLI exports RDF or JSON-LD payloads rather than portable Markdown bundles, and no checked-out Wazoo consumer currently reads OKF bundles.
 
-The immediate implementation task should be a small, opt-in OKF profile for generated-page producers: emit `sources` and `generated`, preserve unknown fields, and only emit `verified`, `status`, or `stale_after` when the producer has evidence for them. This is the useful intersection of [LLM Wiki](LLM_Wiki.md), [Learning Systems](Learning_Systems.md), and the memory-first model described by [Memory Repo Best Practices](https://wiki.wazoo.dev/Memory_Repo_Best_Practices/).
+The immediate implementation task should be a small, opt-in OKF profile for generated-page producers: emit `sources` and `generated`, preserve unknown fields, and only emit `verified`, `status`, or `stale_after` when the producer has evidence for them. This is the useful intersection of [LLM Wiki](LLM_Wiki.md), [Learning Systems](Learning_Systems.md), and the memory-first model described by [Memory Repo Best Practices](Memory_Repo_Best_Practices.md).
 
 ## Audit scope and evidence
 
