@@ -809,7 +809,7 @@ The CLI automatically detects and loads configurations from `wiki.yaml`, `wiki.y
 ```yaml
 # wiki.yaml
 wiki:
-  inputs: [wiki]
+  input: [wiki]
   assets: [assets]
   filename_pattern: "[A-Za-z0-9_()-]+\\.md"
 
