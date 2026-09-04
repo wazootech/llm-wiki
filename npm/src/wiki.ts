@@ -19,16 +19,19 @@ import type {
   ExportResult,
   FmtOptions,
   InitOptions,
+  InstallOptions,
   LinkOptions,
   LintOptions,
   McpOptions,
   PreflightOptions,
   PreflightResult,
   QueryOptions,
+  RemoveOptions,
   RenderOptions,
   RunOptions,
   RuntimeOptions,
   ServeOptions,
+  UpdateOptions,
   UpgradeOptions,
   WikiCommandResult,
   WikiLoadOptions,
@@ -351,6 +354,7 @@ export class Wiki {
     pushFlag(args, "--graph-context-wiki", options.graphContextWiki);
     pushFlag(args, "--site-base-url", options.baseUrl);
     pushFlag(args, "--site-url-style", options.urlStyle);
+    pushFlag(args, "--site-layout", options.siteLayout);
     pushFlag(args, "--graph-content-predicate", options.graphContentPredicate);
     pushFlag(args, "--link-style", options.linkStyle);
     pushRepeated(args, "--wiki-inputs", options.wikiInputs);
@@ -368,7 +372,43 @@ export class Wiki {
           : "--no-graph-include-file-extension",
       );
     }
+    pushFlag(args, "--template", options.template);
     return this.run(this.args("init", args));
+  }
+
+  /** Fetch and lock external data sources.
+   *
+   * With no URL, installs all sources declared in the config file and updates
+   * wiki.lock. With a URL, adds a new git source to the config, fetches it,
+   * and locks it.
+   *
+   * @param options - Install options (git URL of the source to add).
+   */
+  install(options: InstallOptions = {}): Promise<WikiCommandResult> {
+    const args: string[] = [];
+    if (options.url !== undefined) args.push(options.url);
+    return this.run(this.args("install", args));
+  }
+
+  /** Check locked sources for newer commits and update wiki.lock.
+   *
+   * @param options - Update options (source name filter, dry run).
+   */
+  update(options: UpdateOptions = {}): Promise<WikiCommandResult> {
+    const args: string[] = [];
+    if (options.dryRun) args.push("--dry-run");
+    if (options.name !== undefined) args.push(options.name);
+    return this.run(this.args("update", args));
+  }
+
+  /** Remove a source from the config file, its cache, and wiki.lock.
+   *
+   * @param options - Remove options (name of the source to remove).
+   */
+  remove(options: RemoveOptions): Promise<WikiCommandResult> {
+    const args: string[] = [];
+    args.push(options.name);
+    return this.run(this.args("remove", args));
   }
 
   /** Check for updates and upgrade the wiki CLI.
