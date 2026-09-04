@@ -1,0 +1,43 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix wiki: <https://wiki.wazoo.dev/vocab/> .
+
+# The shared toolchain vocabulary for the wiki project.
+# Specification: https://wiki.wazoo.dev/Wiki_Vocabulary/
+# Tracking issue: https://github.com/wazootech/wiki/issues/272
+#
+# Term IRIs use the slash form under the proposed base https://wiki.wazoo.dev/vocab/.
+# wazoo: (https://schema.wazoo.dev/) is reserved for wazoo/worlds vocabulary and
+# is intentionally not declared here.
+
+wiki: a owl:Ontology ;
+    rdfs:label "Wiki Vocabulary"@en ;
+    dcterms:title "Wiki Vocabulary"@en ;
+    dcterms:description """Shared toolchain vocabulary for the wiki project. Site-specific concepts
+        stay in per-repository site namespaces with an explicit graph.base_iri;
+        wazoo: is reserved for wazoo/worlds vocabulary; standard RDF vocabularies
+        are reused before any new term is invented."""@en ;
+    dcterms:issued "2026-09-03"^^xsd:date ;
+    dcterms:license <https://opensource.org/licenses/MIT> ;
+    rdfs:seeAlso <https://wiki.wazoo.dev/Wiki_Vocabulary/> ;
+    rdfs:seeAlso <https://github.com/wazootech/wiki/issues/272> .
+
+wiki:layout a rdf:Property ;
+    rdfs:label "layout"@en ;
+    rdfs:comment """Path (.html) overriding the site-default page layout for a page."""@en ;
+    rdfs:isDefinedBy wiki: ;
+    rdfs:seeAlso <https://wiki.wazoo.dev/Wiki_Vocabulary/> .
+
+wiki:jsonSchema a rdf:Property ;
+    rdfs:label "jsonSchema"@en ;
+    rdfs:comment """JSON Schema reference (local path or http(s) URL) bound beside
+        sh:targetClass on a shape document, or appended on a page."""@en ;
+    rdfs:isDefinedBy wiki: ;
+    rdfs:seeAlso <https://wiki.wazoo.dev/Wiki_Vocabulary/> .
+
+# Reuse-first provenance decision (2026-09-03): the ad-hoc sourceRepository
+# property observed in early wikis is resolved to the standard term
+# dcterms:source — no wiki: term is invented for it.
