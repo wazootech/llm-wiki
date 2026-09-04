@@ -248,9 +248,7 @@ _README_TEMPLATE = (
     "A semantic markdown knowledge base powered by the Wiki CLI.\n\n"
     "## Wiki layout\n\n"
     "- `wiki.yml` (or `wiki.toml`) — Wiki configuration, namespace prefixes, and `fmt` defaults.\n"
-    "- `wiki/` — Contains markdown files with semantic frontmatter.\n"
-    "  - `Person_Shape.md` — SHACL shape for Person documents.\n"
-    "  - `Ethan_Davidson.md` — An example Person document.\n\n"
+    "- `wiki/` — Empty directory for markdown pages with semantic frontmatter.\n\n"
     "## Commands\n\n"
     "- **Check** (integrity: SHACL, JSON Schema, route safety, layout frontmatter):\n"
     "  ```bash\n"
@@ -270,40 +268,12 @@ _README_TEMPLATE = (
     "  ```\n"
 )
 
-_PERSON_SHAPE_TEMPLATE = (
-    "---\n"
-    "id: wiki:PersonShape\n"
-    "type: sh:NodeShape\n"
-    "sh:targetClass: schema:Person\n"
-    "sh:property:\n"
-    "  - sh:path: schema:givenName\n"
-    "    sh:datatype: xsd:string\n"
-    "    sh:minCount: 1\n"
-    "  - sh:path: schema:familyName\n"
-    "    sh:datatype: xsd:string\n"
-    "    sh:minCount: 1\n"
-    "---\n\n"
-    "# Person shape\n\n"
-    "Defines validation rules for Person profiles in this wiki.\n"
-)
-
 _GITIGNORE_TEMPLATE = (
     "# Source cache (fetched repos)\n"
     ".wiki/\n"
     "\n"
     "# Build output\n"
     "_site/\n"
-)
-
-_EXAMPLE_PERSON_TEMPLATE = (
-    "<!-- wiki tweak: replace with your first page -->\n"
-    "---\n"
-    "type: schema:Person\n"
-    "givenName: Ethan\n"
-    "familyName: Davidson\n"
-    "---\n\n"
-    "# Ethan Davidson\n\n"
-    "Welcome to my personal wiki page! This page serves as a starting point and conforming example of a Person profile.\n"
 )
 
 
@@ -329,12 +299,6 @@ def _scaffold_wiki(
     readme_path.write_text(_README_TEMPLATE, encoding="utf-8")
     written.extend([readme_path, wiki_dir])
 
-    person_shape = wiki_dir / "Person_Shape.md"
-    person_shape.write_text(_PERSON_SHAPE_TEMPLATE, encoding="utf-8")
-    example_person = wiki_dir / "Ethan_Davidson.md"
-    example_person.write_text(_EXAMPLE_PERSON_TEMPLATE, encoding="utf-8")
-    written.extend([person_shape, example_person])
-
     config_content = render_wiki_yaml(init_options)
     config_path.write_text(config_content, encoding="utf-8")
     written.append(config_path)
@@ -352,7 +316,7 @@ def _scaffold_wiki(
             return ScaffoldResult(ok=False, error_message=f"git init failed: {stderr}")
 
     message = (
-        "Initialized wiki config, README.md, and wiki/ starter files."
+        "Initialized wiki config, README.md, and an empty wiki/ directory."
     )
     if init_git:
         message += " Ran git init."

@@ -251,24 +251,24 @@ ORDER BY ?command
 ```
 -->
 
-| command                         | description                                                                                         |
-| ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| [wiki_build](wiki_build.md)     | Generate a static HTML site from the wiki.                                                          |
-| [wiki_check](wiki_check.md)     | Integrity checks — SHACL validation, JSON Schema frontmatter, route safety, and layout frontmatter. |
-| [wiki_export](wiki_export.md)   | Export document frontmatter as RDF or JSON-LD.                                                      |
-| [wiki_fmt](wiki_fmt.md)         | Format markdown wiki pages using mdformat with wikilink preservation.                               |
-| [wiki_graph](wiki_graph.md)     | List read-only RDF named graphs for root and installed source provenance.                           |
-| [wiki_init](wiki_init.md)       | Scaffold wiki.yml and starter wiki pages interactively.                                             |
-| [wiki_install](wiki_install.md) | Fetch and lock external data sources declared in wiki.yml.                                          |
-| [wiki_link](wiki_link.md)       | Suggest missing wikilinks and repair unambiguous broken internal links.                             |
-| [wiki_lint](wiki_lint.md)       | Convention audits for broken links, filename patterns, heading style, and internal link style.      |
-| [wiki_mcp](wiki_mcp.md)         | Run a read-only MCP server for querying the wiki graph.                                             |
-| [wiki_query](wiki_query.md)     | Run SPARQL SELECT or CONSTRUCT against the wiki graph.                                              |
-| [wiki_remove](wiki_remove.md)   | Remove a data source from wiki.yml, its cache, and wiki.lock.                                       |
-| [wiki_render](wiki_render.md)   | Update inline SPARQL result tables in markdown files.                                               |
-| [wiki_serve](wiki_serve.md)     | Local HTTP server for live HTML preview and optional read-only SPARQL endpoint.                     |
-| [wiki_update](wiki_update.md)   | Check locked sources for newer commits and update wiki.lock.                                        |
-| [wiki_upgrade](wiki_upgrade.md) | Check PyPI for updates and upgrade wazootech-wiki.                                                  |
+| command | description |
+| --- | --- |
+| [wiki_build](wiki_build.md) | Generate a static HTML site from the wiki. |
+| [wiki_check](wiki_check.md) | Integrity checks — SHACL validation, JSON Schema frontmatter, route safety, and layout frontmatter. |
+| [wiki_export](wiki_export.md) | Export document frontmatter as RDF or JSON-LD. |
+| [wiki_fmt](wiki_fmt.md) | Format markdown wiki pages using mdformat with wikilink preservation. |
+| [wiki_graph](wiki_graph.md) | List read-only RDF named graphs for root and installed source provenance. |
+| [wiki_init](wiki_init.md) | Scaffold wiki.yml and an empty wiki/ folder for markdown pages. |
+| [wiki_install](wiki_install.md) | Fetch and lock external data sources declared in wiki.yml. |
+| [wiki_link](wiki_link.md) | Suggest missing wikilinks and repair unambiguous broken internal links. |
+| [wiki_lint](wiki_lint.md) | Convention audits for broken links, filename patterns, heading style, and internal link style. |
+| [wiki_mcp](wiki_mcp.md) | Run a read-only MCP server for querying the wiki graph. |
+| [wiki_query](wiki_query.md) | Run SPARQL SELECT or CONSTRUCT against the wiki graph. |
+| [wiki_remove](wiki_remove.md) | Remove a data source from wiki.yml, its cache, and wiki.lock. |
+| [wiki_render](wiki_render.md) | Update inline SPARQL result tables in markdown files. |
+| [wiki_serve](wiki_serve.md) | Local HTTP server for live HTML preview and optional read-only SPARQL endpoint. |
+| [wiki_update](wiki_update.md) | Check locked sources for newer commits and update wiki.lock. |
+| [wiki_upgrade](wiki_upgrade.md) | Check PyPI for updates and upgrade wazootech-wiki. |
 
 <!-- sparql:end -->
 

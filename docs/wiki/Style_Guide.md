@@ -97,7 +97,7 @@ Inline SPARQL blocks use `&lt;!-- sparql:start --&gt;` … `&lt;!-- sparql:end -
 
 ## SHACL shapes
 
-Define constraints in frontmatter with `type: sh:NodeShape` (see `wiki init`'s `Person_Shape.md` or [Software Application Shape](Software_Application_Shape.md) in this wiki). Shapes in the wiki are loaded into the validation graph; [wiki check](wiki_check.md) runs PySHACL against every document. Background: [SHACL](SHACL.md).
+Define constraints in frontmatter with `type: sh:NodeShape` (see [Software Application Shape](Software_Application_Shape.md) in this wiki). Shapes in the wiki are loaded into the validation graph; [wiki check](wiki_check.md) runs PySHACL against every document. Background: [SHACL](SHACL.md).
 
 Optionally bind a **JSON Schema** on the same shape document with `wazoo:jsonSchema` (local path under the wiki config root or remote `http(s)` URL). Type-level schemas apply to every page whose effective `type` matches `sh:targetClass`. Pages may append extra schemas with their own `wazoo:jsonSchema` key (scalar or YAML list); all bound schemas must pass.
 
