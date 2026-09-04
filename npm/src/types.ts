@@ -5,22 +5,8 @@ import type {
   McpOptions as GeneratedMcpOptions,
   QueryOptions as GeneratedQueryOptions,
   ServeOptions as GeneratedServeOptions,
+  UrlStyle,
 } from "./types.generated";
-
-/** Build output URL style: ``<slug>.html`` (file) or ``<slug>/index.html`` (dir). */
-export type UrlStyle = "dir" | "file";
-/** Internal link syntax: ``[text](Page.md)`` (standard) or ``[[Page]]`` (wikilink). */
-export type LinkStyle = "standard" | "wikilink";
-/** Output formats for SPARQL query results. */
-export type QueryFormat =
-  "table" | "json" | "csv" | "tsv" | "turtle" | "n3" | "markdown";
-/** MCP server transport mode. */
-export type McpMode = "stdio";
-/** Output formats for RDF export. */
-export type ExportFormat =
-  "dict" | "json-ld" | "turtle" | "xml" | "n3" | "nt" | "trig" | "nquads";
-/** JSON-LD serialization mode. */
-export type ExportMode = "expanded" | "compacted";
 
 /** Options for loading a Wiki instance. */
 export interface WikiLoadOptions {
@@ -64,26 +50,36 @@ export interface WikiCommandResult {
   command: readonly string[];
 }
 
-// ── Generated CLI option bags ──────────────────────────────────────────────
-// The command option bags are generated from the Pydantic COMMAND_MODELS in
-// src/wiki/schemas/cli.py (scripts/export_cli_schemas.py +
-// scripts/generate_cli_types.mjs via `npm run gen:cli-types`); the drift test
-// in npm/test-cli-drift.js fails when the committed generated file falls out
-// of sync with the models. The bags below that merge SDK-only fields (e.g.
-// parseJson, cwd/env) onto their pure-CLI generated shape re-declare with
-// `extends`; everything else re-exports the generated declaration unchanged.
+// ── Generated CLI option bags and choice unions ────────────────────────────
+// The command option bags and the choice-union aliases (UrlStyle, LinkStyle,
+// QueryFormat, McpMode, ExportFormat, ExportMode) are generated from the
+// Pydantic COMMAND_MODELS in src/wiki/schemas/cli.py
+// (scripts/export_cli_schemas.py + scripts/generate_cli_types.mjs via
+// `npm run gen:cli-types`); the drift test in npm/test-cli-drift.js fails when
+// the committed generated file falls out of sync with the models. The bags
+// below that merge SDK-only fields (e.g. parseJson, cwd/env) onto their
+// pure-CLI generated shape re-declare with `extends`; everything else
+// re-exports the generated declaration unchanged. Only the SDK-runtime layer
+// below (load/run options, results, subprocess types) is hand-authored — it
+// has no CLI counterpart and cannot be generated from COMMAND_MODELS.
 export type {
   BuildOptions,
   CheckOptions,
+  ExportFormat,
+  ExportMode,
   FmtOptions,
   InitOptions,
   InstallOptions,
   LinkOptions,
+  LinkStyle,
   LintOptions,
+  McpMode,
+  QueryFormat,
   RenderOptions,
   RemoveOptions,
   UpdateOptions,
   UpgradeOptions,
+  UrlStyle,
 } from "./types.generated";
 
 /** Mixin for methods that accept a ``files`` filter. */
