@@ -89,7 +89,7 @@ ORDER BY ?name
 | [Linked_Markdown](Linked_Markdown.md) | Linked Markdown |  |
 | [Obsidian](Obsidian.md) | Obsidian |  |
 | [Vivary](Vivary.md) | Vivary | 0.1.0 |
-| [wiki](wiki.md) | wiki | 0.1.21 |
+| [wiki](wiki.md) | wiki | 0.1.22 |
 
 <!-- sparql:end -->
 
