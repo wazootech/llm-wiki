@@ -6,7 +6,10 @@
  * 1. CLI/model conformance (`scripts/check_cli_models.py`): introspects the
  *    real Click command tree and fails when a non-hidden subcommand or
  *    option has no Pydantic model entry (e.g. a new `@click.option` that
- *    was never mirrored into `src/wiki/schemas/cli.py`).
+ *    was never mirrored into `src/wiki/schemas/cli.py`), or when a
+ *    `click.Choice`'s canonical values disagree with the model field's
+ *    `Literal`/`enum` (a choice accepted by the CLI but missing from the
+ *    generated TypeScript, or vice versa).
  * 2. Command presence: every manifest command must have a
  *    Wiki.prototype method (and vice versa for the documented extras that
  *    have no manifest key).
