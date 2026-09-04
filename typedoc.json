@@ -5,5 +5,9 @@
   "name": "wazootech-wiki TypeScript API",
   "includeVersion": true,
   "tsconfig": "./tsconfig.json",
-  "highlightLanguages": ["typescript", "javascript", "bash", "json", "yaml", "markdown", "html", "python", "sparql", "powershell"]
+  "highlightLanguages": ["typescript", "javascript", "bash", "json", "yaml", "markdown", "html", "python", "sparql", "powershell"],
+  "validation": {
+    "notDocumented": true
+  },
+  "treatWarningsAsErrors": true
 }
