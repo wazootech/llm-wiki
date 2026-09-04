@@ -28,6 +28,14 @@
  *    `update`'s `--dry-run` and `init`'s boolean-pair ternary — is a real
  *    option string on that command (or on the root `wiki` command for
  *    `args()`, which emits `--config`/`--wiki-inputs` from no model entry).
+ * 5. Config-key conformance (`scripts/check_config_keys.py`): every
+ *    config-key reference in the scaffold template
+ *    (`src/wiki/templates/wiki.yml`) and the docs (`docs/wiki`,
+ *    `skills/wiki`, `README.md`) must resolve against the Pydantic
+ *    `Config` schema. Stages 1-4 anchor the command tree and the
+ *    bindings, but a schema-field rename (e.g. `wiki.inputs` ->
+ *    `wiki.input`) is invisible to all of them — it only breaks when a
+ *    stale template key fails to load or a doc points at a dead key.
  */
 
 const { execSync } = require("child_process");
@@ -229,12 +237,28 @@ async function main() {
     }
   }
 
+  // Stage 5: config-key conformance — every config-key reference in the
+  // scaffold template and the docs must resolve against the Config schema.
+  let configKeyCount = 0;
+  try {
+    const configOut = execSync("uv run python scripts/check_config_keys.py", {
+      encoding: "utf-8",
+      timeout: 60_000,
+    });
+    const configMatch = /(\d+) references verified/.exec(configOut);
+    configKeyCount = configMatch ? Number(configMatch[1]) : 0;
+  } catch (error) {
+    console.error(error.message || String(error));
+    process.exit(1);
+  }
+
   if (exitCode === 0 && errors.length === 0) {
     const cmdCount = Object.keys(manifest).length;
     console.log(
       `Drift check passed: ${cmdCount} commands mirrored on Wiki.prototype; ` +
         `${flagCount} wrapper flag emissions verified against the Click tree; ` +
-        `generated types are fresh.`,
+        `generated types are fresh; ` +
+        `${configKeyCount} config-key references verified against the config schema.`,
     );
   } else {
     exitCode = 1;
