@@ -14,7 +14,7 @@ leaf command, the exact option strings Click accepts:
   half of ``"/"`` boolean pairs (e.g. ``--no-graph-include-file-extension``).
   Only ``-``-prefixed strings are collected, so positional arguments
   (whose ``opts`` is just the bare name) never pollute the set.
-- The root group's own params (``--config``, ``--wiki-inputs``) are emitted
+- The root group's own params (``--config``, ``--input``) are emitted
   under the ``"__root__"`` key — they live in no ``COMMAND_MODELS`` entry, so
   no earlier stage guards them.
 - Nested leaves (e.g. ``graph list``) are zero-param by construction

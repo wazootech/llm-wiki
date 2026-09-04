@@ -97,7 +97,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\ntype: schema:Person\ngivenName: Ada\n---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(missing, [])
@@ -123,7 +123,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(missing, [])
@@ -157,7 +157,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(missing, [])
@@ -181,7 +181,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\ntype: schema:Person\ngivenName: Ada\nfamilyName: Lovelace\n---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(validation, [])
@@ -204,7 +204,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
             )
             invalid = wiki / "Invalid.md"
             invalid.write_text("---\ntype: schema:Person\ngivenName: Ada\n---\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config, file_paths=[invalid])
             self.assertEqual(missing, [])
@@ -247,7 +247,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\ntype: schema:Thing\n---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             with patch("wiki.frontmatter_schema.urlopen", return_value=FakeResponse()):
                 missing, validation = check_frontmatter_schema(config)
@@ -270,7 +270,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki]},
+                wiki={"input": [wiki]},
                 config_root=root,
                 check={"remote_schema_refs": "deny"},
             )
@@ -296,7 +296,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki]},
+                wiki={"input": [wiki]},
                 config_root=root,
                 check={
                     "remote_schema_refs": "allowlist",
@@ -349,7 +349,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki]},
+                wiki={"input": [wiki]},
                 config_root=root,
                 check={
                     "remote_schema_refs": "allowlist",
@@ -379,7 +379,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                     "---\n",
                     encoding="utf-8",
                 )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             registry = build_type_schema_registry(config)
             self.assertEqual(registry["https://schema.org/Person"], ["schemas/person.json"])
 
@@ -409,7 +409,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             (wiki / "Broken.md").write_text("---\ntype: TechArticle\nheadline: Only\n---\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             results = run_check(config)
             self.assertFalse(results.ok)
@@ -467,7 +467,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             wiki = self._setup_severity_fixture(root)
-            base = {"wiki": {"inputs": [wiki]}, "config_root": root}
+            base = {"wiki": {"input": [wiki]}, "config_root": root}
 
             for severity, expect_errors, expect_warnings, expect_conforms in (
                 ("off", 0, 0, True),
@@ -497,7 +497,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             wiki = self._setup_severity_fixture(root)
-            base = {"wiki": {"inputs": [wiki]}, "config_root": root}
+            base = {"wiki": {"input": [wiki]}, "config_root": root}
 
             for severity, expect_errors, expect_warnings, expect_conforms in (
                 ("off", 0, 0, True),
@@ -537,7 +537,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
             root = Path(tmpdir)
             wiki = self._setup_severity_fixture(root)
             config = Config(
-                wiki={"inputs": [wiki]},
+                wiki={"input": [wiki]},
                 config_root=root,
                 check={"frontmatter_schema": "off", "missing_schema_ref": "off"},
             )
@@ -573,7 +573,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(missing, [])
@@ -612,7 +612,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(validation, [])
@@ -633,7 +633,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             missing, validation = check_frontmatter_schema(config)
             self.assertEqual(validation, [])
@@ -656,7 +656,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 "---\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             with patch(
                 "wiki.frontmatter_schema.Draft202012Validator",
@@ -682,7 +682,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             (wiki / "Page.md").write_text("---\ntype: schema:Thing\nlabel: ok\n---\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             def raise_http_error(*args, **kwargs):
                 raise HTTPError(
@@ -714,7 +714,7 @@ class TestFrontmatterSchemaValidation(unittest.TestCase):
                 encoding="utf-8",
             )
             (wiki / "Page.md").write_text("---\ntype: schema:Thing\nlabel: ok\n---\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             with patch("wiki.frontmatter_schema.urlopen", side_effect=TimeoutError):
                 missing, validation = check_frontmatter_schema(config)

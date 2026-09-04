@@ -36,7 +36,7 @@ wiki init --graph-context-wiki https://example.org/mywiki/ --site-base-url /mywi
 | `--site-url-style`               | Override `site.url_style`: `dir` or `file` (default `dir`)                                     | `site.url_style`                                 |
 | `--graph-content-predicate`      | Override `graph.content_predicate` CURIE (e.g. `schema:articleBody`)                           | `graph.content_predicate`                        |
 | `--link-style`                   | Override `link.style`: standard page links (`standard`) or wikilinks (`wikilink`)              | `link.style`                                     |
-| `--wiki-inputs`                  | Override `wiki.inputs` list (can be specified multiple times, default `[wiki]`)                | `wiki.inputs`                                    |
+| `--input`                        | Override `wiki.input` list (can be specified multiple times, default `[wiki]`)                 | `wiki.input`                                     |
 | `--graph-base-iri`               | Override `graph.base_iri` URI                                                                  | `graph.base_iri`                                 |
 | `--graph-implicit-types`         | Override `graph.implicit_types` (can be specified multiple times)                              | `graph.implicit_types`                           |
 | `--graph-implicit-types-policy`  | Override `graph.implicit_types_policy`: `fallback` or `append`                                 | `graph.implicit_types_policy`                    |

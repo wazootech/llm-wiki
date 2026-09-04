@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Changed
+
+- Renamed the `--wiki-inputs` CLI flag to `--input` and the `wiki.inputs`
+  config key to `wiki.input` (the TypeScript SDK option is now `input`).
+  **Migration:** rename `wiki.inputs` to `wiki.input` in existing
+  `wiki.yml` files and update `--wiki-inputs` / `wikiInputs` usages.
+  ([#227](https://github.com/wazootech/wiki/issues/227))
+
 ## 0.1.22 — 2026-09-04
 
 ### Added

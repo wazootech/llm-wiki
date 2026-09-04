@@ -13,7 +13,7 @@ Start a local [Model Context Protocol](https://modelcontextprotocol.io/) server 
 ```bash
 wiki mcp
 wiki -c docs/wiki.yml mcp
-wiki --wiki-inputs docs/wiki mcp
+wiki --input docs/wiki mcp
 wiki mcp --mode stdio
 wiki mcp --cache
 ```

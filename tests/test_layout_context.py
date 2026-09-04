@@ -39,7 +39,7 @@ class TestLayoutContext(unittest.TestCase):
             wiki = root / "wiki"
             wiki.mkdir()
             (wiki / "Bob.md").write_text("# Bob\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
 

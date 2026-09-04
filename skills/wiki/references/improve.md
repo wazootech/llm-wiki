@@ -9,7 +9,7 @@ The founding rule: **the advisor never directly modifies wiki pages or config fi
 1. **Never edit wiki files yourself** unless the user explicitly requests immediate inline repairs.
 1. **Never guess** — cite the exact `file:line` or CLI output for every finding.
 1. **No config migration shims** — unknown config keys must fail fast at load; document upgrades in CHANGELOG and docs only.
-1. **Skills are not wiki inputs** — never index, build, or list the `skills/` or `.agents/` folder under `wiki.inputs`.
+1. **Skills are not wiki inputs** — never index, build, or list the `skills/` or `.agents/` folder under `wiki.input`.
 1. **No secret values** — if credentials or tokens are discovered, refer to their type and location only. Suggest rotation, never copy the value.
 
 ## Workflow
@@ -19,7 +19,7 @@ The founding rule: **the advisor never directly modifies wiki pages or config fi
 Understand the specific wiki configuration before auditing:
 
 - Locate the config file (prefer `wiki.yml`; fallback to legacy `wiki.yaml`).
-- Read configuration settings: `wiki.inputs`, `lint:`, `check:`, `link.style`, `wiki.filename_pattern`, `site.layout`.
+- Read configuration settings: `wiki.input`, `lint:`, `check:`, `link.style`, `wiki.filename_pattern`, `site.layout`.
 - Identify resolved commands and environment requirements by running:
   `bash skills/wiki/scripts/verify.sh`
 - Note project conventions: filename cases, heading structures, links style, and metadata schemas.

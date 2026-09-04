@@ -32,7 +32,7 @@ givenName: Gregory
 """, encoding="utf-8")
             
             # 1. Configure and Load
-            config = Config(wiki={"inputs": [wiki_dir]})
+            config = Config(wiki={"input": [wiki_dir]})
             
             # Disable auto inference in loader to confirm pre/post state
             graph = load_graph(config, infer=False)

@@ -48,7 +48,7 @@ class TestWikiFmt(unittest.TestCase):
                 encoding="utf-8"
             )
 
-            result = runner.invoke(main, ["--wiki-inputs", str(wiki_dir), "fmt", "-v"])
+            result = runner.invoke(main, ["--input", str(wiki_dir), "fmt", "-v"])
             self.assertEqual(result.exit_code, 0)
             self.assertIn("Formatted unformatted.md", result.output)
 
@@ -68,7 +68,7 @@ class TestWikiFmt(unittest.TestCase):
             )
 
             # 1. Run with --check: should fail since it's not formatted
-            result_stale = runner.invoke(main, ["--wiki-inputs", str(wiki_dir), "fmt", "--check", "-v"])
+            result_stale = runner.invoke(main, ["--input", str(wiki_dir), "fmt", "--check", "-v"])
             self.assertEqual(result_stale.exit_code, 1)
             self.assertIn("Error: The following files are not correctly formatted:", result_stale.output)
             self.assertIn("unformatted.md", result_stale.output)
@@ -77,10 +77,10 @@ class TestWikiFmt(unittest.TestCase):
             self.assertEqual(file_path.read_text(encoding="utf-8"), "---\ntype: schema:WebPage\nname: Test\n---\n\n# Header\n\nSome text  \n")
 
             # 2. Run without --check to format it
-            runner.invoke(main, ["--wiki-inputs", str(wiki_dir), "fmt"])
+            runner.invoke(main, ["--input", str(wiki_dir), "fmt"])
 
             # 3. Run with --check again: should succeed
-            result_clean = runner.invoke(main, ["--wiki-inputs", str(wiki_dir), "fmt", "--check", "-v"])
+            result_clean = runner.invoke(main, ["--input", str(wiki_dir), "fmt", "--check", "-v"])
             self.assertEqual(result_clean.exit_code, 0)
             self.assertIn("All files are correctly formatted.", result_clean.output)
 
@@ -129,7 +129,7 @@ class TestWikiFmt(unittest.TestCase):
                 "---\ntype: TechArticle\nname: Catalog page\n---\n\n# Shelf layout\n\nBody.",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
             site = build_site(config)
             page = site.pages[0]
             html = build_page_html(page, root, default_layout=write_layout(root, "layouts/fmt.html", seed_template))
@@ -207,7 +207,7 @@ class TestWikiFmt(unittest.TestCase):
             )
             file_path = nested / "page.md"
             file_path.write_text("# Title\n", encoding="utf-8")
-            config = Config(config_root=root, wiki={"inputs": [wiki]})
+            config = Config(config_root=root, wiki={"input": [wiki]})
             source = describe_fmt_source(file_path, config)
             self.assertIn(".mdformat.toml", source)
             self.assertIn("wiki", source.replace("\\", "/"))
@@ -222,7 +222,7 @@ class TestWikiFmt(unittest.TestCase):
             root = Path(tmpdir)
             (root / ".mdformat.toml").write_text(toml, encoding="utf-8")
             (root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nfmt: .mdformat.toml\n",
+                "wiki:\n  input: [wiki]\nfmt: .mdformat.toml\n",
                 encoding="utf-8",
             )
             file_path = root / "wiki" / "page.md"
@@ -242,7 +242,7 @@ class TestWikiFmt(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".mdformat.toml").write_text(toml, encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             file_path = root / "wiki" / "page.md"
             file_path.parent.mkdir(parents=True)
             file_path.write_text("# Title\n\nSome text  \n", encoding="utf-8")
@@ -277,7 +277,7 @@ class TestWikiFmt(unittest.TestCase):
             pointer_root.mkdir()
             (pointer_root / ".mdformat.toml").write_text(toml, encoding="utf-8")
             (pointer_root / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nfmt: .mdformat.toml\n",
+                "wiki:\n  input: [wiki]\nfmt: .mdformat.toml\n",
                 encoding="utf-8",
             )
             pointer_cfg = Config.load(pointer_root)
@@ -286,7 +286,7 @@ class TestWikiFmt(unittest.TestCase):
             omit_root = root / "omit"
             omit_root.mkdir()
             (omit_root / ".mdformat.toml").write_text(toml, encoding="utf-8")
-            (omit_root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (omit_root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             omit_cfg = Config.load(omit_root)
             omit_out = format_markdown(original, file_path, omit_cfg)
 
@@ -297,7 +297,7 @@ class TestWikiFmt(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
             (base_path / "wiki.yaml").write_text(
-                "wiki:\n  inputs: [wiki]\nfmt:\n  wrap: no\n  end_of_line: lf\n"
+                "wiki:\n  input: [wiki]\nfmt:\n  wrap: no\n  end_of_line: lf\n"
                 '  extensions: ["gfm", "front_matters", "wikilink"]\n',
                 encoding="utf-8",
             )
@@ -307,7 +307,7 @@ class TestWikiFmt(unittest.TestCase):
     def test_fmt_absent_uses_wiki_cli_defaults(self) -> None:
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             file_path = root / "page.md"
             original = "# Title\n\nSome text  \n"
             file_path.write_text(original, encoding="utf-8")
@@ -324,7 +324,7 @@ class TestWikiFmt(unittest.TestCase):
             file_path = root / "page.md"
             original = "# Title\n\nSome text  \n"
             file_path.write_text(original, encoding="utf-8")
-            (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+            (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
             absent_config = Config.load(root)
             empty_config = Config(config_root=root, fmt={})
             absent_out = format_markdown(original, file_path, absent_config)

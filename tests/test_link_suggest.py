@@ -18,7 +18,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Getting started\n\nRead the Wiki CLI guide before you begin.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             opportunities = find_link_opportunities(config)
 
@@ -38,7 +38,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Guide\n\nAlready linked [[Wiki_CLI]] and literal `Wiki CLI` in code.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             opportunities = find_link_opportunities(config)
 
@@ -54,7 +54,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Guide\n\nPages are served as HTML documents.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             opportunities = find_link_opportunities(config)
 
@@ -71,7 +71,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Guide\n\nInstall the Wiki CLI first.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             opportunities = find_link_opportunities(config)
 
@@ -90,7 +90,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Getting started\n\nRead the Wiki CLI guide before you begin.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             opportunities = find_link_opportunities(config)
             changed = apply_link_opportunities(config, opportunities, dry_run=False)
@@ -111,7 +111,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "---\ntype: TechArticle\n---\n\nInstall the Wiki CLI first.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             apply_link_opportunities(config, find_link_opportunities(config), dry_run=False)
 
@@ -130,7 +130,7 @@ class TestLinkSuggest(unittest.TestCase):
                 "# Getting started\n\nRead the Wiki CLI guide before you begin.\n",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki]}, link={"style": "wikilink"}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, link={"style": "wikilink"}, config_root=root)
 
             opportunities = find_link_opportunities(config)
             apply_link_opportunities(config, opportunities, dry_run=False)

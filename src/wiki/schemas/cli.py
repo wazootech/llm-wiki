@@ -29,8 +29,8 @@ class MainOptions(BaseModel):
 
     wiki_inputs: tuple[str, ...] | None = Field(
         default=None,
-        alias="wikiInputs",
-        description="Override ``wiki.inputs`` from the config file.",
+        alias="input",
+        description="Override ``wiki.input`` from the config file.",
     )
     config_path: str = Field(
         default=".",
@@ -366,8 +366,8 @@ class InitOptions(BaseModel):
     )
     wiki_inputs: tuple[str, ...] | None = Field(
         default=None,
-        alias="wikiInputs",
-        description="Override ``wiki.inputs`` (repeatable).",
+        alias="input",
+        description="Override ``wiki.input`` (repeatable).",
     )
     graph_base_iri: str | None = Field(
         default=None,

@@ -40,7 +40,7 @@ Three audit lanes map to three commands:
 - Putting a regex under `check.filename_pattern` fails at load with a hint.
 - `check.filename_pattern` and `check.headings` fail at load — use `lint.filename_pattern` and `lint.headings`.
 
-Relative **`--wiki-inputs`** paths on the CLI resolve against the config file directory (same as paths in yaml), not the shell cwd.
+Relative **`--input`** paths on the CLI resolve against the config file directory (same as paths in yaml), not the shell cwd.
 
 ### Blocks
 
@@ -80,7 +80,7 @@ These apply regardless of yaml severities:
 
 ```yaml
 wiki:  # optional block
-  inputs: [wiki]                    # default [wiki]; init writes
+  input: [wiki]                    # default [wiki]; init writes
   assets: [assets]                  # default [assets] if assets/ exists, else []; init writes
   exclude: []                         # default []; init omits
   filename_pattern: "[A-Za-z0-9_()-]+\\.md"  # no default; recommended; init writes
@@ -93,7 +93,7 @@ wiki:  # optional block
 | `exclude`          | optional               | `[]`                                        | omits  | indexing (skipped paths)                   |
 | `filename_pattern` | optional (recommended) | unset — no regex check until set            | writes | `wiki lint` (`lint.filename_pattern`)      |
 
-Page URLs come from paths under `wiki.inputs`: `wiki/Alice.md` → `/wiki/Alice/` with default `site.base_url` and `site.url_style: dir`. `index.md` in a folder owns that folder’s route (for example `wiki/index.md` → `/wiki/`).
+Page URLs come from paths under `wiki.input`: `wiki/Alice.md` → `/wiki/Alice/` with default `site.base_url` and `site.url_style: dir`. `index.md` in a folder owns that folder’s route (for example `wiki/index.md` → `/wiki/`).
 
 See [Filename conventions](#filename-conventions) for regex patterns.
 
@@ -249,7 +249,7 @@ sources:  # optional block
 
 Each source must have a unique `name`. The `type` field is currently limited to `git`. Unknown keys and unsupported types are rejected at config load time.
 
-Run `wiki install` to fetch all declared sources and write `wiki.lock`. Check `wiki.lock` into version control for reproducible builds. The resolved source paths are automatically appended to `wiki.inputs` so the existing graph, check, and build pipeline picks them up.
+Run `wiki install` to fetch all declared sources and write `wiki.lock`. Check `wiki.lock` into version control for reproducible builds. The resolved source paths are automatically appended to `wiki.input` so the existing graph, check, and build pipeline picks them up.
 
 Use `wiki graph list` to inspect the root graph and installed source graph URIs. Source graph URIs are derived from `graph.context.wiki`:
 
@@ -545,7 +545,7 @@ Under `lint`, each rule is `error`, `warning`, or `off`:
 
 ## Related
 
-- [wiki](wiki.md#global-options) — `-c` and `--wiki-inputs` global options
+- [wiki](wiki.md#global-options) — `-c` and `--input` global options
 - [wiki init](wiki_init.md) — scaffold a new wiki project
 - [wiki check](wiki_check.md) — integrity checks
 - [wiki lint](wiki_lint.md) — convention audits

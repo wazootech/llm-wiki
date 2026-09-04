@@ -6,7 +6,7 @@ description: Procedural knowledge for coding agents — install, scaffold, impro
 
 # Wiki CLI Agent Skills
 
-[Procedural Knowledge](Procedural_Knowledge.md) for coding agents lives in the Wiki CLI repository under `skills/`. The **`wiki`** skill routes operational workflows to focused references, including code-wiki sync. Skills are **not** wiki pages — do not add `skills/` to `wiki.inputs`.
+[Procedural Knowledge](Procedural_Knowledge.md) for coding agents lives in the Wiki CLI repository under `skills/`. The **`wiki`** skill routes operational workflows to focused references, including code-wiki sync. Skills are **not** wiki pages — do not add `skills/` to `wiki.input`.
 
 Onboarding workflows are **independent modules** with no required order. Each completes its job and stops unless the user asks for the next step in the same turn.
 

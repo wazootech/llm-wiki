@@ -89,7 +89,7 @@ class Wiki:
 
         Args:
             config_path: Path to wiki config file or a directory containing one.
-            wiki_inputs: Override ``wiki.inputs`` from the config file.
+            wiki_inputs: Override ``wiki.input`` from the config file.
 
         Returns:
             A new ``Wiki`` instance backed by the loaded config.
@@ -98,16 +98,16 @@ class Wiki:
         resolved_config_path = find_config_path(load_path)
         config = Config.load(load_path)
         if wiki_inputs:
-            config.wiki.inputs = [
+            config.wiki.input = [
                 Path(entry) if Path(entry).is_absolute() else config.config_root / entry
                 for entry in wiki_inputs
             ]
         resolved = resolve_sources(config)
         if resolved:
-            existing = set(config.wiki.inputs)
+            existing = set(config.wiki.input)
             for path in resolved:
                 if path not in existing:
-                    config.wiki.inputs.append(path)
+                    config.wiki.input.append(path)
         return cls(config, resolved_config_path)
 
     def with_runtime(

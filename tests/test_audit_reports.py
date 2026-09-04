@@ -33,7 +33,7 @@ class TestAuditReports(unittest.TestCase):
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki_dir]},
+                wiki={"input": [wiki_dir]},
                 lint={"broken_links": "error", "link_style": "error"},
                 link={"style": "standard"},
             )

@@ -101,7 +101,7 @@ def graph_descriptors(config: Config) -> list[GraphDescriptor]:
 
     root_inputs = []
     source_descriptors = []
-    for input_dir in config.wiki.inputs:
+    for input_dir in config.wiki.input:
         resolved = input_dir.resolve()
         descriptor = source_paths.get(resolved)
         if descriptor is None:
@@ -413,7 +413,7 @@ def _build_graph_from_wiki(context: Config) -> Graph:
 
     document_files = set(iter_document_files(context))
 
-    for input_dir in context.wiki.inputs:
+    for input_dir in context.wiki.input:
         _process_input_dir(graph, context, input_dir, document_files)
 
     return graph
@@ -468,7 +468,7 @@ def load_dataset(
     }
     root_descriptor = descriptors[0]
 
-    for input_dir in context.wiki.inputs:
+    for input_dir in context.wiki.input:
         resolved = input_dir.resolve()
         descriptor = source_by_path.get(resolved, root_descriptor)
         graph = dataset.graph(URIRef(descriptor.uri))

@@ -2,7 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/wazootech/wiki)](https://skills.sh/wazootech/wiki)
 
-One agent skill for [Wiki CLI](https://github.com/wazootech/wiki): install the CLI, scaffold a wiki project, audit hygiene, and deploy to GitHub Pages. Skills live under `skills/` and are **not** wiki content — do not add this folder to `wiki.inputs`.
+One agent skill for [Wiki CLI](https://github.com/wazootech/wiki): install the CLI, scaffold a wiki project, audit hygiene, and deploy to GitHub Pages. Skills live under `skills/` and are **not** wiki content — do not add this folder to `wiki.input`.
 
 Typical flow: **install** → **create** → **deploy** → **improve** (each optional; route to one workflow per turn).
 

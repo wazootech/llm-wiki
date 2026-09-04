@@ -76,8 +76,8 @@ function parseJsonOutput<T>(result: WikiCommandResult): ExportResult<T> {
 export class Wiki {
   /** Path to the ``wiki.yml`` config file (or directory). */
   readonly config: string | undefined;
-  /** Overridden ``wiki.inputs`` paths. */
-  readonly wikiInputs: readonly string[];
+  /** Overridden ``wiki.input`` paths. */
+  readonly input: readonly string[];
   /** Working directory for CLI subprocesses. */
   readonly cwd: string | undefined;
   /** Extra environment variables. */
@@ -88,7 +88,7 @@ export class Wiki {
   /** @internal Use {@link Wiki.load} to construct. */
   constructor(options: WikiLoadOptions & { runtime?: RuntimeOptions } = {}) {
     this.config = options.config;
-    this.wikiInputs = options.wikiInputs ?? [];
+    this.input = options.input ?? [];
     this.cwd = options.cwd;
     this.env = options.env;
     this.runtime = options.runtime ?? {};
@@ -108,7 +108,7 @@ export class Wiki {
    */
   withRuntime(options: RuntimeOptions): Wiki {
     const loadOptions: WikiLoadOptions & { runtime?: RuntimeOptions } = {
-      wikiInputs: this.wikiInputs,
+      input: this.input,
       runtime: { ...this.runtime, ...options },
     };
     if (this.config !== undefined) loadOptions.config = this.config;
@@ -119,14 +119,14 @@ export class Wiki {
 
   /** Build the argv array for a subcommand.
    *
-   * Prepends ``--wiki-inputs`` and ``--config`` from the instance state.
+   * Prepends ``--input`` and ``--config`` from the instance state.
    *
    * @param subcommand - CLI subcommand name (e.g. ``"check"``).
    * @param subcommandArgs - Additional arguments for the subcommand.
    */
   args(subcommand: string, subcommandArgs: readonly string[] = []): string[] {
     const args: string[] = [];
-    pushRepeated(args, "--wiki-inputs", this.wikiInputs);
+    pushRepeated(args, "--input", this.input);
     pushFlag(args, "--config", this.config);
     args.push(subcommand, ...subcommandArgs);
     return args;
@@ -357,7 +357,7 @@ export class Wiki {
     pushFlag(args, "--site-layout", options.siteLayout);
     pushFlag(args, "--graph-content-predicate", options.graphContentPredicate);
     pushFlag(args, "--link-style", options.linkStyle);
-    pushRepeated(args, "--wiki-inputs", options.wikiInputs);
+    pushRepeated(args, "--input", options.input);
     pushFlag(args, "--graph-base-iri", options.graphBaseIri);
     pushRepeated(args, "--graph-implicit-types", options.graphImplicitTypes);
     pushFlag(

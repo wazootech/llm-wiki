@@ -15,7 +15,7 @@ description: >-
 
 Procedural knowledge for coding agents working with [Wiki CLI](https://github.com/wazootech/wiki) (`wiki` command, PyPI **`wazootech-wiki`**).
 
-Skills under `skills/` are agent knowledge — **not** wiki pages. Do not add `skills/` to `wiki.inputs`.
+Skills under `skills/` are agent knowledge — **not** wiki pages. Do not add `skills/` to `wiki.input`.
 
 ## Principles
 

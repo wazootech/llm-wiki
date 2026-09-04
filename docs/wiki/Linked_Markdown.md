@@ -25,7 +25,7 @@ Under the Linked Markdown protocol:
 
 ## Subject URI resolution
 
-The subject IRI of a document is inferred from its relative filepath from the wiki root (under `wiki.inputs`). The default namespace prefix is `wiki:`, resolving to the configured base IRI.
+The subject IRI of a document is inferred from its relative filepath from the wiki root (under `wiki.input`). The default namespace prefix is `wiki:`, resolving to the configured base IRI.
 
 For example, a file located at `wiki/people/Alice_Smith.md` resolves to:
 

@@ -27,7 +27,7 @@ class TestWikiPaths(unittest.TestCase):
             games.mkdir(parents=True)
             page = games / "Pokemon_Diamond_(copy_1).md"
             page.write_text("# Pokemon", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             self.assertEqual(route_for_document_file(config, page), "games/Pokemon_Diamond_(copy_1)")
 
@@ -41,7 +41,7 @@ class TestWikiPaths(unittest.TestCase):
             folder_index = games / "index.md"
             root_index.write_text("# Home", encoding="utf-8")
             folder_index.write_text("# Games", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             self.assertEqual(route_for_document_file(config, root_index), "")
             self.assertEqual(route_for_document_file(config, folder_index), "games")
@@ -64,7 +64,7 @@ class TestWikiPaths(unittest.TestCase):
             wiki.mkdir()
             (wiki / "Bad Page.md").write_text("# Bad", encoding="utf-8")
             (wiki / "Bad#Page.md").write_text("# Bad", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             issues = validate_route_safety(config)
             self.assertEqual(len(issues), 2)
@@ -87,7 +87,7 @@ class TestWikiPaths(unittest.TestCase):
             drafts.mkdir(parents=True)
             (wiki / "Published.md").write_text("# Published", encoding="utf-8")
             (drafts / "Draft.md").write_text("# Draft", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki], "exclude": ["wiki/drafts/**"]}, config_root=root)
+            config = Config(wiki={"input": [wiki], "exclude": ["wiki/drafts/**"]}, config_root=root)
 
             self.assertEqual([route.route for route in page_routes(config)], ["Published"])
 
@@ -99,7 +99,7 @@ class TestWikiPaths(unittest.TestCase):
             about.mkdir(parents=True)
             (wiki / "About.md").write_text("# About", encoding="utf-8")
             (about / "index.md").write_text("# About", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             entries = build_page_manifest(config, root / "_site" / "wiki", "/wiki", "dir")
             issues = detect_output_collisions(entries)
@@ -113,7 +113,7 @@ class TestWikiPaths(unittest.TestCase):
             wiki.mkdir(parents=True)
             (wiki / "About.md").write_text("# About", encoding="utf-8")
             (wiki / "About.yaml").write_text("type: Thing\nname: About data\n", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             entries = build_page_manifest(config, root / "_site" / "wiki", "/wiki", "dir")
             issues = detect_output_collisions(entries)
@@ -151,7 +151,7 @@ class TestWikiPaths(unittest.TestCase):
             games.mkdir()
             (people / "Ethan_Davidson.md").write_text("# Ethan\n\nSee [[../games/Pokemon_Diamond#Release History]].", encoding="utf-8")
             (games / "Pokemon_Diamond.md").write_text("# Pokemon\n\n## Release History", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             self.assertEqual(lint_broken_links(config), [])
 
@@ -162,7 +162,7 @@ class TestWikiPaths(unittest.TestCase):
             wiki.mkdir()
             (wiki / "A.md").write_text("# A\n\nSee [[B#Missing]].", encoding="utf-8")
             (wiki / "B.md").write_text("# B\n\n## Present", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki]}, config_root=root)
+            config = Config(wiki={"input": [wiki]}, config_root=root)
 
             issues = lint_broken_links(config)
             self.assertEqual(len(issues), 1)
@@ -207,7 +207,7 @@ class TestWikiPaths(unittest.TestCase):
                 "---\nimage: ../assets/items/label.jpg\n---\n# Item\n\n![label](../assets/items/label.jpg)",
                 encoding="utf-8",
             )
-            config = Config(wiki={"inputs": [wiki], "assets": [root / "assets"]}, config_root=root)
+            config = Config(wiki={"input": [wiki], "assets": [root / "assets"]}, config_root=root)
 
             self.assertEqual(lint_broken_links(config), [])
 
@@ -219,7 +219,7 @@ class TestWikiPaths(unittest.TestCase):
             wiki.mkdir()
             assets.mkdir()
             (wiki / "Item.md").write_text("# Item\n\n[manual](../assets/missing.pdf)", encoding="utf-8")
-            config = Config(wiki={"inputs": [wiki], "assets": [assets]}, config_root=root)
+            config = Config(wiki={"input": [wiki], "assets": [assets]}, config_root=root)
 
             issues = lint_broken_links(config)
             self.assertEqual(len(issues), 1)

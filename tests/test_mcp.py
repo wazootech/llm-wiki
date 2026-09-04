@@ -23,7 +23,7 @@ class TestWikiMcp(unittest.TestCase):
         wiki_dir = root / "docs" / "wiki"
         wiki_dir.mkdir(parents=True)
         (root / "docs" / "wiki.yml").write_text(
-            "wiki:\n  inputs: wiki\n",
+            "wiki:\n  input: wiki\n",
             encoding="utf-8",
         )
         (wiki_dir / "Alice.md").write_text(

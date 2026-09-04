@@ -16,7 +16,7 @@ class TestLibraryOps(unittest.TestCase):
         root = Path(tmpdir.name)
         wiki_dir = root / "wiki"
         wiki_dir.mkdir()
-        (root / "wiki.yaml").write_text("wiki:\n  inputs: [wiki]\n", encoding="utf-8")
+        (root / "wiki.yaml").write_text("wiki:\n  input: [wiki]\n", encoding="utf-8")
         page = wiki_dir / "Page.md"
         page.write_text(
             "---\ntype: schema:WebPage\nname: Page\n---\n\n# Page\n\nContent.\n",

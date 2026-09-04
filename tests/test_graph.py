@@ -457,7 +457,7 @@ name: Raw Agent
 Raw Body Text.
 """, encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki, imports]})
+            config = Config(wiki={"input": [wiki, imports]})
             config.graph.content_predicate = "schema:text"
             
             # Load graph should not crash due to bad TTLs or broken syntax, and must ingest everything
@@ -497,7 +497,7 @@ name: Good Page
             bad_ttl = wiki / "broken.ttl"
             bad_ttl.write_text("UNPARSABLE GARBAGE", encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki]})
+            config = Config(wiki={"input": [wiki]})
 
             with self.assertLogs(graph_logger, level="WARNING") as log_cm:
                 g = load_graph(config, infer=False)
@@ -522,7 +522,7 @@ name: Good Page
             (wiki_dir / "gregory.yaml").write_text("type: Person\ngivenName: Gregory\n", encoding="utf-8")
             (wiki_dir / "alice.json").write_text('{"type": "Person", "givenName": "Alice"}', encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki_dir]})
+            config = Config(wiki={"input": [wiki_dir]})
             g = load_graph(config, infer=False)
 
             self.assertTrue((None, None, Literal("Bob")) in g)
@@ -564,7 +564,7 @@ name: Source Doc
                 )
             }).save(root / "wiki.lock")
 
-            config = Config(config_root=root, wiki={"inputs": [wiki_dir, source_dir]})
+            config = Config(config_root=root, wiki={"input": [wiki_dir, source_dir]})
             dataset = load_dataset(config, infer=False)
             source_uri = source_graph_uri(config, "brain")
 
@@ -599,7 +599,7 @@ name: Source Doc
                 )
             }).save(root / "wiki.lock")
 
-            config = Config(config_root=root, wiki={"inputs": [wiki_dir, source_dir]})
+            config = Config(config_root=root, wiki={"input": [wiki_dir, source_dir]})
             source_uri = source_graph_uri(config, "brain")
             load_dataset(config, infer=False, disk_cache=True)
             cached = load_dataset(config, infer=False, disk_cache=True)
@@ -629,7 +629,7 @@ name: Source Doc
                 )
             }).save(root / "wiki.lock")
 
-            config = Config(config_root=root, wiki={"inputs": [wiki_dir, source_dir]})
+            config = Config(config_root=root, wiki={"input": [wiki_dir, source_dir]})
             descriptors = graph_descriptors(config)
 
             self.assertEqual(descriptors[0].kind, "root")
@@ -663,7 +663,7 @@ name: Source Doc
 
             config = Config(
                 config_root=root,
-                wiki={"inputs": [wiki_dir, source_dir]},
+                wiki={"input": [wiki_dir, source_dir]},
                 sources=[{"name": "brain", "type": "git", "url": "https://example.com/brain.git"}],
             )
 
@@ -678,7 +678,7 @@ name: Source Doc
             source_dir = root / ".wiki" / "sources" / "brain" / "repo" / "wiki"
             source_dir.mkdir(parents=True)
 
-            config = Config(config_root=root, wiki={"inputs": [wiki_dir, source_dir]})
+            config = Config(config_root=root, wiki={"input": [wiki_dir, source_dir]})
             with self.assertLogs("wiki.graph", level="WARNING") as log_cm:
                 descriptors = graph_descriptors(config)
 
@@ -703,7 +703,7 @@ schema:location: wiki:Pokemon_Cartridge_Case
 ---
 """, encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki_dir]})
+            config = Config(wiki={"input": [wiki_dir]})
             g = load_graph(config, infer=False)
 
             place_uri = URIRef("https://wiki.example.org/Pokemon_Cartridge_Case")
@@ -722,7 +722,7 @@ name: Test Page
 ---
 """, encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki_dir]}, graph={"include_file_extension": True})
+            config = Config(wiki={"input": [wiki_dir]}, graph={"include_file_extension": True})
             g = load_graph(config, infer=False)
             expected = URIRef("https://wiki.example.org/test.md")
             self.assertTrue((expected, None, None) in g)
@@ -733,7 +733,7 @@ name: Test Page
             wiki_dir = Path(tmpdir)
             (wiki_dir / "person.yaml").write_text("type: Person\ngivenName: Test\n", encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki_dir]}, graph={"include_file_extension": True})
+            config = Config(wiki={"input": [wiki_dir]}, graph={"include_file_extension": True})
             g = load_graph(config, infer=False)
             expected = URIRef("https://wiki.example.org/person.yaml")
             self.assertTrue((expected, None, None) in g)
@@ -750,7 +750,7 @@ schema:familyName: Smith
 """, encoding="utf-8")
 
             config = Config(
-                wiki={"inputs": [wiki_dir]},
+                wiki={"input": [wiki_dir]},
                 graph={
                     "context": {
                         "@vocab": None,
@@ -803,7 +803,7 @@ sh:property:
 ---
 """, encoding="utf-8")
 
-            config = Config(wiki={"inputs": [wiki_dir]})
+            config = Config(wiki={"input": [wiki_dir]})
             data_graph = load_graph(config, infer=True)
             shapes_graph = load_shapes(data_graph)
 
@@ -827,7 +827,7 @@ name: Alice
 """, encoding="utf-8")
 
             config = Config(
-                wiki={"inputs": [wiki_dir]},
+                wiki={"input": [wiki_dir]},
                 graph={
                     "context": {
                         "@vocab": "https://custom.example.org/vocab/",

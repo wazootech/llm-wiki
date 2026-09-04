@@ -45,7 +45,7 @@ SELECT ?givenName WHERE {
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki_dir]},
+                wiki={"input": [wiki_dir]},
                 config_root=wiki_dir,
                 graph={
                     "context": {
@@ -91,7 +91,7 @@ SELECT ?givenName WHERE {
                 encoding="utf-8",
             )
             config = Config(
-                wiki={"inputs": [wiki_dir]},
+                wiki={"input": [wiki_dir]},
                 config_root=wiki_dir,
                 graph={
                     "context": {
@@ -140,7 +140,7 @@ SELECT ?graph ?name WHERE { GRAPH ?graph { ?s <https://schema.org/name> ?name } 
                 '"required_by":["root"]}}}',
                 encoding="utf-8",
             )
-            config = Config(config_root=root, wiki={"inputs": [wiki_dir, source_dir]})
+            config = Config(config_root=root, wiki={"input": [wiki_dir, source_dir]})
 
             render_markdown_files(
                 config,
