@@ -136,7 +136,7 @@ After `npm install -g wazootech-wiki`, use `wiki` instead of the `npx` prefix (f
 
 ### Standalone binary (no Python required)
 
-Pre-built executables ship on [GitHub Releases](https://github.com/wazootech/wiki/releases) for Linux (x64), macOS (arm64 and x64), and Windows (x64). Each release includes a `SHA256SUMS` file.
+Pre-built executables ship on [GitHub Releases](https://github.com/wazootech/wiki/releases) for Linux (x64), macOS (arm64), and Windows (x64). Each release includes a `SHA256SUMS` file.
 
 ```bash
 # Linux / macOS — verify checksum, then extract
