@@ -46,7 +46,7 @@ jobs:
           node-version: "20"
 
       - name: Generate Python API docs
-        run: uv run sphinx-build -b html -c docs docs/api/python docs/assets/api/python
+        run: npm run gendocs:python
 
       - name: Generate TypeScript API docs
         run: npm install && npm run gendocs:ts
