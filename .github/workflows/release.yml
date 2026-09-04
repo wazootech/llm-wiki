@@ -157,9 +157,12 @@ jobs:
           - runner: macos-14
             slug: macos-arm64
             smoke_check: false
-          - runner: macos-13
-            slug: macos-x64
-            smoke_check: false
+          # macOS (Intel) standalone disabled: GitHub's macos-13 runner pool has
+          # been unable to schedule jobs (queued for hours). Re-enable when
+          # runner capacity recovers.
+          # - runner: macos-13
+          #   slug: macos-x64
+          #   smoke_check: false
     steps:
       - name: Checkout
         uses: actions/checkout@v6
