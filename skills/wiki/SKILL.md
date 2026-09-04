@@ -52,7 +52,7 @@ Before any wiki command:
 
 In the **Wiki CLI repository checkout**, if PATH `wiki` fails but `pyproject.toml` exists, use `uv run wiki` or `python -m wiki` when both `--help` and `fmt` capability pass.
 
-Zero-install equivalent: `npx wazootech-wiki <args>` or `uvx wazootech-wiki <args>` in place of `wiki <args>`.
+Zero-install equivalent: `npx wazootech-wiki <args>` or `uvx --from wazootech-wiki wiki <args>` in place of `wiki <args>`.
 
 ## Deterministic scripts
 

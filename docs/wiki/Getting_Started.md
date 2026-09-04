@@ -33,7 +33,7 @@ npx wazootech-wiki init
 npx wazootech-wiki check
 ```
 
-`npx wazootech-wiki` and `uvx wazootech-wiki` accept the same subcommands and flags as `wiki`.
+`npx wazootech-wiki` and `uvx --from wazootech-wiki wiki` accept the same subcommands and flags as `wiki`.
 
 ### Editable install from this repository
 
