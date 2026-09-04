@@ -78,11 +78,11 @@ After Phase A succeeds, **default:** run `wiki check --strict` with the resolved
 
 ### Phase B: tweak
 
-Edit scaffold files marked with `<!-- wiki tweak: … -->` comments (with user approval):
+Review the scaffolded files with the user (config, README, empty `wiki/`):
 
 | Topic           | Action                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------ |
-| First page      | Replace `wiki/Ethan_Davidson.md` (starter includes a tweak comment) or add the user's page |
+| First page      | Add the user's first page under `wiki/` (scaffolded empty) |
 | Config extras   | Uncomment optional blocks in `wiki.yml` — see the Preferences wizard section below         |
 | Lint strictness | Only if user asks — see the Preferences wizard section below                               |
 
@@ -91,7 +91,7 @@ Edit scaffold files marked with `<!-- wiki tweak: … -->` comments (with user a
 ### What init creates
 
 - `wiki.yml`
-- `wiki/Person_Shape.md`, `wiki/Ethan_Davidson.md`, `README.md`
+- `wiki/` (empty), `README.md`
 
 ## Post-init hygiene
 

@@ -524,7 +524,7 @@ def serve(
 @click.option(
     "--repo",
     default=None,
-    help="GitHub owner/repo; infer graph.context.wiki and site.base_url for GitHub Pages.",
+    help="GitHub owner/repo; infer graph.context.wiki and site.base_url for GitHub Pages (skips the interactive prompt).",
 )
 @click.option(
     "--graph-context-wiki",
@@ -614,7 +614,12 @@ def init(
     graph_implicit_types_policy: str | None,
     graph_include_file_extension: bool | None,
 ) -> None:
-    """Scaffold a new wiki project in the current directory."""
+    """Scaffold a new wiki project in the current directory.
+
+    Non-interactive runs (stdin is not a TTY — CI, scripts, agent tools) skip
+    the namespace prompt and use the default; pass --repo or
+    --graph-context-wiki to control the resulting wiki namespace IRI.
+    """
     cwd = Path.cwd()
     config_path = cwd / "wiki.yml"
     legacy_config_paths = (
@@ -652,7 +657,16 @@ def init(
             sys.exit(1)
 
     def prompt_context_wiki(default: str) -> str:
-        return str(click.prompt("Custom wiki namespace IRI (graph.context.wiki)", default=default))
+        if not sys.stdin.isatty():
+            click.echo(
+                "Non-interactive stdin detected — using the default wiki namespace "
+                f"IRI {default}. Pass --repo or --graph-context-wiki to control it.",
+                err=True,
+            )
+            return default
+        return str(
+            click.prompt("Custom wiki namespace IRI (graph.context.wiki)", default=default)
+        )
 
     if init_template is not None:
         from .init_scaffold import fetch_template

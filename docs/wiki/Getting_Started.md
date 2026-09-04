@@ -55,7 +55,7 @@ wiki init --repo wazootech/wiki
 wiki init --git
 ```
 
-`wiki init` writes `wiki.yml`, `README.md`, and a starter `wiki/` folder (`Person_Shape.md`, `Ethan_Davidson.md`). Use `--repo owner/repo` to infer GitHub Pages URLs without a prompt, or pass `--graph-context-wiki` / `--site-base-url` explicitly. By default it does not create a Git repository; use `--git` if you want that explicitly. Init requires a clean directory (no existing `wiki.yml`, `README.md`, or non-empty `wiki/`). See [wiki init](wiki_init.md) for all flags.
+`wiki init` writes `wiki.yml`, `README.md`, and an empty `wiki/` folder for your markdown pages. Use `--repo owner/repo` to infer GitHub Pages URLs without a prompt, or pass `--graph-context-wiki` / `--site-base-url` explicitly; in non-interactive contexts (CI, scripts) init skips the prompt and uses the default namespace. By default it does not create a Git repository; use `--git` if you want that explicitly. Init requires a clean directory (no existing `wiki.yml`, `README.md`, or non-empty `wiki/`). See [wiki init](wiki_init.md) for all flags.
 
 ### Branding
 

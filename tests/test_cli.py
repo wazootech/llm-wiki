@@ -519,18 +519,10 @@ SELECT ?givenName WHERE { ?s <https://schema.org/givenName> ?givenName }
                 self.assertIn("A semantic markdown knowledge base powered by the Wiki CLI.", readme_content)
                 self.assertIn("wiki check", readme_content)
 
-                # Check wiki/Person_Shape.md exists and contains schema:givenName/familyName
-                shape_content = Path("wiki") / "Person_Shape.md"
-                content = shape_content.read_text(encoding="utf-8")
-                self.assertIn("sh:path: schema:givenName", content)
-                self.assertIn("sh:path: schema:familyName", content)
-
-                # Check wiki/Ethan_Davidson.md exists
-                person_content = (Path("wiki") / "Ethan_Davidson.md").read_text(encoding="utf-8")
-                self.assertIn("wiki tweak: replace with your first page", person_content)
-                self.assertIn("givenName: Ethan", person_content)
-                self.assertIn("familyName: Davidson", person_content)
-                self.assertNotIn("wazoo:layout:", person_content)
+                # Check wiki/ is scaffolded empty — no placeholder pages
+                wiki_dir = Path("wiki")
+                self.assertTrue(wiki_dir.is_dir())
+                self.assertEqual(list(wiki_dir.iterdir()), [])
 
                 # Check layout and assets are commented/unused in config
                 self.assertNotIn("manifest:", config_content)
@@ -648,6 +640,18 @@ SELECT ?givenName WHERE { ?s <https://schema.org/givenName> ?givenName }
                 self.assertIn("wiki: https://example.org/custom/", config_content)
                 self.assertIn("wiki: https://example.org/custom/", config_content)
                 self.assertIn("base_url: /custom", config_content)
+
+    def test_cli_init_noninteractive_uses_default_namespace(self) -> None:
+        """#264: init without --repo/--graph-context-wiki must not hang on a
+        non-interactive stdin — it uses the default wiki namespace IRI."""
+        runner = CliRunner()
+        with TemporaryDirectory() as tmpdir:
+            with runner.isolated_filesystem(temp_dir=tmpdir):
+                result = runner.invoke(main, ["init"], catch_exceptions=False)
+                self.assertEqual(result.exit_code, 0)
+                config_content = Path("wiki.yml").read_text(encoding="utf-8")
+                self.assertIn("wiki: https://wiki.example.org/", config_content)
+                self.assertIn("Non-interactive stdin detected", result.output)
 
     @patch("wiki.init_scaffold.detect_origin_repo", return_value="wazootech/wiki")
     def test_cli_init_detects_git_remote(self, _detect_mock) -> None:

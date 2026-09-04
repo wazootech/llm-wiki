@@ -1,12 +1,12 @@
 ---
 type: TechArticle
 headline: wiki init
-description: Scaffold wiki.yml and starter wiki pages interactively.
+description: Scaffold wiki.yml and an empty wiki/ folder for markdown pages.
 ---
 
 # `wiki init`
 
-Create a new wiki project in the **current directory**: `wiki.yml`, `README.md`, and starter files under `wiki/`.
+Create a new wiki project in the **current directory**: `wiki.yml`, `README.md`, and an empty `wiki/` folder for your markdown pages.
 
 Does not use loaded Config; safe to run before a config exists. Init runs once per clean directory — if `wiki.yml`, `README.md`, or a non-empty `wiki/` already exist, use a new directory or remove those files before re-running.
 
@@ -48,7 +48,7 @@ When `--graph-context-wiki` is not passed, init resolves `graph.context.wiki` in
 
 1. **`--repo`** — GitHub Pages project site: `https://{owner}.github.io/{repo}/` and `site.base_url: /{repo}` (accepts `owner/repo`, HTTPS, or SSH URLs).
 1. **Git remote** — If `.git` already exists or `--git` was passed, parse `git remote get-url origin` when it points at GitHub.
-1. **Interactive prompt** — **Custom wiki namespace IRI** (default `https://wiki.example.org/`).
+1. **Interactive prompt** — **Custom wiki namespace IRI** (default `https://wiki.example.org/`). The prompt is skipped when stdin is not an interactive terminal (CI, scripts, agent tools); the default is used instead.
 
 `--graph-context-wiki` always wins over `--repo` and remote detection. `--site-base-url` overrides the inferred path from `--repo`.
 
@@ -62,6 +62,8 @@ When no flag or git remote supplies `graph.context.wiki`, init prompts once:
 
 When the namespace came from that prompt, the prompt ends and initialization proceeds.
 
+The prompt only appears when stdin is an interactive terminal. In non-interactive contexts (CI, scripts, agent tools), init detects the lack of a TTY and uses the default `https://wiki.example.org/`, printing a note to stderr — pass `--repo` or `--graph-context-wiki` to control the namespace without prompting.
+
 Always includes `schema`, `wiki`, `wazoo`, `foaf`, `dc`, `dcterms`, `sh`, and `xsd` prefixes. The `wazoo` URI is fixed in the scaffold (`https://schema.wazoo.dev/`), like the other built-in prefixes.
 
 ## Generated config
@@ -73,8 +75,7 @@ For every key — schema default, whether init writes it, and which command audi
 ## Generated files
 
 - `README.md` — starter wiki overview and common commands
-- `wiki/Person_Shape.md` — starter `sh:NodeShape` for `schema:Person`
-- `wiki/Ethan_Davidson.md` — starter `schema:Person` example (includes a tweak comment to replace with your first page)
+- `wiki/` — empty directory for your markdown pages with semantic frontmatter
 
 ## Related
 
