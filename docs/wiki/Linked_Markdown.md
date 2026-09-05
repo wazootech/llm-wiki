@@ -3,7 +3,7 @@ type:
   - schema:TechArticle
   - schema:SoftwareApplication
 headline: Linked Markdown
-name: Linked Markdown
+name: Linked_Markdown
 description: The protocol specifying how semantic frontmatter and Markdown cross-links compile to an RDF graph.
 codeRepository: https://github.com/wazootech/linked-markdown
 ---

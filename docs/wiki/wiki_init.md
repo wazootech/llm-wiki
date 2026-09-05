@@ -34,6 +34,7 @@ wiki init --graph-context-wiki https://example.org/mywiki/ --site-base-url /mywi
 | `--graph-context-wiki`           | Override `graph.context.wiki` (overrides `--repo` inference)                                   | `graph.context.wiki`                             |
 | `--site-base-url`                | Override `site.base_url` (default `/wiki` or inferred from `--repo`)                           | `site.base_url`                                  |
 | `--site-url-style`               | Override `site.url_style`: `dir` or `file` (default `dir`)                                     | `site.url_style`                                 |
+| `--site-layout`                  | Override `site.layout` (default depends on the selected scaffold or template)                  | `site.layout`                                    |
 | `--graph-content-predicate`      | Override `graph.content_predicate` CURIE (e.g. `schema:articleBody`)                           | `graph.content_predicate`                        |
 | `--link-style`                   | Override `link.style`: standard page links (`standard`) or wikilinks (`wikilink`)              | `link.style`                                     |
 | `--input`                        | Override `wiki.input` list (can be specified multiple times, default `[wiki]`)                 | `wiki.input`                                     |
@@ -41,6 +42,7 @@ wiki init --graph-context-wiki https://example.org/mywiki/ --site-base-url /mywi
 | `--graph-implicit-types`         | Override `graph.implicit_types` (can be specified multiple times)                              | `graph.implicit_types`                           |
 | `--graph-implicit-types-policy`  | Override `graph.implicit_types_policy`: `fallback` or `append`                                 | `graph.implicit_types_policy`                    |
 | `--graph-include-file-extension` | Override `graph.include_file_extension` flag (defaults to `--no-graph-include-file-extension`) | `graph.include_file_extension`                   |
+| `--template`                     | Use a starter template from wazootech/wiki-templates (e.g. generic, llm-wiki, astro)           | —                                                |
 
 ## URL resolution
 

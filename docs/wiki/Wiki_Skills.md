@@ -104,6 +104,7 @@ See `skills/wiki/references/deploy.md` (which includes the Deploy Alignment Chec
 ```
 skills/
   wiki/SKILL.md
+  wiki/evals/evals.json
   wiki/scripts/audit.sh
   wiki/scripts/verify.sh
   wiki/references/install.md
@@ -113,6 +114,7 @@ skills/
   wiki/references/plan.md
   wiki/references/loop.md
   wiki/references/deploy.md
+  wiki/references/enrich.md
   wiki/references/sync.md
   wiki/references/workflow-template-uv.yml
   wiki/references/workflow-template-pip.yml
