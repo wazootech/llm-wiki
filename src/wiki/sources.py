@@ -8,8 +8,10 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import shutil
+import stat
 import subprocess
 import tomllib
 from dataclasses import dataclass, field
@@ -122,6 +124,22 @@ def _git_clone_or_fetch(source: SourceConfig, cache_dir: Path) -> Path:
                 "Updated remote URL for source from %s to %s",
                 url_result.stdout.strip(),
                 source.url,
+            )
+
+        # The cache repo may have a local branch checked out (the default
+        # branch from the initial clone). Fetching into refs/heads/* is
+        # refused by git when it would update the currently checked-out
+        # branch, so detach HEAD first; _git_prepare_ref re-attaches and
+        # re-checks-out the working tree afterward.
+        detach = subprocess.run(
+            ["git", "checkout", "--detach"],
+            capture_output=True,
+            text=True,
+            cwd=repo_dir,
+        )
+        if detach.returncode != 0:
+            raise RuntimeError(
+                f"Failed to prepare {source.url}: {detach.stderr.strip()}"
             )
 
         result = subprocess.run(
@@ -614,6 +632,22 @@ def update(
     return result
 
 
+def _rmtree_force(path: Path) -> None:
+    """Remove a directory tree, clearing the read-only attribute as needed.
+
+    Git object files are created read-only, and ``shutil.rmtree`` cannot
+    delete read-only files on Windows (PermissionError: [WinError 5]);
+    POSIX unlinks them regardless. Clear the write bit and retry any
+    failed entry so removals behave the same on both platforms.
+    """
+
+    def _clear_readonly(func: Any, entry: Path, exc_info: object) -> None:
+        os.chmod(entry, stat.S_IWRITE)
+        func(entry)
+
+    shutil.rmtree(path, onerror=_clear_readonly)
+
+
 def _remove_orphans(
     config: Config, lockfile: Lockfile, removed_name: str
 ) -> None:
@@ -641,7 +675,7 @@ def _remove_orphans(
     for orphan in orphaned:
         cache_dir = _source_cache_dir(config, orphan)
         if cache_dir.exists():
-            shutil.rmtree(cache_dir)
+            _rmtree_force(cache_dir)
             logger.info("Removed cache for orphaned transitive source %r", orphan)
         del lockfile.sources[orphan]
         logger.info(
@@ -656,13 +690,18 @@ def remove(config: Config, name: str) -> None:
     Transitive dependencies that are no longer required by any remaining
     top-level source are automatically cleaned up (cache and lockfile
     entry removed).
-    """
-    _remove_from_wiki_yml(config, name)
 
+    The cache deletion is the step most likely to fail (read-only files on
+    Windows, antivirus locks), so it runs first: a failure then leaves
+    wiki.yml and wiki.lock untouched and consistent, and the source can be
+    re-installed cleanly.
+    """
     cache_dir = _source_cache_dir(config, name)
     if cache_dir.exists():
-        shutil.rmtree(cache_dir)
+        _rmtree_force(cache_dir)
         logger.info("Removed cache for source %r", name)
+
+    _remove_from_wiki_yml(config, name)
 
     lockfile = _load_lockfile(config)
     if name in lockfile.sources:

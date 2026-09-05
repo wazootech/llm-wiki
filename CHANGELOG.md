@@ -9,6 +9,17 @@
   GitHub's `macos-13` runner pool is unavailable; the README download list
   reflects the current set.
 
+### Fixed
+
+- `wiki update` now works for unpinned git sources: the cache clone is
+  detached before fetching so git no longer refuses to update its own
+  checked-out branch, and the working tree is re-checked-out afterward.
+  ([#298](https://github.com/wazootech/wiki/issues/298))
+- `wiki remove` no longer crashes on Windows when read-only git object
+  files block cache deletion, and it removes the cache first so a failure
+  leaves `wiki.yml` and `wiki.lock` consistent.
+  ([#299](https://github.com/wazootech/wiki/issues/299))
+
 ## 0.1.23 — 2026-09-04
 
 ### Changed

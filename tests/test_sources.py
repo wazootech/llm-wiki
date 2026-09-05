@@ -1,4 +1,7 @@
 import json
+import os
+import shutil
+import subprocess
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -13,6 +16,9 @@ from wiki.sources import (
     _expand_source_url,
     _install_tree,
     _remove_orphans,
+    install,
+    remove,
+    update,
 )
 
 
@@ -631,6 +637,138 @@ class TestRemoveOrphans(unittest.TestCase):
             self.assertFalse((root / ".wiki" / "sources" / "B").exists())
             # A's cache is still there (the caller removed A separately)
             self.assertTrue((root / ".wiki" / "sources" / "A").exists())
+
+
+class TestSourceGitLifecycle(unittest.TestCase):
+    """End-to-end install → update → remove against real git repos.
+
+    Regression coverage for two shipped bugs:
+
+    * ``wiki update`` failing on unpinned sources because the cache clone's
+      mirror fetch tried to update its own checked-out branch, which git
+      refuses ("refusing to fetch into branch ... checked out at ...").
+    * ``wiki remove`` crashing on Windows where read-only git object files
+      block ``shutil.rmtree`` with PermissionError.
+    """
+
+    @unittest.skipUnless(shutil.which("git"), "git executable not available")
+    def test_install_update_remove_unpinned_source(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "root"
+            src = Path(tmpdir) / "src"
+            initial = self._init_source(src)
+            config = self._root_config(root)
+
+            installed = install(config, url=src.as_posix())
+            name = src.name
+            self.assertIn(name, installed.sources)
+            self.assertEqual(installed.sources[name].resolved_ref, initial)
+            repo_dir = root / ".wiki" / "sources" / name / "repo"
+            self.assertTrue(repo_dir.exists())
+            self.assertEqual(
+                (repo_dir / "data.txt").read_text(encoding="utf-8"), "v1\n"
+            )
+
+            # A newer upstream commit must be picked up by update. This
+            # used to raise "Failed to fetch ... refusing to fetch into
+            # branch" for unpinned sources.
+            new = self._commit(src, "v2\n")
+            result = update(config)
+            self.assertEqual([u.name for u in result.changed], [name])
+            relocked = Lockfile.load(root / "wiki.lock")
+            self.assertEqual(relocked.sources[name].resolved_ref, new)
+            # The working tree advanced, not just the lockfile entry.
+            self.assertEqual(
+                (repo_dir / "data.txt").read_text(encoding="utf-8"), "v2\n"
+            )
+
+            # A second update with nothing new upstream is a no-op.
+            self.assertEqual(update(config).changed, [])
+
+            # Removal cleans wiki.yml, wiki.lock, and the cache directory.
+            remove(config, name)
+            self.assertFalse(repo_dir.exists())
+            self.assertNotIn(name, Lockfile.load(root / "wiki.lock").sources)
+            self.assertNotIn(
+                "sources", (root / "wiki.yml").read_text(encoding="utf-8")
+            )
+
+    @unittest.skipUnless(shutil.which("git"), "git executable not available")
+    def test_install_update_pinned_branch_source(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "root"
+            src = Path(tmpdir) / "src"
+            self._init_source(src)
+            config = self._root_config(root)
+
+            installed = install(config, url=f"{src.as_posix()}#main")
+            self.assertIn(src.name, installed.sources)
+
+            new = self._commit(src, "v2\n")
+            result = update(config)
+            self.assertEqual([u.name for u in result.changed], [src.name])
+            relocked = Lockfile.load(root / "wiki.lock")
+            self.assertEqual(relocked.sources[src.name].resolved_ref, new)
+
+    @unittest.skipUnless(shutil.which("git"), "git executable not available")
+    def test_remove_survives_read_only_cache_files(self) -> None:
+        """Removal clears read-only attributes on cache files (Windows)."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "root"
+            src = Path(tmpdir) / "src"
+            self._init_source(src)
+            config = self._root_config(root)
+            install(config, url=src.as_posix())
+            name = src.name
+
+            cache_dir = root / ".wiki" / "sources" / name
+            for p in cache_dir.rglob("*"):
+                if p.is_file():
+                    os.chmod(p, 0o444)
+
+            remove(config, name)
+            self.assertFalse(cache_dir.exists())
+            self.assertNotIn(name, Lockfile.load(root / "wiki.lock").sources)
+            self.assertNotIn(
+                name, (root / "wiki.yml").read_text(encoding="utf-8")
+            )
+
+    def _root_config(self, root: Path) -> Config:
+        root.mkdir(parents=True)
+        (root / "wiki.yml").write_text(
+            yaml.dump({"wiki": {"input": "pages"}}), encoding="utf-8"
+        )
+        return Config.load(root)
+
+    def _init_source(self, src: Path) -> str:
+        src.mkdir(parents=True)
+        self._git(src, "init", "-b", "main")
+        (src / "wiki.yml").write_text(
+            yaml.dump({"wiki": {"input": "pages"}}), encoding="utf-8"
+        )
+        return self._commit(src, "v1\n", message="init")
+
+    def _commit(self, repo: Path, content: str, message: str = "update") -> str:
+        (repo / "data.txt").write_text(content, encoding="utf-8")
+        self._git(repo, "add", "-A")
+        self._git(
+            repo,
+            "-c", "user.name=Test",
+            "-c", "user.email=test@example.com",
+            "-c", "commit.gpgsign=false",
+            "commit", "-m", message,
+        )
+        return self._git(repo, "rev-parse", "HEAD").stdout.strip()
+
+    def _git(self, repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(
+            ["git", *args], cwd=repo, capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            raise AssertionError(
+                f"git {' '.join(args)} failed: {result.stderr.strip()}"
+            )
+        return result
 
 
 if __name__ == "__main__":
