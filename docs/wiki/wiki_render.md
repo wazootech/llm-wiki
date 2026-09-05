@@ -86,7 +86,7 @@ ORDER BY ?name
 
 | app | name | version |
 | --- | --- | --- |
-| [Linked_Markdown](Linked_Markdown.md) | Linked Markdown |  |
+| [Linked_Markdown](Linked_Markdown.md) | Linked_Markdown |  |
 | [Obsidian](Obsidian.md) | Obsidian |  |
 | [Vivary](Vivary.md) | Vivary | 0.1.0 |
 | [wiki](wiki.md) | wiki | 0.1.23 |

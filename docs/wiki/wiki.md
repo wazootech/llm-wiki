@@ -210,7 +210,7 @@ Procedural knowledge for coding agents: [Wiki Skills](Wiki_Skills.md) (`skills/w
 
 ## Global Options
 
-These options apply to config-loading subcommands (`check`, `lint`, `link`, `query`, `mcp`, `render`, `build`, `export`, `serve`, `fmt`, `install`, `remove`). `init` and `upgrade` do not load a config file.
+These options apply to all subcommands. Config-driven commands include `check`, `lint`, `link`, `query`, `mcp`, `render`, `build`, `export`, `serve`, `fmt`, `install`, `remove`, `update`, and `graph`; `init` and `upgrade` run with defaults when no config file exists.
 
 ### `-c, --config PATH`
 

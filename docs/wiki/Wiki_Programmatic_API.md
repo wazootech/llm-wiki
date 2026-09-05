@@ -67,7 +67,7 @@ for graph in w.graphs():
 
 SPARQL `GRAPH` clauses are supported through `Wiki.query()` and the CLI query command. Unscoped queries continue to read the default union view.
 
-Runtime overrides (global `-b` / `--url-style`):
+Runtime overrides (CLI `--site-base-url` / `--site-url-style`; Python `base_url` / `url_style` kwargs):
 
 ```python
 w = w.with_runtime(base_url="/wiki", url_style="dir")
@@ -185,7 +185,7 @@ CommonJS usage:
 const { Wiki } = require("wazootech-wiki");
 ```
 
-The SDK exposes methods that mirror the CLI surface: `check`, `lint`, `fmt`, `render`, `build`, `export`, `link`, `query`, `graphList`, `serve`, `init`, and `upgrade`. Options use TypeScript-friendly camelCase names and map to the corresponding CLI flags.
+The SDK exposes methods that mirror the CLI surface: `check`, `lint`, `fmt`, `render`, `build`, `export`, `link`, `query`, `graphList`, `serve`, `init`, `install`, `update`, `remove`, `mcp`, and `upgrade`. Options use TypeScript-friendly camelCase names and map to the corresponding CLI flags.
 
 Most report-producing methods return a `WikiCommandResult` containing `ok`, `exitCode`, `stdout`, `stderr`, and the executed command argv. JSON-capable commands can parse structured output: `query({ format: "json" })` returns parsed JSON by default, and `export({ format: "dict" })` or `export({ format: "json-ld" })` includes parsed `data`.
 
