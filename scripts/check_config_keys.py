@@ -72,6 +72,7 @@ ALLOWED: dict[str, str] = {
     "wiki.exe": "binary name reference (wiki.exe)",
     "wiki.git": "filename/repo reference",
     "wiki.example.org": "example URL host",
+    "wiki.wazoo.dev": "URL host (wiki.wazoo.dev)",
     "check.yml": "filename reference (check.yml)",
     # CLI subcommands written with a dot in prose.
     "wiki.check": "CLI subcommand written with a dot",
@@ -92,6 +93,8 @@ ALLOWED: dict[str, str] = {
     # Python module / attribute references in the programmatic-API docs.
     "wiki.site": "Python module reference (``wiki.site``)",
     "wiki.graph": "Python module reference (``wiki.graph``)",
+    "wiki.py": "Python module reference (``src/wiki/wiki.py`` line-range citation)",
+    "graph.py": "Python module reference (``src/wiki/graph.py`` line-range citation)",
     "wiki.schemas.init": "Python module reference (``wiki.schemas.init``)",
     "wiki.schemas.layout": "Python module reference (``wiki.schemas.layout``)",
     "graph.name": "Python attribute access in a code snippet",
