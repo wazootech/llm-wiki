@@ -27,8 +27,8 @@ The key property: **knowledge persists and compounds forward**. The agent does n
 
 In this ecosystem, recursive learning manifests as:
 
-- The **[Vivary](Vivary.md) strato loop** — `Ask → retrieve → act → verify → learn → gate`. The "learn" step examines verification results and the gated outcome, then distills improvements into memory, skills, or the graph itself.
-- **[Vivary ozone](Vivary.md#ozone--review-by-blast-radius)** — graph-aware review that checks not just individual documents but the relationships between them, surfacing gaps a per-document check cannot see.
+- The **[Vivary](Vivary.md) agent loop** — read `.vivary/context.md` first, act, verify with `tropo check`, and stop at deliberate human gates. Verification results and gate outcomes are recorded as receipts that later turns reuse.
+- **[Vivary governance](Vivary.md#governance--capsules-receipts-and-policy)** — `tropo check` gates the whole graph, and Task Capsules + Execution Receipts bind what ran to one question and scope, so verification feeds the next cycle.
 - **[Procedural Knowledge](Procedural_Knowledge.md)** — self-updating workflows: [SPARQL](SPARQL.md) blocks that [render](wiki_render.md) live results, [SHACL](SHACL.md) shapes that validate structure, and [wiki skills](Wiki_Skills.md) that encode repeatable processes.
 - **[wiki render](wiki_render.md)** — `wiki render --check` detects stale SPARQL result blocks from a prior run and flags them for regeneration, closing the recursive loop.
 
@@ -36,14 +36,14 @@ The key property: **the system improves its own process by examining its output*
 
 ## Comparison
 
-| Dimension         | Continual learning                                          | Recursive learning                                                     |
-| ----------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Time axis**     | Forward accumulation — each session adds                    | Cyclical refinement — each loop re-evaluates                           |
-| **Storage model** | Growing corpus of documents and graph triples               | Self-modifying workflows, skills, and memory                           |
-| **Agent role**    | Gardener — tends and expands the wiki                       | Meta-cognitive — reflects on and improves its own process              |
-| **Scale**         | Sessions to months                                          | Single turn to a few turns                                             |
-| **Risk**          | Stale or contradictory pages if unchecked                   | Infinite loops or over-optimization without gates                      |
-| **Examples**      | Adding a new page, enriching frontmatter, growing the graph | `verify → learn → gate` in Vivary, `wiki render --check`, ozone review |
+| Dimension         | Continual learning                                          | Recursive learning                                                          |
+| ----------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **Time axis**     | Forward accumulation — each session adds                    | Cyclical refinement — each loop re-evaluates                                |
+| **Storage model** | Growing corpus of documents and graph triples               | Self-modifying workflows, skills, and memory                                |
+| **Agent role**    | Gardener — tends and expands the wiki                       | Meta-cognitive — reflects on and improves its own process                   |
+| **Scale**         | Sessions to months                                          | Single turn to a few turns                                                  |
+| **Risk**          | Stale or contradictory pages if unchecked                   | Infinite loops or over-optimization without gates                           |
+| **Examples**      | Adding a new page, enriching frontmatter, growing the graph | `tropo check` gates in Vivary, `wiki render --check`, receipt-driven review |
 
 ## How they compose
 
@@ -53,12 +53,12 @@ Continual and recursive learning are complementary, not competing. A healthy age
 1. On each turn (or heartbeat), the agent verifies its latest output, learns from verification results, and updates its skills or memory — **recursive** refinement of process.
 1. The recursive loop feeds the continual corpus: insights from verification become new frontmatter, corrected links, or updated shapes.
 
-The **[LLM Wiki](LLM_Wiki.md)** pattern is the continual surface; the **[Vivary](Vivary.md) strato loop** is the recursive engine. They meet in the middle: a wiki that grows perpetually and improves itself on every interaction.
+The **[LLM Wiki](LLM_Wiki.md)** pattern is the continual surface; the **[Vivary](Vivary.md) agent loop** is the recursive engine. They meet in the middle: a wiki that grows perpetually and improves itself on every interaction.
 
 ## Related
 
 - [LLM Wiki](LLM_Wiki.md) — pattern origins and compounding knowledge base design
-- [Vivary](Vivary.md) — agent workspace with the strato loop and ozone review
+- [Vivary](Vivary.md) — agent workspace with typed records, verification gates, and receipts
 - [Agent Memory Filesystems](Agent_Memory_Filesystems.md) — persistent memory across sessions
 - [Declarative Knowledge](Declarative_Knowledge.md) — facts and structures that accumulate
 - [Procedural Knowledge](Procedural_Knowledge.md) — workflows and processes that self-improve
