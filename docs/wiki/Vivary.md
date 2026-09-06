@@ -81,6 +81,26 @@ Key commands:
 | `tropo find --governed`     | Bounded graph-backed context for a question                                                                                   |
 | `tropo query --mode vector` | Vector search, preferring stored embeddings when `.vivary/storage.toml` enables them (`source: stored` / `computed` / `text`) |
 
+## Adding or changing types — tighten-only overlays
+
+Once a base schema exists, refinement happens through **overlays** — nested `tropo.toml` files that may only *add requirements or narrow enums* for a subtree, never relax inherited ones. That is the **tighten-only law**: a schema's evolution toward being optimal for a project is a directional, one-way tightening process, enforced at config-load time (`E120` on any loosen attempt) and guided by what `tropo check` and `tropo fix` surface as friction — `W210` flags frontmatter that merely repeats a derived value, and `tropo fix` strips it (the only mechanical edit tropo makes).
+
+Add or change a type by editing `tropo.toml`:
+
+```toml
+[types.runbook]
+folder   = "runbooks"
+required = { owner = "string" }
+optional = { related_modules = "ref-list" }
+```
+
+A nested `tropo.toml` tightens the rules for its subtree — it can add requirements or narrow enums, never loosen inherited ones:
+
+```toml
+[types.runbook]
+required = { owner = "string", review_status = "enum:draft|reviewed|approved" }
+```
+
 ## Governance — capsules, receipts, and policy
 
 - **Task Capsules** (`vivary.task-capsule/v0`) — fingerprinted governed-context artifacts compiled for one question and declared scope; they carry the context and effective checks but never execute them.
