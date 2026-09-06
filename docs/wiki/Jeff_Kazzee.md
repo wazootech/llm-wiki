@@ -10,14 +10,14 @@ familyName: Kazzee
 
 ## Software in this wiki
 
-| Tool                | Role                                                                                |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| [Vivary](Vivary.md) | Agent workspace standard — tropo graph, strato loop, ozone review, exo coordination |
+| Tool                | Role                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| [Vivary](Vivary.md) | Agent workspace standard — thin .vivary/ contract, tropo typed graph, verification receipts, human gates |
 
 ## Lineage
 
 - **braincheck → loam → tropo** — knowledge-layer validation lineage evolving to typed graph edges in [Vivary](Vivary.md)
-- **throughline + flywheel → strato** — self-improving loop at turn speed and heartbeat speed, fused inside Vivary workspace templates
+- **throughline + flywheel** — per-turn and heartbeat loops that shaped Vivary's agent-facing workspace contract
 
 ## Other repositories
 
